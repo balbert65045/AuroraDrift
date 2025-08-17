@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class TargetGroupController : MonoBehaviour
 {
+    [SerializeField] RedOrbController redOrbController;
+    [SerializeField] float MaxDistanceAway = 50;
+    
+
     [SerializeField] CinemachineTargetGroup targetGroup;
     [SerializeField] float adjustSpeed = 1f;
 
@@ -15,6 +19,19 @@ public class TargetGroupController : MonoBehaviour
     List<Transform> removingMembers = new List<Transform>();
     private void Update()
     {
+        float distance = (redOrbController.transform.position - Player.transform.position).magnitude;
+        if (distance > MaxDistanceAway)
+        {
+            int index = targetGroup.FindMember(redOrbController.transform);
+            float percentage = (distance - MaxDistanceAway) / MaxDistanceAway;
+            targetGroup.m_Targets[index].weight = .7f - (.7f * percentage);
+        }
+        else
+        {
+            int index = targetGroup.FindMember(redOrbController.transform);
+            targetGroup.m_Targets[index].weight = .7f;
+        }
+
         transform.position = Player.transform.position;
         if(newMembers.Count > 0)
         {

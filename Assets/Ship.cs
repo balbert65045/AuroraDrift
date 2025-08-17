@@ -177,7 +177,6 @@ public class Ship : MonoBehaviour
         }
         else
         {
-            Debug.Log("KnockedBack");
             rb.velocity = knockBackVel;
         }
     }
@@ -196,10 +195,12 @@ public class Ship : MonoBehaviour
         }
     }
 
+    public EventHandler<HealthStruct> OnTakeDamage;
     void TakeDamge(Vector2 pos)
     {
         float damageAmount = 10f;
         currentHealth -= damageAmount;
+        if(OnTakeDamage != null) { OnTakeDamage.Invoke(this, new HealthStruct(currentHealth, MaxHealth)); }
         if(currentHealth <= 0)
         {
             Explode();
@@ -232,6 +233,6 @@ public class Ship : MonoBehaviour
         Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
         //FindObjectOfType<Score>().AddScore(ValueAmount);
 
-        Destroy(this.gameObject);
+        Destroy(this.transform.parent.gameObject);
     }
 }

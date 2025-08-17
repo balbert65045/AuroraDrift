@@ -27,6 +27,7 @@ public class PlayerInputController : MonoBehaviour
         pm = FindObjectOfType<PlayerMovement>();
         rotationController = FindObjectOfType<PlayerRotationController>();
         pullController = FindObjectOfType<PlayerPullController>();
+        Cursor.visible = false;
     }
 
     bool pullingRed = false;
