@@ -44,7 +44,7 @@ public class Score : MonoBehaviour
     {
         Color multColor = Color.yellow;
         //Super Simple method
-        playerPullController.AdjustPushPullSpeed(playerPullController.PushPullSpeed + score * scoreToSpeedRatio);
+        //playerPullController.AdjustPushPullSpeed(playerPullController.PushPullSpeed + score * scoreToSpeedRatio);
 
         //enemysKilledInCombo++;
         //if (enemysKilledInCombo > 30)

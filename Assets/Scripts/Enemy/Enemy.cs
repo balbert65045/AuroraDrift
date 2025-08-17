@@ -116,7 +116,7 @@ public class Enemy : MovableObject
     {
         Instantiate(DamageFontPredab, transform.position, Quaternion.identity);
         Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
-        FindObjectOfType<Score>().AddScore(ValueAmount);
+        //FindObjectOfType<Score>().AddScore(ValueAmount);
 
         Destroy(this.gameObject);
     }

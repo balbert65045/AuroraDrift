@@ -18,21 +18,21 @@ public class EnemySpawner : MonoBehaviour
     void Start()
     {
         pm = FindObjectOfType<PlayerMovement>();
-        for(int i = 0; i < 4; i++)
-        {
-            float x = 0;
-            float y = 0;
-            while (x == 0 && y == 0)
-            {
-                x = Random.Range(-1f, 1f);
-                y = Random.Range(-1f, 1f);
-            }
-            Vector3 dir = new Vector3(x, y, 0);
+        //for(int i = 0; i < 4; i++)
+        //{
+        //    float x = 0;
+        //    float y = 0;
+        //    while (x == 0 && y == 0)
+        //    {
+        //        x = Random.Range(-1f, 1f);
+        //        y = Random.Range(-1f, 1f);
+        //    }
+        //    Vector3 dir = new Vector3(x, y, 0);
 
-            float ranRadius = Random.Range(50f, Radius);
+        //    float ranRadius = Random.Range(50f, Radius);
 
-            Instantiate(SpawnObjects[0], pm.transform.position + (dir.normalized * ranRadius), Quaternion.identity);
-        }
+        //    Instantiate(SpawnObjects[0], pm.transform.position + (dir.normalized * ranRadius), Quaternion.identity);
+        //}
     }
 
     // Update is called once per frame

@@ -27,6 +27,12 @@ public class DamageFont : MonoBehaviour
         }
     }
 
+    public void DisplayPain(int amount, Color color)
+    {
+        MyText.color = color;
+        MyText.text = amount.ToString();
+    }
+
     private void Update()
     {
         currentLifetime += Time.deltaTime;

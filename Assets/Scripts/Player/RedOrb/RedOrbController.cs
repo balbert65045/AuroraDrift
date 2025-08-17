@@ -69,14 +69,31 @@ public class RedOrbController : MovableObject
         }
         else
         {
-            if(redOrbTracker.ClosestObject() != null)
+            if (canTrack.Count == 0)
             {
-                GameObject ClosestObject = redOrbTracker.ClosestObject();
-                currentVelocity = (ClosestObject.transform.position - transform.position).normalized * currentVelocity.magnitude;
+                if (redOrbTracker.ClosestObject() != null)
+                {
+                    GameObject ClosestObject = redOrbTracker.ClosestObject();
+                    currentVelocity = (ClosestObject.transform.position - transform.position).normalized * currentVelocity.magnitude;
+                }
             }
             MoveInDirection();
         }
     }
+
+    public void DissableTrack()
+    {
+        StartCoroutine(DissableTrackThenRenable());
+    }
+
+    IEnumerator DissableTrackThenRenable()
+    {
+        canTrack.Add(true);
+        yield return new WaitForSeconds(.5f);
+        canTrack.Remove(true);
+    }
+
+    List<bool> canTrack = new List<bool>();
 
     void Retract()
     {

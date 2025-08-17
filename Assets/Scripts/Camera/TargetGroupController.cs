@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,21 +9,74 @@ public class TargetGroupController : MonoBehaviour
     [SerializeField] CinemachineTargetGroup targetGroup;
     [SerializeField] float adjustSpeed = 1f;
 
-    public List<int> gateAddedIndex = new List<int>();
+    [SerializeField] GameObject Player;
 
-
+    List<Transform> newMembers = new List<Transform>();
+    List<Transform> removingMembers = new List<Transform>();
     private void Update()
     {
-        if(gateAddedIndex.Count > 0)
+        transform.position = Player.transform.position;
+        if(newMembers.Count > 0)
         {
-            foreach(int gateIndex in gateAddedIndex)
+            List<Transform> finished = new List<Transform>();
+            foreach(Transform t in newMembers)
             {
-                targetGroup.m_Targets[gateIndex].weight += Time.deltaTime * adjustSpeed;
-                if (targetGroup.m_Targets[gateIndex].weight >= 1)
+                int index = targetGroup.FindMember(t);
+                targetGroup.m_Targets[index].weight = Mathf.Clamp01(targetGroup.m_Targets[index].weight + Time.deltaTime * adjustSpeed);
+                if(targetGroup.m_Targets[index].weight >= 1f)
                 {
-                    targetGroup.m_Targets[gateIndex].weight = 1;
-                    gateAddedIndex.Remove(gateIndex);
+                    finished.Add(t);
                 }
+            }
+
+            foreach(Transform t in finished)
+            {
+                newMembers.Remove(t);
+            }
+        }
+
+        if (removingMembers.Count > 0)
+        {
+            List<Transform> finished = new List<Transform>();
+            foreach (Transform t in removingMembers)
+            {
+                int index = targetGroup.FindMember(t);
+                targetGroup.m_Targets[index].weight = Mathf.Clamp01(targetGroup.m_Targets[index].weight - Time.deltaTime * adjustSpeed);
+                if (targetGroup.m_Targets[index].weight <= 0)
+                {
+                    finished.Add(t);
+                }
+            }
+
+            foreach (Transform t in finished)
+            {
+                targetGroup.RemoveMember(t);
+                removingMembers.Remove(t);
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Ship>())
+        {
+            targetGroup.AddMember(collision.transform, 0, 5f);
+            newMembers.Add(collision.transform);
+            if (removingMembers.Contains(collision.transform))
+            {
+                removingMembers.Remove(collision.transform);
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Ship>())
+        {
+            removingMembers.Add(collision.transform);
+            if (newMembers.Contains(collision.transform))
+            {
+                newMembers.Remove(collision.transform);
             }
         }
     }
