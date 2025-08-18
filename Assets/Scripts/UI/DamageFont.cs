@@ -9,7 +9,7 @@ public class DamageFont : MonoBehaviour
     [SerializeField] TMP_Text MyText;
     float currentLifetime = 0f;
 
-    float radialRandomAmount = 1f;
+    float radialRandomAmount = 5f;
     private void Awake()
     {
         float randomX = Random.Range(0, radialRandomAmount);

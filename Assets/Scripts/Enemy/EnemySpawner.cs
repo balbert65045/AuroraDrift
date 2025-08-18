@@ -40,6 +40,9 @@ public class EnemySpawner : MonoBehaviour
     {
         if(Time.timeSinceLevelLoad > timeSinceLastSpawn + SpawnRate)
         {
+            SpawnRate -= -.1f;
+            Mathf.Clamp(SpawnRate, .5f, 1000);
+            Spawn();
             Spawn();
         }
     }
