@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class  PauseCanvas : MonoBehaviour
 {
+    [SerializeField] GameObject LoseWindow;
+    [SerializeField] GameObject WinWindow;
     [SerializeField] GameObject Panel;
     bool paused = false;
 
@@ -22,8 +24,9 @@ public class  PauseCanvas : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Cancel"))
         {
+            if (LoseWindow.activeSelf || WinWindow.activeSelf) { return; }
             ToggleMenu();
         }
         float factor = cam.orthographicSize / ogCamSize;

@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class PlayerVisual : MonoBehaviour
 {
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] TrailRenderer trailRenderer;
     public GameObject TrackObject;
     [SerializeField] float speed = 10f;
+
+    [SerializeField] Material nonChargedMaterial;
+
+    [SerializeField] Color chargedColor;
+    [SerializeField] Material chargedMaterial;
 
     //private void Start()
     //{
@@ -30,6 +37,35 @@ public class PlayerVisual : MonoBehaviour
     //    texture.Apply();
     //    return texture;
     //}
+
+    PlayerMovement pm;
+    private void Start()
+    {
+        pm = FindObjectOfType<PlayerMovement>();
+        pm.OnDash += OnDash;
+        pm.OnRechargeDash += OnDashRecharge;
+    }
+
+    void OnDashRecharge()
+    {
+        //spriteRenderer.color = chargedColor;
+        //spriteRenderer.material = chargedMaterial;
+
+        //trailRenderer.endColor = chargedColor;
+        //trailRenderer.startColor = chargedColor;
+        //trailRenderer.material = chargedMaterial;
+    }
+
+    void OnDash()
+    {
+        if (pm.canDash) { return; }
+        //spriteRenderer.color = Color.white;
+        //spriteRenderer.material = nonChargedMaterial;
+
+        //trailRenderer.endColor = Color.white;
+        //trailRenderer.startColor = Color.white;
+        //trailRenderer.material = nonChargedMaterial;
+    }
 
     public void SetTrackObject(GameObject trackObject, Rigidbody2D rb)
     {

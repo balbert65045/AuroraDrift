@@ -25,11 +25,12 @@ public class BallIndicator : MonoBehaviour
         _canvasRect = _canvas.GetComponent<RectTransform>();
     }
 
+
     // Update is called once per frame
     void Update()
     {
         if (target == null || cam == null || arrowRect == null || _canvasRect == null) return;
-
+        if(!target.gameObject.activeSelf) return;
         // World -> Screen
         Vector3 sp = cam.WorldToScreenPoint(target.position);
         bool behind = sp.z < 0f;

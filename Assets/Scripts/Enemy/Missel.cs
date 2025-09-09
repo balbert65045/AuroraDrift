@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Missel : MonoBehaviour
+public class Missel : MovableObject
 {
     [SerializeField] GameObject ExplosionPrefab;
     [SerializeField] float ExplosionDelay = 1f;
@@ -12,15 +12,14 @@ public class Missel : MonoBehaviour
     public float speed = 100f;
     [SerializeField] float initialSpeed = 50f;
 
-    Vector2 currentVelocity;
-
     PlayerMovement pm;
-    Rigidbody2D rb;
     float SpawnTime;
 
     public bool predictiveLead = true;
 
     public float turnRateDeg = 180f;
+
+    bool shortDissable = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,12 +27,21 @@ public class Missel : MonoBehaviour
         pm = FindObjectOfType<PlayerMovement>();
         rb = GetComponent<Rigidbody2D>();
         SpawnTime = Time.time;
+        shortDissable = true;
+        StartCoroutine("ShortDissableRoutine");
 
-        Vector2 dir = (pm.transform.position - transform.position).normalized;
-        currentVelocity = dir * initialSpeed;
-        float desired = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        // Vector2 dir = (pm.transform.position - transform.position).normalized;
+        currentVelocity = transform.right * initialSpeed;
+        //float desired = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-        transform.rotation = Quaternion.Euler(0, 0, desired);
+       // transform.rotation = Quaternion.Euler(0, 0, desired);
+
+    }
+
+    IEnumerator ShortDissableRoutine()
+    {
+        yield return new WaitForSeconds(.1f);
+        shortDissable = false;
 
     }
 
@@ -79,12 +87,18 @@ public class Missel : MonoBehaviour
             collision.GetComponent<PlayerCollisionController>().Reflect(-dir*80);
             collision.GetComponent<PlayerHealth>().LoseHealth(10);
             Explode();
+        }
+        if(collision.GetComponent<Ship>() != null && !shortDissable)
+        {
+            collision.GetComponent<Ship>().TakeDamge(this.gameObject);
 
+            Explode();
         }
     }
 
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
+        base.FixedUpdate();
         rb.velocity = currentVelocity;
     }
 }

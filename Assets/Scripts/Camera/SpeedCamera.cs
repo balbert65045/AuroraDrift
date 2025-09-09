@@ -45,7 +45,7 @@ public class SpeedCamera : MonoBehaviour
         //float newSize = increase * minSize;
         //transposer.m_MinimumOrthoSize = Mathf.Lerp(transposer.m_MinimumOrthoSize, newSize, Time.deltaTime * zoomSpeed);
 
-
+        if (pm.dashing) { return; }
         if (pm.pulling || orbitController.Orbiting)
         {
             float increase = Mathf.Clamp(pm.GetComponent<Rigidbody2D>().velocity.magnitude / pm.maxSpeed, 1, 100);

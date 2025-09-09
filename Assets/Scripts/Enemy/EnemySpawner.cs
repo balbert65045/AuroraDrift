@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] List<GameObject> SpawnObjects;
+    [SerializeField] EnemySpawnProfile profile;
     [SerializeField] List<float> Rarities;
 
 
@@ -14,63 +15,46 @@ public class EnemySpawner : MonoBehaviour
     float timeSinceLastSpawn;
 
     PlayerMovement pm;
+    int currentWaveIndex = 0;
+    int enemiesAliveInWave;
+
+    public List<GameObject> enemiesOut = new List<GameObject>();
     // Start is called before the first frame update
     void Start()
     {
         pm = FindObjectOfType<PlayerMovement>();
-        //for(int i = 0; i < 4; i++)
-        //{
-        //    float x = 0;
-        //    float y = 0;
-        //    while (x == 0 && y == 0)
-        //    {
-        //        x = Random.Range(-1f, 1f);
-        //        y = Random.Range(-1f, 1f);
-        //    }
-        //    Vector3 dir = new Vector3(x, y, 0);
-
-        //    float ranRadius = Random.Range(50f, Radius);
-
-        //    Instantiate(SpawnObjects[0], pm.transform.position + (dir.normalized * ranRadius), Quaternion.identity);
-        //}
+        Spawn(profile.waves[currentWaveIndex]);
     }
 
-    // Update is called once per frame
-    void Update()
+
+    void Spawn(Wave wave)
     {
-        if(Time.timeSinceLevelLoad > timeSinceLastSpawn + SpawnRate)
+
+        currentWaveIndex++;
+
+        foreach (GameObject enemyToSpawn in wave.EnemiesForWave)
         {
-            SpawnRate -= -.1f;
-            Mathf.Clamp(SpawnRate, .5f, 1000);
-            Spawn();
-            Spawn();
+            Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
+            GameObject spawn = Instantiate(enemyToSpawn, (Vector2)pm.transform.position + (randomDir * Radius), Quaternion.identity);
+            enemiesOut.Add(spawn);
+            spawn.GetComponentInChildren<EnemyHealth>().OnDeath += OnEnemyDestroyed;
         }
     }
 
-    void Spawn()
+    void OnEnemyDestroyed(object sender, GameObject enemy)
     {
-        timeSinceLastSpawn = Time.timeSinceLevelLoad;
-        float x = 0;
-        float y = 0;
-        while(x == 0 && y == 0)
+        enemiesOut.Remove(enemy);
+        if (enemiesOut.Count == 0)
         {
-            x = Random.Range(-1f, 1f);
-            y = Random.Range(-1f, 1f);
-        }
-        Vector3 dir = new Vector3(x, y , 0);
-
-        float RarityRoll = Random.Range(0f, 1f);
-        int index = 0;
-        for(int i = Rarities.Count - 1; i >= 0; i--)
-        {
-            if (RarityRoll <= Rarities[i])
+            if(currentWaveIndex >= profile.waves.Count)
             {
-                index = i;
-                break;
+                //All waves done -> Complete Level
+                FindObjectOfType<GameManager>().CompleteLevel();
+            }
+            else
+            {
+                Spawn(profile.waves[currentWaveIndex]);
             }
         }
-
-        //int index = Random.Range(0, SpawnObjects.Count);
-        Instantiate(SpawnObjects[index], pm.transform.position + (dir.normalized * Radius), Quaternion.identity);
     }
 }

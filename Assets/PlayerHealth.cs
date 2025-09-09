@@ -26,14 +26,18 @@ public class PlayerHealth : MonoBehaviour
 
     public Action OnDied;
     public EventHandler<HealthStruct> OnHealthChanged;
+
+    PlayerChargeController playerChargeController;
     // Start is called before the first frame update
     void Start()
     {
         currentHealth = MaxHealth;
+        playerChargeController = FindObjectOfType<PlayerChargeController>();
     }
 
     public void LoseHealth(float amount)
     {
+        playerChargeController.LoseCharge(100);
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, MaxHealth);
         if (OnHealthChanged != null) { OnHealthChanged.Invoke(this, new HealthStruct(currentHealth, MaxHealth)); }

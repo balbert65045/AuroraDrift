@@ -147,6 +147,7 @@ public class RedOrbController : MovableObject
         redOrbCollision.gameObject.SetActive(true);
         thrownDir = rotationController.transform.right;
         currentVelocity = thrownDir * pullController.PushPullSpeed * 1.4f;
+        //currentVelocity = thrownDir * 85f;
         rb.velocity = currentVelocity;
         thrown = true;
 
@@ -157,6 +158,11 @@ public class RedOrbController : MovableObject
         transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle + 90));
         StartCoroutine("WaitThenEnableCatch");
 
+    }
+
+    public void StopCatch()
+    {
+        StartCoroutine("WaitThenEnableCatch");
     }
 
     public void KeepMoving()

@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using System;
 
 public class PlayerMovement : MovableObject
 {
@@ -26,6 +27,7 @@ public class PlayerMovement : MovableObject
     public bool pulling = false;
 
     //Dash
+    [SerializeField] float DashCooldown = .3f;
     [SerializeField] float DashMultiplier = 2f;
     [SerializeField] float DashTime = .5f;
     float timeSinceDashed = -5;
@@ -40,7 +42,7 @@ public class PlayerMovement : MovableObject
 
     Vector2 inputDirection;
 
-
+    float MaxDashSpeed = 200;
 
     public void ReceiveMovment(float x, float y)
     {
@@ -78,13 +80,35 @@ public class PlayerMovement : MovableObject
 
     public void ReceiveDash()
     {
+        if(Orbiting) { return; }
+        if (!canDash) { return; }
+        //if(Time.timeSinceLevelLoad < timeSinceDashed + DashCooldown) { return; }
+        //if (chargeController.CurrentCharge() < 50) { return; }
         if (dashing)
         {
             if (CheckStillDashing(inputDirection)) { return; }
         }
         Dash(inputDirection);
-
+        //chargeController.LoseCharge(50);
     }
+
+    public void DissableInputForBriefMoment()
+    {
+        StartCoroutine("DissableInputForBriefMomentRoutine");
+    }
+
+    IEnumerator DissableInputForBriefMomentRoutine()
+    {
+        SetControl(false);
+        //15 is knockback force for the moment
+
+        float KnockBackMagnitude = 50f;
+        if(prevVel.magnitude > 50) { KnockBackMagnitude = Mathf.Clamp(prevVel.magnitude, 50, 100); }
+        rb.velocity = currentVelocity.normalized * KnockBackMagnitude;
+        yield return new WaitForSeconds(.2f);
+        SetControl(true);
+    }
+
     public void  SetControl(bool value)
     {
         InControl = value;
@@ -108,22 +132,32 @@ public class PlayerMovement : MovableObject
         return deceleration * decelerationMultiplieer;
     }
 
+    PlayerChargeController chargeController;
     void Start()
     {
         pullController = GetComponent<PlayerPullController>();
-
+        chargeController = FindObjectOfType<PlayerChargeController>();
     }
+
+    
 
     public void CreateNewVelocity(Vector2 velocity)
     {
         currentVelocity = velocity;
     }
 
+    public bool canDash = false;
+    public Action OnRechargeDash;
     public void adjustOrbiting(bool value)
     {
         Orbiting = value;
         if (value)
         {
+            //if(canDash == false)
+            //{
+            //    canDash = true;
+            //    if(OnRechargeDash != null) { OnRechargeDash.Invoke(); }
+            //}
             pulling = false;
             decelerationMultiplieer = .5f;
         }
@@ -148,18 +182,28 @@ public class PlayerMovement : MovableObject
 
     void Dash(Vector2 direction)
     {
+        Debug.Log("Start Dashing");
+        //rb.GetComponent<CircleCollider2D>().isTrigger = true;
         dashing = true;
         timeSinceDashed = Time.timeSinceLevelLoad;
         velocityBeforeDash = currentVelocity;
-        float maxSpeed = Mathf.Max(GetSpeed() * DashMultiplier, currentVelocity.magnitude);
-        currentVelocity = direction * maxSpeed;
+        float maxSpeed = Mathf.Max(GetSpeed() * DashMultiplier, currentVelocity.magnitude * DashMultiplier * .6f);
+        float dashSpeed = Mathf.Min(maxSpeed, MaxDashSpeed);
+        currentVelocity = direction * dashSpeed;
+        // if(Orbiting == false) { canDash = false; }
+        canDash = false;
+        if (OnDash != null) { OnDash.Invoke(); }
     }
 
+    public Action OnDash;
+
+    public Vector2 GetCurrentVelocity() { return currentVelocity; }
     bool CheckStillDashing(Vector2 dir)
     {
         if (timeSinceDashed + DashTime < Time.timeSinceLevelLoad)
         {
             dashing = false;
+            //rb.GetComponent<CircleCollider2D>().isTrigger = false;
 
             currentVelocity = dir * velocityBeforeDash.magnitude;
             return false;
@@ -183,6 +227,8 @@ public class PlayerMovement : MovableObject
         if (moveDir.magnitude > 1)
         {
             currentVelocity += (perp) * PullOffsetMult;
+            //float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, 120);
+            //currentVelocity = currentVelocity.normalized * maxval;
         }
     }
 
@@ -199,7 +245,9 @@ public class PlayerMovement : MovableObject
 
             if (currentVelocity.magnitude > 4)
             {
-                currentVelocity += (perp) * currentVelocity.magnitude / 40;
+                currentVelocity += (perp * 2) * currentVelocity.magnitude / 40;
+                float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, 120);
+                currentVelocity = currentVelocity.normalized * maxval;
             }       
         }
         else
@@ -216,10 +264,12 @@ public class PlayerMovement : MovableObject
         Vector2 projection = (Vector2.Dot(dir, refference) / Vector2.Dot(refference, refference)) * refference;
         Vector2 perp = dir - projection;
 
-
+//        currentVelocity = currentVelocity.normalized * pullController.PushPullSpeed;
         if (currentVelocity.magnitude > 4)
         {
-            currentVelocity += (perp) * currentVelocity.magnitude / 40;
+            currentVelocity += (perp*2) * currentVelocity.magnitude / 40;
+            float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, 120);
+            currentVelocity = currentVelocity.normalized * maxval;
         }
     }
 
@@ -236,13 +286,27 @@ public class PlayerMovement : MovableObject
 
             if (currentVelocity.magnitude > 4)
             {
-                currentVelocity += (perp) * currentVelocity.magnitude / 40;
+                currentVelocity += (perp * 2) * currentVelocity.magnitude / 40;
+                float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, 120);
+                currentVelocity = currentVelocity.normalized * maxval;
             }
         }
         else
         {
             currentVelocity = Vector2.MoveTowards(currentVelocity, Vector2.zero, GetDecelleration() * Time.deltaTime);
 
+        }
+    }
+
+    private void Update()
+    {
+        if (canDash == false)
+        {
+            if (Time.timeSinceLevelLoad > timeSinceDashed + DashCooldown)
+            {
+                canDash = true;
+                if (OnRechargeDash != null) { OnRechargeDash.Invoke(); }
+            }
         }
     }
 

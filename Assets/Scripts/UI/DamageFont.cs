@@ -27,10 +27,13 @@ public class DamageFont : MonoBehaviour
         }
     }
 
-    public void DisplayPain(int amount, Color color)
+    public void DisplayPain(int amount, Color color, float sizeChange = 1)
     {
-        MyText.color = color;
+        MyText.transform.localScale = MyText.transform.localScale * sizeChange;
+        //MyText.color = color;
+        MyText.enabled = true;
         MyText.text = amount.ToString();
+
     }
 
     private void Update()

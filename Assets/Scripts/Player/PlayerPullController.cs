@@ -5,8 +5,12 @@ using UnityEngine;
 public class PlayerPullController : MonoBehaviour
 {
     public float PushPullSpeed = 70;
+    //[SerializeField] float MinPullSpeed = 20f;
+    [SerializeField] float MaxPullSpeed = 120;
 
-    RedOrbController redOrb;
+
+
+    [SerializeField] RedOrbController redOrb;
     PlayerMovement pm;
     PlayerOrbitController orbitController;
     PlayerVisual pv;
@@ -14,25 +18,30 @@ public class PlayerPullController : MonoBehaviour
     void Start()
     {
         pv = FindObjectOfType<PlayerVisual>();
-        redOrb = FindObjectOfType<RedOrbController>();
+        if(redOrb == null)
+        {
+            redOrb = FindObjectOfType<RedOrbController>();
+        }
         pm = GetComponent<PlayerMovement>();
         orbitController = GetComponent<PlayerOrbitController>();
     }
 
     public float GetAdjustedPull()
     {
-        float max = Mathf.Max(PushPullSpeed, 120);
+        float max = Mathf.Max(PushPullSpeed, MaxPullSpeed);
         return Mathf.Min(PushPullSpeed + ((pm.transform.position - redOrb.transform.position).magnitude) / 1f, max);
         //return PushPullSpeed + ((pm.transform.position - sword.transform.position).magnitude)/1f;
     }
 
-    public void AdjustPushPullSpeed(float speed)
+    public void AdjustPushPullSpeed(float percentage)
     {
-        PushPullSpeed = speed;
+        //float diff = MaxPullSpeed - MinPullSpeed;
+        //PushPullSpeed = MinPullSpeed + diff*percentage;
     }
 
     public void ReceiveThrow_StopPullRed()
     {
+        if (!redOrb.gameObject.activeSelf) { return; }
         if (redOrb.GetHeld())
         {
             ThrowRed();
@@ -45,6 +54,7 @@ public class PlayerPullController : MonoBehaviour
 
     public void ReceivePullRed()
     {
+        if (!redOrb.gameObject.activeSelf) { return; }
         if (!redOrb.GetHeld())
         {
             PullRed();
@@ -54,6 +64,7 @@ public class PlayerPullController : MonoBehaviour
     public void ReceiveThrow_StopPullBlue()
     {
         //ThrowBlue
+        if (!redOrb.gameObject.activeSelf) { return; }
         if (redOrb.GetHeld())
         {
             ThrowBlue();
@@ -67,6 +78,7 @@ public class PlayerPullController : MonoBehaviour
     public void RecivePullBlue()
     {
         //PullPlayer
+        if (!redOrb.gameObject.activeSelf) { return; }
         if (!redOrb.GetHeld())
         {
             PullBlue();

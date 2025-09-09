@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
 
-
 public class Healthbar : MonoBehaviour
 {
     [SerializeField] Image healthbarMiddle;
     [SerializeField] Image Hurt1;
     [SerializeField] Image Hurt2;
+
+    [SerializeField] Color dashChargeColor;
+    [SerializeField] Image Dash;
 
     [SerializeField] float initDelatyTime = .4f;
     [SerializeField] float HurtFadTime = .4f;
@@ -36,15 +38,33 @@ public class Healthbar : MonoBehaviour
 
 
 
-
+    PlayerMovement pm;
     // Start is called before the first frame update
     void Start()
     {
+        pm = FindObjectOfType<PlayerMovement>();
+        pm.OnDash += Dashed;
+        pm.OnRechargeDash += RechargeDash;
+
         PlayerHealth player = FindObjectOfType<PlayerHealth>();
         player.OnHealthChanged += SetHealth;
 
         noise = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        noise.m_AmplitudeGain = 0f;
 
+    }
+
+    void Dashed()
+    {
+        if (!pm.canDash)
+        {
+            Dash.color = Color.gray;
+        }
+    }
+
+    void RechargeDash()
+    {
+        Dash.color = dashChargeColor;
     }
 
     private System.Collections.IEnumerator DoShake(float intensity, float time)

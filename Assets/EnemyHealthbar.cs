@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class EnemyHealthbar : MonoBehaviour
 {
     [SerializeField] Image image;
-    [SerializeField] Ship ship;
+    [SerializeField] EnemyHealth enemyHealth;
 
 
     void ChangeHealth(object sender, HealthStruct healthStruct)
@@ -18,7 +18,7 @@ public class EnemyHealthbar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ship.OnTakeDamage += ChangeHealth;
+        enemyHealth.OnTakeDamage += ChangeHealth;
     }
 
     // Update is called once per frame

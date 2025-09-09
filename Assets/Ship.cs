@@ -2,15 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Ship : MonoBehaviour
 {
-    [SerializeField] float MaxHealth = 30;
-    float currentHealth;
+    [SerializeField] float minDistanceFromEnemies = 15f;
     [SerializeField] float AboutToAttackTime = .5f;
-
-    [SerializeField] GameObject ExplosionPrefab;
-    [SerializeField] GameObject DamageFontPredab;
     [SerializeField] int ValueAmount = 30;
 
     public float acceleration = 10f;
@@ -18,7 +15,6 @@ public class Ship : MonoBehaviour
 
     public float speed = 100f;
 
-    [SerializeField] GameObject DamagedPrefab;
     [SerializeField] float FireRadius = 50f;
 
     [SerializeField] float fireRate = 2f;
@@ -40,13 +36,21 @@ public class Ship : MonoBehaviour
 
     public EventHandler<float> OnAboutToShoot;
     bool show = false;
+    public List<Ship> allEnemies = new List<Ship>();
+    [SerializeField] int numerOfMisselsPerShot = 1;
     // Start is called before the first frame update
     void Start()
     {
         timeSinceLastShot = Time.timeSinceLevelLoad;
         pm = FindObjectOfType<PlayerMovement>();
         rb = GetComponent<Rigidbody2D>();
-        currentHealth = MaxHealth;
+
+        Ship[] enemies = FindObjectsOfType<Ship>();
+        foreach(Ship enemy in enemies)
+        {
+            allEnemies.Add(enemy);
+        }
+        
     }
 
     void AboutToAttack()
@@ -75,21 +79,35 @@ public class Ship : MonoBehaviour
 
         if ((transform.position - pm.transform.position).magnitude <= FireRadius)
         {
-            if (!inShotProces)
+            if (!inShotProces && Time.time > timeSinceLastShot + fireRate)
             {
                 inShotProces = true;
                 StartCoroutine("BeginShotProcess");
             }
 
-            //if (!inShotRange) {
-            //    enterShotRangeTime = Time.time;
-            //    inShotRange = true;
-            //}
-            ////FIRE!!
-            currentVelocity = Vector2.MoveTowards(currentVelocity, Vector2.zero, deceleration * Time.deltaTime);
-            //currentVelocity = Vector2.zero;
+            Vector3 moveDirection = Vector3.zero;
+            foreach (var other in allEnemies)
+            {
+                if (other == this) continue;
+                if(other == null) continue;
+                float dist = Vector3.Distance(transform.position, other.transform.position);
+                if (dist < minDistanceFromEnemies && dist > 0f)
+                {
+                    Vector3 away = (transform.position - other.transform.position).normalized;
+                    moveDirection += away * (minDistanceFromEnemies - dist);
+                }
+            }
+            if(moveDirection == Vector3.zero)
+            {
+                currentVelocity = Vector2.MoveTowards(currentVelocity, moveDirection * speed, deceleration * Time.deltaTime);
 
-            //float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            }
+            else
+            {
+                currentVelocity = Vector2.MoveTowards(currentVelocity, moveDirection * speed, acceleration * Time.deltaTime);
+
+            }
+
 
             float desired = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             float current = transform.eulerAngles.z;
@@ -97,37 +115,6 @@ public class Ship : MonoBehaviour
             float next = Mathf.MoveTowardsAngle(current, desired - 90, turnRateDeg * Time.deltaTime);
 
             transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, next));
-
-            //if (firstShot)
-            //{
-            //    if (!show)
-            //    {
-            //        AboutToAttack();
-            //        show = true;
-            //    }
-            //    if (Time.time > enterShotRangeTime + initialShotDelay)
-            //    {
-            //        show = false;
-            //        ShootMissel();
-            //        firstShot = false;
-            //    }
-            //}
-            //else
-            //{
-            //    if(Time.time > timeSinceLastShot + fireRate - AboutToAttackTime)
-            //    {
-            //        if (!show)
-            //        {
-            //            AboutToAttack();
-            //            show = true;
-            //        }
-            //    }
-            //    if (Time.time > timeSinceLastShot + fireRate)
-            //    {
-            //        show = false;
-            //        ShootMissel();
-            //    }
-            //}
         }
         else
         {
@@ -137,9 +124,10 @@ public class Ship : MonoBehaviour
             currentVelocity = Vector2.MoveTowards(currentVelocity, dir * speed, acceleration * Time.deltaTime);
 
             float angle = Mathf.Atan2(currentVelocity.y, currentVelocity.x) * Mathf.Rad2Deg;
+            float current = transform.eulerAngles.z;
+            float next = Mathf.MoveTowardsAngle(current, angle - 90, turnRateDeg * Time.deltaTime);
 
-            // Apply the rotation around the Z axis to point at the mouse
-            transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle - 90));
+            transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, next));
         }
     }
 
@@ -161,7 +149,17 @@ public class Ship : MonoBehaviour
     void ShootMissel()
     {
         timeSinceLastShot = Time.time;
-        GameObject missel = Instantiate(MisselPrefab, transform.position, Quaternion.identity);
+        if(numerOfMisselsPerShot == 1)
+        {
+            GameObject missel = Instantiate(MisselPrefab, transform.position, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 90));
+        }
+        if(numerOfMisselsPerShot == 3)
+        {
+            GameObject missel1 = Instantiate(MisselPrefab, transform.position, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 90));
+            GameObject missel2 = Instantiate(MisselPrefab, transform.position + transform.right * 2f, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z));
+            GameObject missel3 = Instantiate(MisselPrefab, transform.position - transform.right * 2f, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 180));
+
+        }
     }
 
     float timeSinceKnockedBack;
@@ -185,54 +183,44 @@ public class Ship : MonoBehaviour
     {
         if (collision.transform.GetComponent<RedOrbController>())
         {
-            TakeDamge(collision.transform.position);
+            TakeDamge(collision.transform.gameObject);
             //Explode();
         }
         if (collision.transform.GetComponent<PlayerCollisionController>())
         {
-            TakeDamge(collision.transform.position);
+            TakeDamge(collision.transform.gameObject);
             //Explode();
         }
     }
 
     public EventHandler<HealthStruct> OnTakeDamage;
-    void TakeDamge(Vector2 pos)
+    GameObject recentDamageObj;
+    float lastDamagedTime;
+    public void TakeDamge(GameObject fromWhat)
     {
-        float damageAmount = 10f;
-        currentHealth -= damageAmount;
-        if(OnTakeDamage != null) { OnTakeDamage.Invoke(this, new HealthStruct(currentHealth, MaxHealth)); }
-        if(currentHealth <= 0)
+        if(recentDamageObj == fromWhat && Time.timeSinceLevelLoad < lastDamagedTime + .2f)
         {
-            Explode();
+            return;
         }
-        else
+        recentDamageObj = fromWhat;
+        lastDamagedTime = Time.timeSinceLevelLoad;
+        GetComponent<EnemyHealth>().TakeDamage(fromWhat);
+        float force = 40 + (fromWhat.GetComponent<MovableObject>().prevVel.magnitude / 7f);
+        if (pm.dashing)
         {
-            KnockBack(pos);
+            force = 60 + (fromWhat.GetComponent<MovableObject>().prevVel.magnitude / 7f);
         }
+        //float force = 40 + (fromWhat.GetComponent<MovableObject>().prevVel.magnitude / 7f);
+        KnockBack(fromWhat.transform.position, force);
     }
 
-    void KnockBack(Vector2 pos)
+
+
+    void KnockBack(Vector2 pos, float force)
     {
         knockBack = true;
         timeSinceKnockedBack = Time.time;
         Vector2 dir = (pos - (Vector2)transform.position).normalized;
-        knockBackVel = -dir * 60f;
-        SpawnDamaged();
-    }
-
-    void SpawnDamaged()
-    {
-        Instantiate(DamagedPrefab, transform.position, Quaternion.identity);
-        Instantiate(DamageFontPredab, transform.position, Quaternion.identity);
-        DamageFontPredab.GetComponent<DamageFont>().DisplayPain(10, Color.red);
-    }
-
-    public void Explode()
-    {
-        Instantiate(DamageFontPredab, transform.position, Quaternion.identity);
-        Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
-        //FindObjectOfType<Score>().AddScore(ValueAmount);
-
-        Destroy(this.transform.parent.gameObject);
+        knockBackVel = -dir * force;
     }
 }

@@ -103,7 +103,7 @@ public class Score : MonoBehaviour
 
         if(currentScore > manager.ScoreToBeat)
         {
-            manager.CompleteLevel();
+            //manager.CompleteLevel();
         }
 
     }

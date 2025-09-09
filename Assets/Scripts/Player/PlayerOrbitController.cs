@@ -9,7 +9,7 @@ public class PlayerOrbitController : MonoBehaviour
     
     [SerializeField] GameObject RedOrbLocation;
     public bool Orbiting;
-    RedOrbController redOrb;
+    [SerializeField] RedOrbController redOrb;
     PlayerMovement pm;
 
 
@@ -18,6 +18,9 @@ public class PlayerOrbitController : MonoBehaviour
     [SerializeField] GameObject RedOrbSpin;
     [SerializeField] RedOrbVisual rv;
     [SerializeField] PlayerVisual bv;
+
+    public Action OnBeginOrbit;
+    public Action OnEndOrbit;
     public void BeginOrbit()
     {
         Orbiting = true;
@@ -29,6 +32,7 @@ public class PlayerOrbitController : MonoBehaviour
         if (!FindObjectOfType<PlayerInputController>().GetHoldingDown())
         {
             ThrowRed();
+            return;
         }
         else
         {
@@ -37,12 +41,17 @@ public class PlayerOrbitController : MonoBehaviour
             bv.SetTrackObject(BlueOrbSpin, GetComponent<Rigidbody2D>());
             Spin.SetActive(true);
         }
+
+        if(OnBeginOrbit != null) { OnBeginOrbit.Invoke(); }
     }
    
 
     private void Start()
     {
-        redOrb = FindObjectOfType<RedOrbController>();
+        if(redOrb == null)
+        {
+            redOrb = FindObjectOfType<RedOrbController>();
+        }
         pm = FindObjectOfType<PlayerMovement>();
     }
 
@@ -58,23 +67,28 @@ public class PlayerOrbitController : MonoBehaviour
 
     public void ThrowRed()
     {
-        redOrb.transform.position = RedOrbLocation.transform.position;
-
-        bv.SetTrail(false);
-        rv.SetTrackObject(redOrb.gameObject, redOrb.GetComponent<Rigidbody2D>());
-        bv.SetTrackObject(this.gameObject, GetComponent<Rigidbody2D>());
-        Spin.SetActive(false);
-
-        Orbiting = false;
-        GetComponent<PlayerMovement>().adjustOrbiting(false);
-        redOrb.ShowHideVisual(true);
-        redOrb.PlaceDown(RedOrbLocation.transform.position);
+        EndOrbit();
         redOrb.GetThrown();
         GetComponent<PlayerPullController>().OutsideStopPulling();
-
     }
 
     public void ThrowBlue()
+    {
+        EndOrbit();
+
+        //Keep Player momentum
+        redOrb.KeepMoving();
+
+        //ThrowPlayer
+        Vector2 thrownDir = FindObjectOfType<PlayerRotationController>().transform.right;
+        //1.4 before
+        Vector2 velocity = thrownDir * FindObjectOfType<PlayerPullController>().PushPullSpeed * 1.6f;
+        //Vector2 velocity = thrownDir * 85f;
+        pm.AdjustVel(velocity);
+    }
+
+
+    public void EndOrbit()
     {
         redOrb.transform.position = RedOrbLocation.transform.position;
 
@@ -87,13 +101,7 @@ public class PlayerOrbitController : MonoBehaviour
         GetComponent<PlayerMovement>().adjustOrbiting(false);
         redOrb.ShowHideVisual(true);
         redOrb.PlaceDown(RedOrbLocation.transform.position);
-        //Keep Player momentum
-        redOrb.KeepMoving();
-
-        //ThrowPlayer
-        Vector2 thrownDir = FindObjectOfType<PlayerRotationController>().transform.right;
-        Vector2 velocity = thrownDir * FindObjectOfType<PlayerPullController>().PushPullSpeed * 1.4f;
-        pm.AdjustVel(velocity);
+        
+        if(OnEndOrbit != null) { OnEndOrbit.Invoke(); }
     }
-
 }

@@ -227,7 +227,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -20.42, y: 10.9, z: -0.46383628}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.495, y: 1.495, z: 1.495}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1286503416733733060}
@@ -321,7 +321,7 @@ MonoBehaviour:
   ExplosionDelay: 3
   acceleration: 100
   deceleration: 300
-  speed: 100
-  initialSpeed: 50
+  speed: 200
+  initialSpeed: 100
   predictiveLead: 1
-  turnRateDeg: 50
+  turnRateDeg: 0

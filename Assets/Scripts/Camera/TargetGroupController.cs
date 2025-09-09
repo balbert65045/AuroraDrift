@@ -75,26 +75,50 @@ public class TargetGroupController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<Ship>())
+        Debug.Log(collision.name);
+        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>())
         {
-            targetGroup.AddMember(collision.transform, 0, 5f);
-            newMembers.Add(collision.transform);
-            if (removingMembers.Contains(collision.transform))
-            {
-                removingMembers.Remove(collision.transform);
-            }
+            AddNewMember(collision.transform);
+            //targetGroup.AddMember(collision.transform, 0, 5f);
+            //newMembers.Add(collision.transform);
+            //if (removingMembers.Contains(collision.transform))
+            //{
+            //    removingMembers.Remove(collision.transform);
+            //}
         }
     }
 
+    public void AddNewMember(Transform member)
+    {
+        targetGroup.AddMember(member, 0, 5f);
+        newMembers.Add(member);
+        if (removingMembers.Contains(member))
+        {
+            removingMembers.Remove(member);
+        }
+    }
+
+    public void RemoveNewMember(Transform member)
+    {
+        removingMembers.Add(member);
+        if (newMembers.Contains(member))
+        {
+            newMembers.Remove(member);
+        }
+    }
+
+
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<Ship>())
+        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>())
         {
-            removingMembers.Add(collision.transform);
-            if (newMembers.Contains(collision.transform))
-            {
-                newMembers.Remove(collision.transform);
-            }
+            RemoveNewMember(collision.transform);
+
+            //removingMembers.Add(collision.transform);
+            //if (newMembers.Contains(collision.transform))
+            //{
+            //    newMembers.Remove(collision.transform);
+            //}
         }
     }
 }
