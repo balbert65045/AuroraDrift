@@ -19,18 +19,18 @@ public class TargetGroupController : MonoBehaviour
     List<Transform> removingMembers = new List<Transform>();
     private void Update()
     {
-        float distance = (redOrbController.transform.position - Player.transform.position).magnitude;
-        if (distance > MaxDistanceAway)
-        {
-            int index = targetGroup.FindMember(redOrbController.transform);
-            float percentage = (distance - MaxDistanceAway) / MaxDistanceAway;
-            targetGroup.m_Targets[index].weight = .7f - (.7f * percentage);
-        }
-        else
-        {
-            int index = targetGroup.FindMember(redOrbController.transform);
-            targetGroup.m_Targets[index].weight = .7f;
-        }
+        //float distance = (redOrbController.transform.position - Player.transform.position).magnitude;
+        //if (distance > MaxDistanceAway)
+        //{
+        //    int index = targetGroup.FindMember(redOrbController.transform);
+        //    float percentage = (distance - MaxDistanceAway) / MaxDistanceAway;
+        //    targetGroup.m_Targets[index].weight = .7f - (.7f * percentage);
+        //}
+        //else
+        //{
+        //    int index = targetGroup.FindMember(redOrbController.transform);
+        //    targetGroup.m_Targets[index].weight = .7f;
+        //}
 
         transform.position = Player.transform.position;
         if(newMembers.Count > 0)
@@ -76,7 +76,7 @@ public class TargetGroupController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log(collision.name);
-        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>())
+        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>() || collision.GetComponent<RedOrbCamTracker>())
         {
             AddNewMember(collision.transform);
             //targetGroup.AddMember(collision.transform, 0, 5f);
@@ -110,7 +110,7 @@ public class TargetGroupController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>())
+        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>() || collision.GetComponent<RedOrbCamTracker>())
         {
             RemoveNewMember(collision.transform);
 

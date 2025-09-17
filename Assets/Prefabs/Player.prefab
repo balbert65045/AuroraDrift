@@ -70,6 +70,7 @@ Transform:
   - {fileID: 5945398631869554268}
   - {fileID: 8420474404788397273}
   - {fileID: 2430431289390226396}
+  - {fileID: 7742060635715316267}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1938928922982336738
@@ -104,6 +105,128 @@ MonoBehaviour:
   redMaterial: {fileID: 2100000, guid: 7e1a24fc057723c4c956209a4dd0f647, type: 2}
   minIntensity: 0.8
   maxIntensity: 1.5
+--- !u!1 &953511290412045199
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7742060635715316267}
+  - component: {fileID: 6114146401309357885}
+  - component: {fileID: 7192042030456284095}
+  - component: {fileID: 4160164705340602583}
+  - component: {fileID: 1551466889602578622}
+  m_Layer: 0
+  m_Name: RedOrbCameraTracker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7742060635715316267
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953511290412045199}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8297334973630879115}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &6114146401309357885
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953511290412045199}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
+--- !u!114 &7192042030456284095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953511290412045199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0964b23ae3114f4984592673e9bfbe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4160164705340602583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953511290412045199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8507bbb6a8d7424459ad7986f8c75645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followObj: {fileID: 2369612414382732122}
+--- !u!50 &1551466889602578622
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953511290412045199}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1094411215790586074
 GameObject:
   m_ObjectHideFlags: 0
@@ -5898,6 +6021,7 @@ MonoBehaviour:
   InControl: 1
   PullOffsetMult: 60
   pulling: 0
+  DashCooldown: 0.3
   DashMultiplier: 5
   DashTime: 0.1
   dashing: 0
@@ -5979,6 +6103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RedOrbLocation: {fileID: 8178623491325822904}
   Orbiting: 0
+  redOrb: {fileID: 0}
   Spin: {fileID: 8334696765537143560}
   BlueOrbSpin: {fileID: 6108435958402966863}
   RedOrbSpin: {fileID: 8178623491325822904}
@@ -5998,6 +6123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PushPullSpeed: 70
   MaxPullSpeed: 100
+  redOrb: {fileID: 0}
 --- !u!114 &8911352543015329342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6010,6 +6136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5716cd6024834d5489886df035e1f17e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  redOrb: {fileID: 0}
 --- !u!114 &4620609781407507811
 MonoBehaviour:
   m_ObjectHideFlags: 0

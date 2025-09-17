@@ -6,11 +6,15 @@ public class TutorialController : MonoBehaviour
 {
     int currentIndex = 0;
     [SerializeField] GameObject Ship;
+    [SerializeField] GameObject Ship2;
+    [SerializeField] GameObject Ship3;
+
     [SerializeField] GameObject[] TutorialPompts;
     [SerializeField] GameObject Previous;
     [SerializeField] GameObject Next;
     [SerializeField] GameObject RedOrbController;
     [SerializeField] GameObject RedOrbVisual;
+    [SerializeField] GameObject RedOrbCameraController;
 
     [SerializeField] GameObject TutorialBlockPrefab;
     // Start is called before the first frame update
@@ -81,6 +85,7 @@ public class TutorialController : MonoBehaviour
             //Reveal Red Orb
             if (!RedOrbController.activeSelf)
             {
+                RedOrbCameraController.SetActive(true);
                 RedOrbController.SetActive(true);
                 RedOrbVisual.SetActive(true);
                 PlayerMovement pm = FindObjectOfType<PlayerMovement>();
@@ -91,13 +96,24 @@ public class TutorialController : MonoBehaviour
         }
         if (currentIndex == 5)
         {
-            if (!Ship.activeSelf)
-            {
-                Ship.SetActive(true);
-                PlayerMovement pm = FindObjectOfType<PlayerMovement>();
-                Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
-                Ship.transform.position = pos;
-            }
+            Ship.SetActive(true);
+            PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+            Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
+            Ship.transform.position = pos;
+        }
+        if(currentIndex == 6)
+        {
+            Ship2.SetActive(true);
+            PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+            Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
+            Ship2.transform.position = pos;
+        }
+        if(currentIndex == 7)
+        {
+            Ship3.SetActive(true);
+            PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+            Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
+            Ship3.transform.position = pos;
         }
     }
 
@@ -105,11 +121,13 @@ public class TutorialController : MonoBehaviour
     {
         currentIndex++;
         CheckForAction();
-        Vector2 newPos = pos + Vector2.up * 2f + Vector2.right * 25f;
+        //Vector2 newPos = pos + Vector2.up * 2f + Vector2.right * 25f;
+        Vector2 newPos = pos + Vector2.up * 2f;
         switch (currentIndex)
         {
-            //case 1:
+            
         }
+        TutorialPompts[currentIndex - 1].SetActive(false);
         TutorialPompts[currentIndex].transform.position = newPos;
         TutorialPompts[currentIndex].SetActive(true);
     }
@@ -118,13 +136,19 @@ public class TutorialController : MonoBehaviour
     {
         if(currentIndex == TutorialPompts.Length - 1) { return; }
         TutorialPompts[currentIndex-1].SetActive(false);
+        if (currentIndex == 5) { return; }
         Vector2 posOffset = pos + Vector2.right * 50;
         switch (currentIndex)
         {
             case 2:
                 posOffset = pos + Vector2.right * 25 + Vector2.up * 25;
                 break;
-
+            case 3:
+                posOffset = pos + Vector2.right * 150;
+                break;
+            case 4:
+                posOffset = pos + Vector2.right * 75 + Vector2.up * 50;
+                break;
         }
         Instantiate(TutorialBlockPrefab, posOffset, Quaternion.identity);
     }

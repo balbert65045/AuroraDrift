@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 public class TutorialBlock : MonoBehaviour
 {
     TutorialController controller;
+    [SerializeField] GameObject ExplosionPrefab;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +23,7 @@ public class TutorialBlock : MonoBehaviour
     void ShowTutorial()
     {
         controller.ShowNextTutorial(transform.position);
+        Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
         Destroy(this.gameObject);
         controller.ShowNextBlock(transform.position);
     }
