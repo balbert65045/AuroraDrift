@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerVisual : MonoBehaviour
 {
+    PlayerAbilityController playerAbilityController;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] TrailRenderer trailRenderer;
     public GameObject TrackObject;
@@ -41,9 +42,18 @@ public class PlayerVisual : MonoBehaviour
     PlayerMovement pm;
     private void Start()
     {
+        playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        playerAbilityController.OnBeginCharge += BeginCharge;
+
         pm = FindObjectOfType<PlayerMovement>();
         pm.OnDash += OnDash;
         pm.OnRechargeDash += OnDashRecharge;
+
+    }
+
+    void BeginCharge()
+    {
+        //spriteRenderer.enabled = false;
     }
 
     void OnDashRecharge()

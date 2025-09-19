@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,64 +11,43 @@ public class PlayerInputController : MonoBehaviour
     [Tooltip("Name of the vertical input axis.")]
     public string verticalAxis = "Vertical";
 
-    PlayerMovement pm;
-    PlayerRotationController rotationController;
-    PlayerPullController pullController;
 
     [SerializeField] bool UseController = true;
+
+    public EventHandler<Vector2> OnMoveInput;
+    public Action OnDashInput;
+    public Action OnPullRedInput;
+    public Action OnReleaseRedInput;
+    public Action OnPullBlueInput;
+    public Action OnReleaseBlueInput;
+
 
     public bool GetHoldingDown()
     {
         return (Input.GetAxisRaw("PullRed") == 1 || Input.GetAxis("PullBlue") == 1);
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        pm = FindObjectOfType<PlayerMovement>();
-        rotationController = FindObjectOfType<PlayerRotationController>();
-        pullController = FindObjectOfType<PlayerPullController>();
         Cursor.visible = false;
     }
 
     bool pullingRed = false;
     bool pullingBlue = false;
-    // Update is called once per frame
     void Update()
     {
         //MOVEMENT//
         float inputX = Input.GetAxisRaw(horizontalAxis);
         float inputY = Input.GetAxisRaw(verticalAxis);
+
         DoMovement(inputX, inputY);
 
+        //DASH
         if (Input.GetButtonDown("Dash"))
         {
             DoDash();
         }
-        //
-
-        //ROTATION//
-        if(UseController)
-        {
-            //float inputXLook = Input.GetAxisRaw("LookDirHor");
-            //float inputYLook = Input.GetAxisRaw("LookDirVert");
-            //if((new Vector2(inputX, inputY)).magnitude > .4f)
-            //{
-            //    DoLookDirection(new Vector2(inputX, inputY));
-            //}
-            DoLookDirection(new Vector2(inputX, inputY));
-        }
-        else
-        {
-            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorldPosition.z = 0f; // Ensure we are only rotating in 2D
-
-            // Calculate the direction from the object's position to the mouse position
-            Vector3 direction = mouseWorldPosition - rotationController.gameObject.transform.position;
-            DoLookDirection(direction);
-        }
-
-        //
+        
 
         //PushPull//
         if (UseController)
@@ -115,36 +95,33 @@ public class PlayerInputController : MonoBehaviour
     }
 
     void DoPullRed() {
-        pullController.ReceivePullRed();
+        if(OnPullRedInput != null) {  OnPullRedInput.Invoke(); }
     }
 
     void DoStopPullRed()
     {
-        pullController.ReceiveThrow_StopPullRed();
+        if(OnReleaseRedInput != null) { OnReleaseRedInput.Invoke(); }
 
     }
 
     void DoPullBlue()
     {
-        pullController.RecivePullBlue();
+        if(OnPullBlueInput != null) { OnPullBlueInput.Invoke(); }
     }
 
     void DoStopPullBlue()
     {
-        pullController.ReceiveThrow_StopPullBlue();
+        if(OnReleaseBlueInput != null) { OnReleaseBlueInput.Invoke(); }
     }
 
-    void DoLookDirection(Vector2 dir)
-    {
-        rotationController.ReceiveLookDir(dir);
-    }
     void DoDash()
     {
-        pm.ReceiveDash();
+        if(OnDashInput != null) { OnDashInput.Invoke(); }
     }
 
     void DoMovement(float x, float y)
     {
-        pm.ReceiveMovment(x, y);
+        if (OnMoveInput != null) { OnMoveInput.Invoke(this, new Vector2(x, y).normalized); }
+
     }
 }

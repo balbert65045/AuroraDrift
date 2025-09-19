@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using System;
+using UnityEditor.Build;
 
 public class PlayerMovement : MovableObject
 {
@@ -44,9 +45,10 @@ public class PlayerMovement : MovableObject
 
     float MaxDashSpeed = 200;
 
-    public void ReceiveMovment(float x, float y)
+    public void ReceiveMovment(object sender, Vector2 moveDir)
     {
-        inputDirection = new Vector2(x, y).normalized;
+        //inputDirection = new Vector2(x, y).normalized;
+        inputDirection = moveDir;
 
         if (dashing)
         {
@@ -69,13 +71,24 @@ public class PlayerMovement : MovableObject
         //Orbiting Movement
         else if (Orbiting)
         {
-            DoOrbitingMovement(inputDirection);
+            if (!stopped)
+            {
+                DoOrbitingMovement(inputDirection);
+            }
         }
         //Slowing Down
         else
         {
             DoSlowDown(inputDirection);
         }
+    }
+
+    bool stopped = false;
+    public void StopMoving()
+    {
+        rb.velocity = Vector2.zero;
+        currentVelocity = Vector2.zero;
+        stopped = true;
     }
 
     public void ReceiveDash()
@@ -135,6 +148,9 @@ public class PlayerMovement : MovableObject
     PlayerChargeController chargeController;
     void Start()
     {
+        PlayerInputController playerInputController = FindObjectOfType<PlayerInputController>();
+        playerInputController.OnMoveInput += ReceiveMovment;
+        playerInputController.OnDashInput += ReceiveDash;
         pullController = GetComponent<PlayerPullController>();
         chargeController = FindObjectOfType<PlayerChargeController>();
     }

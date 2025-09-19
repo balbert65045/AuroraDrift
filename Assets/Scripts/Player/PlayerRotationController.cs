@@ -21,7 +21,13 @@ public class PlayerRotationController : MonoBehaviour
         //transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
     }
 
-    public void ReceiveLookDir(Vector2 dir)
+    private void Start()
+    {
+        PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
+        inputController.OnMoveInput += ReceiveLookDir;
+    }
+
+    void ReceiveLookDir(object sender, Vector2 dir)
     {
         // Compute the angle in radians and then convert to degrees
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

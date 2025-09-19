@@ -1,0 +1,18 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class RotationFollow : MonoBehaviour
+{
+    private void Start()
+    {
+        PlayerInputController playerInputController = FindObjectOfType<PlayerInputController>();
+        playerInputController.OnMoveInput += RotateInDirection;
+    }
+
+    public void RotateInDirection(object sender, Vector2 dir)
+    {
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0,0,angle - 90);
+    }
+}

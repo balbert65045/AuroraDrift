@@ -10100,6 +10100,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2295864007821297661, guid: 338d1caeab749934b87b6bd19750a691, type: 3}
+      propertyPath: Deceleration
+      value: 65
+      objectReference: {fileID: 0}
     - target: {fileID: 2859843770194196633, guid: 338d1caeab749934b87b6bd19750a691, type: 3}
       propertyPath: m_IsActive
       value: 0

@@ -8,14 +8,29 @@ public class PlayerSquishController : MonoBehaviour
     [SerializeField] float squishThreshold = 100f;
 
     [SerializeField] bool inverse = false;
+
+    bool charging = false;
     // Start is called before the first frame update
     void Start()
     {
+        PlayerAbilityController abilityController = GetComponentInParent<PlayerAbilityController>();
+        if (abilityController != null)
+        {
+            abilityController.OnBeginCharge += BeginCharge;
+        }
+
+    }
+
+    void BeginCharge()
+    {
+        transform.localScale = new Vector3(.6f, .6f, .6f);
+        charging = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (charging) { return; }
         if(rb.velocity.magnitude > squishThreshold)
         {
             float Magnifier = rb.velocity.magnitude / squishThreshold;

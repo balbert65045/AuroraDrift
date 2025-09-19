@@ -24,6 +24,12 @@ public class PlayerPullController : MonoBehaviour
         }
         pm = GetComponent<PlayerMovement>();
         orbitController = GetComponent<PlayerOrbitController>();
+
+        PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
+        inputController.OnPullBlueInput += RecivePullBlue;
+        inputController.OnReleaseBlueInput += ReceiveThrow_StopPullBlue;
+        inputController.OnPullRedInput += ReceivePullRed;
+        inputController.OnReleaseRedInput += ReceiveThrow_StopPullRed;
     }
 
     public float GetAdjustedPull()
