@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Missel : MovableObject
 {
+    [SerializeField] float Force = 80f;
+    [SerializeField] float Damage = 10f;
     [SerializeField] GameObject ExplosionPrefab;
     [SerializeField] float ExplosionDelay = 1f;
     public float acceleration = 10f;
@@ -21,6 +23,7 @@ public class Missel : MovableObject
 
     bool shortDissable = false;
 
+    GameObject MyCreator;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +39,11 @@ public class Missel : MovableObject
 
        // transform.rotation = Quaternion.Euler(0, 0, desired);
 
+    }
+
+    public void SetCreator(GameObject creator)
+    {
+        MyCreator = creator;
     }
 
     IEnumerator ShortDissableRoutine()
@@ -81,16 +89,21 @@ public class Missel : MovableObject
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if(collision.GetComponent<Shield>() != null)
+        {
+            if (MyCreator.transform.parent.GetComponentInChildren<Shield>() != null && MyCreator.transform.parent.GetComponentInChildren<Shield>() == collision.GetComponent<Shield>()) { }
+            else { Explode(); }
+        }
         if(collision.GetComponent<PlayerMovement>() != null)
         {
             Vector2 dir = (transform.position - collision.transform.position).normalized;
-            collision.GetComponent<PlayerCollisionController>().Reflect(-dir*80);
+            collision.GetComponent<PlayerCollisionController>().Reflect(-dir* Force);
             collision.GetComponent<PlayerHealth>().LoseHealth(10);
             Explode();
         }
         if(collision.GetComponent<Ship>() != null && !shortDissable)
         {
-            collision.GetComponent<Ship>().TakeDamge(this.gameObject);
+            collision.GetComponent<Ship>().TakeDamge(this.gameObject, Damage, Force);
 
             Explode();
         }

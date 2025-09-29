@@ -9,17 +9,25 @@ public class AnimationSpeedController : MonoBehaviour
     PlayerPullController pullController;
 
     PlayerAbilityController abilityController;
+    TimerClass currentTimer;
     // Start is called before the first frame update
     void Start()
     {
         pullController = FindObjectOfType<PlayerPullController>();
         abilityController = FindObjectOfType<PlayerAbilityController>();
         abilityController.OnBeginCharge += BeginCharge;
+        abilityController.OnReleaseCharge += ReleaseCharge;
     }
 
     bool charging = false;
-    void BeginCharge()
+
+    void ReleaseCharge()
     {
+        charging = false;
+    }
+    void BeginCharge(object sender, TimerClass timer)
+    {
+        currentTimer = timer;
         controller.speed = 3f;
         charging = true;
     }
@@ -30,7 +38,13 @@ public class AnimationSpeedController : MonoBehaviour
         float speed;
         if (charging)
         {
-            speed = Mathf.Min(controller.speed + Time.deltaTime, 5f);
+            float min = 3f;
+            float max = 5f;
+            float diff = max - min;
+            float percentage = currentTimer.percentageComplete(Time.timeSinceLevelLoad);
+            float evaluation = abilityController.ChargeAnimationCurve.Evaluate(percentage);
+            speed = min + diff* evaluation;
+            //speed = Mathf.Min(controller.speed + Time.deltaTime, 5f);
         }
         else
         {

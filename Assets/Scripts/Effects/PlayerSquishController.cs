@@ -10,6 +10,7 @@ public class PlayerSquishController : MonoBehaviour
     [SerializeField] bool inverse = false;
 
     bool charging = false;
+    TimerClass currentTimer;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,12 +18,19 @@ public class PlayerSquishController : MonoBehaviour
         if (abilityController != null)
         {
             abilityController.OnBeginCharge += BeginCharge;
+            abilityController.OnReleaseCharge += ReleaseCharge;
         }
 
     }
 
-    void BeginCharge()
+    void ReleaseCharge()
     {
+        charging = false;
+    }
+
+    void BeginCharge(object sender, TimerClass timer)
+    {
+        currentTimer = timer;
         transform.localScale = new Vector3(.6f, .6f, .6f);
         charging = true;
     }

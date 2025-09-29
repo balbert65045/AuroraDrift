@@ -22,6 +22,7 @@ public class PlayerChargeController : MonoBehaviour
         orbitController.OnEndOrbit += StopCharge;
     }
 
+    public float GetCurrentChargePercentage() { return currentCharge / MaxCharge; }
     public float CurrentCharge() { return currentCharge; }
 
     public void GainCharge(float amount)

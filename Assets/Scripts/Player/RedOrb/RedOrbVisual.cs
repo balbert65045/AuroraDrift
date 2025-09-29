@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build;
 using UnityEngine;
 
 public class RedOrbVisual : MonoBehaviour
@@ -29,6 +30,40 @@ public class RedOrbVisual : MonoBehaviour
     //    texture.Apply();
     //    return texture;
     //}
+    PlayerAbilityController pbc;
+    Color OGColor;
+    SpriteRenderer spriteRenderer;
+    TrailRenderer trailRenderer;
+    private void Start()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        trailRenderer = GetComponent<TrailRenderer>();
+        OGColor = spriteRenderer.color;
+        pbc = FindObjectOfType<PlayerAbilityController>();
+        pbc.OnBeginCharge += ChargeHappening;
+
+        RedOrbController redOrb = FindObjectOfType<RedOrbController>();
+        redOrb.OnRemoveChargeThrown += ChargeRemoved;
+    }
+
+    bool charging = false;
+    TimerClass currentTimer;
+    void ChargeHappening(object sender, TimerClass timer)
+    {
+        charging = true;
+        currentTimer = timer;
+        //spriteRenderer.color = Color.white;
+        //trailRenderer.startColor = Color.white;
+        //trailRenderer.endColor = Color.white;
+    }
+
+    void ChargeRemoved()
+    {
+        charging = false;
+        spriteRenderer.color = OGColor;
+        trailRenderer.startColor = OGColor;
+        trailRenderer.endColor = OGColor;
+    }
 
     public void SetTrackObject(GameObject trackObject, Rigidbody2D rb)
     {
@@ -40,5 +75,16 @@ public class RedOrbVisual : MonoBehaviour
     void FixedUpdate()
     {
         transform.position = Vector2.Lerp(TrackObject.transform.position, transform.position, Time.deltaTime * speed);
+        if (charging && currentTimer.IsOn())
+        {
+            Color currentColor = spriteRenderer.color;
+            float percentage = pbc.GetChargeAmount();
+            float diff = 1 - OGColor.g;
+
+            Color color = new Color(currentColor.r, currentColor.g + diff*percentage, currentColor.b);
+            spriteRenderer.color = color;
+            trailRenderer.startColor = color;
+            trailRenderer.endColor = color;
+        }
     }
 }

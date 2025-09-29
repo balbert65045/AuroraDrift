@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,10 +15,11 @@ public class RedOrbController : MovableObject
         GetComponent<BoxCollider2D>().enabled = value;
     }
 
-
     [SerializeField] float CatchVelocity = 5f;
     [SerializeField] float Acceleration = 1f;
     [SerializeField] float Deceleration = 1f;
+
+    
 
     public bool GetHeld() { return isHeld; }
     bool isHeld = false;
@@ -34,9 +36,13 @@ public class RedOrbController : MovableObject
     PlayerPullController pullController;
     PlayerRotationController rotationController;
     RedOrbTracker redOrbTracker;
+    PlayerOrbitController orbitController;
 
     void Start()
     {
+        orbitController = FindObjectOfType <PlayerOrbitController>();
+        orbitController.OnBeginOrbit += RemoveChargeThrown;
+
         rotationController = FindObjectOfType<PlayerRotationController>();
         pm = FindObjectOfType<PlayerMovement>();
         pullController = pm.GetComponent<PlayerPullController>();
@@ -63,11 +69,12 @@ public class RedOrbController : MovableObject
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+        //if(rb.velocity.magnitude < 2f) { RemoveChargeThrown(); }
         if (retracting)
         {
             Retract();
         }
-        else
+        else if(trackingAvailable)
         {
             if (canTrack.Count == 0)
             {
@@ -80,6 +87,8 @@ public class RedOrbController : MovableObject
             MoveInDirection();
         }
     }
+
+    bool trackingAvailable = true;
 
     public void DissableTrack()
     {
@@ -134,6 +143,10 @@ public class RedOrbController : MovableObject
 
     public void SetRetracting(bool value)
     {
+        //if (value)
+        //{
+        //    RemoveChargeThrown();
+        //}
         redOrbCollision.gameObject.SetActive(true);
 
         currentVelocity = rb.velocity;
@@ -157,7 +170,41 @@ public class RedOrbController : MovableObject
         // Apply the rotation around the Z axis to point at the mouse
         transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle + 90));
         StartCoroutine("WaitThenEnableCatch");
+    }
 
+    public bool ChargeThrown = false;
+    public Action OnRemoveChargeThrown;
+    public void RemoveChargeThrown()
+    {
+        ChargeThrown = false;
+        if (OnRemoveChargeThrown != null) { OnRemoveChargeThrown(); }
+    }
+    public void GetChargeThrown(float percentage, bool perfect)
+    {
+        ChargeThrown = true;
+        float perfectAmount = 170f;
+        float maxAmount = 155f;
+        float minAmount = 85f;
+        float diff = maxAmount - minAmount;
+        float amount = minAmount + percentage * diff;
+        if (perfect)
+        {
+            amount = perfectAmount;
+        }
+
+        redOrbCollision.gameObject.SetActive(true);
+        thrownDir = rotationController.transform.right;
+        currentVelocity = thrownDir * amount;
+        //currentVelocity = thrownDir * 85f;
+        rb.velocity = currentVelocity;
+        thrown = true;
+
+
+        float angle = Mathf.Atan2(thrownDir.y, thrownDir.x) * Mathf.Rad2Deg;
+
+        // Apply the rotation around the Z axis to point at the mouse
+        transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle + 90));
+        StartCoroutine("WaitThenEnableCatch");
     }
 
     public void StopCatch()

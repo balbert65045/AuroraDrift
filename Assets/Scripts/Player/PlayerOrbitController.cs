@@ -72,6 +72,14 @@ public class PlayerOrbitController : MonoBehaviour
         GetComponent<PlayerPullController>().OutsideStopPulling();
     }
 
+    //THIS IS FOR AN ABILITY
+    public void ChargeLaunch(float percentage, bool perfect)
+    {
+        EndOrbit();
+        redOrb.GetChargeThrown(percentage, perfect);
+        GetComponent<PlayerPullController>().OutsideStopPulling();
+    }
+
     public void ThrowBlue()
     {
         EndOrbit();

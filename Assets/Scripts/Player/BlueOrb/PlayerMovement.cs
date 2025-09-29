@@ -84,6 +84,10 @@ public class PlayerMovement : MovableObject
     }
 
     bool stopped = false;
+    public void UnStop()
+    {
+        stopped = false;
+    }
     public void StopMoving()
     {
         rb.velocity = Vector2.zero;
@@ -198,7 +202,6 @@ public class PlayerMovement : MovableObject
 
     void Dash(Vector2 direction)
     {
-        Debug.Log("Start Dashing");
         //rb.GetComponent<CircleCollider2D>().isTrigger = true;
         dashing = true;
         timeSinceDashed = Time.timeSinceLevelLoad;

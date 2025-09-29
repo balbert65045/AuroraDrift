@@ -152,12 +152,17 @@ public class Ship : MonoBehaviour
         if(numerOfMisselsPerShot == 1)
         {
             GameObject missel = Instantiate(MisselPrefab, transform.position, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 90));
+            missel.GetComponent<Missel>().SetCreator(this.gameObject);
         }
         if(numerOfMisselsPerShot == 3)
         {
             GameObject missel1 = Instantiate(MisselPrefab, transform.position, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 90));
             GameObject missel2 = Instantiate(MisselPrefab, transform.position + transform.right * 2f, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z));
             GameObject missel3 = Instantiate(MisselPrefab, transform.position - transform.right * 2f, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 180));
+            missel1.GetComponent<Missel>().SetCreator(this.gameObject);
+            missel2.GetComponent<Missel>().SetCreator(this.gameObject);
+            missel3.GetComponent<Missel>().SetCreator(this.gameObject);
+
 
         }
     }
@@ -181,22 +186,14 @@ public class Ship : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.transform.GetComponent<RedOrbController>())
-        {
-            TakeDamge(collision.transform.gameObject);
-            //Explode();
-        }
-        if (collision.transform.GetComponent<PlayerCollisionController>())
-        {
-            TakeDamge(collision.transform.gameObject);
-            //Explode();
-        }
+
     }
 
     public EventHandler<HealthStruct> OnTakeDamage;
     GameObject recentDamageObj;
     float lastDamagedTime;
-    public void TakeDamge(GameObject fromWhat)
+
+    public void TakeDamge(GameObject fromWhat, float damage, float force)
     {
         if(recentDamageObj == fromWhat && Time.timeSinceLevelLoad < lastDamagedTime + .2f)
         {
@@ -204,13 +201,7 @@ public class Ship : MonoBehaviour
         }
         recentDamageObj = fromWhat;
         lastDamagedTime = Time.timeSinceLevelLoad;
-        GetComponent<EnemyHealth>().TakeDamage(fromWhat);
-        float force = 40 + (fromWhat.GetComponent<MovableObject>().prevVel.magnitude / 7f);
-        if (pm.dashing)
-        {
-            force = 60 + (fromWhat.GetComponent<MovableObject>().prevVel.magnitude / 7f);
-        }
-        //float force = 40 + (fromWhat.GetComponent<MovableObject>().prevVel.magnitude / 7f);
+        GetComponent<EnemyHealth>().TakeDamage(fromWhat, damage);
         KnockBack(fromWhat.transform.position, force);
     }
 

@@ -16,6 +16,7 @@ public class PlayerInputController : MonoBehaviour
 
     public EventHandler<Vector2> OnMoveInput;
     public Action OnDashInput;
+    public Action OnDashRelease;
     public Action OnPullRedInput;
     public Action OnReleaseRedInput;
     public Action OnPullBlueInput;
@@ -46,6 +47,10 @@ public class PlayerInputController : MonoBehaviour
         if (Input.GetButtonDown("Dash"))
         {
             DoDash();
+        }
+        else if (Input.GetButtonUp("Dash"))
+        {
+            ReleaseDash();
         }
         
 
@@ -117,6 +122,11 @@ public class PlayerInputController : MonoBehaviour
     void DoDash()
     {
         if(OnDashInput != null) { OnDashInput.Invoke(); }
+    }
+
+    void ReleaseDash()
+    {
+        if (OnDashRelease != null) { OnDashRelease.Invoke(); }
     }
 
     void DoMovement(float x, float y)

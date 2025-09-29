@@ -42,8 +42,6 @@ public class PlayerVisual : MonoBehaviour
     PlayerMovement pm;
     private void Start()
     {
-        playerAbilityController = FindObjectOfType<PlayerAbilityController>();
-        playerAbilityController.OnBeginCharge += BeginCharge;
 
         pm = FindObjectOfType<PlayerMovement>();
         pm.OnDash += OnDash;

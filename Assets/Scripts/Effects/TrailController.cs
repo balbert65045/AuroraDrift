@@ -28,10 +28,18 @@ public class TrailController : MonoBehaviour
         abilityController = FindObjectOfType<PlayerAbilityController>();
 
         abilityController.OnBeginCharge += BeginCharge;
+        abilityController.OnReleaseCharge += ReleaseCharge;
     }
 
-    void BeginCharge()
+    TimerClass currentTimer;
+
+    void ReleaseCharge()
     {
+        charging = false;
+    }
+    void BeginCharge(object sender, TimerClass timer)
+    {
+        currentTimer = timer;
         trail.time = .2f;
         charging = true;
     }

@@ -548,7 +548,7 @@ GameObject:
   - component: {fileID: 5856406167430230488}
   - component: {fileID: 5363678242807644190}
   - component: {fileID: 4665706487572416938}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ship (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -683,14 +683,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7fbec3bc9b509e4f9d9065cecf2c467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 100
+  MaxHealth: 75
   ExplosionPrefab: {fileID: 2252694052019634547, guid: fae1502a319ef3847ba2f8ecdc91457d, type: 3}
   DamageFontPredab: {fileID: 4804521131095430709, guid: ad928f043242b0643840c13e0e18f30e, type: 3}
   RedDamageFontPrefab: {fileID: 5902712214896093622, guid: f88f9376856881f4fb97217957a815c0, type: 3}
   PurpleDamageFontPrefab: {fileID: 4427032958886905277, guid: f0831df813d80274890b36a48983ee78, type: 3}
   OrangeDamageFontPrefab: {fileID: 7755958452440329513, guid: b4fb3e85160dd8b40b1301ac2ff02879, type: 3}
+  YellowDamageFontPrefab: {fileID: 6460919195899316000, guid: 860a1c59088048943bbf852df78c9139, type: 3}
   DamagedPrefab: {fileID: 3978922889842738559, guid: 3adfd253e09b4874fa97aa002110cf1c, type: 3}
-  damageAmount: 0
 --- !u!1 &9085254822855892442
 GameObject:
   m_ObjectHideFlags: 0

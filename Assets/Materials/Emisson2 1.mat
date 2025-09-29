@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Emisson
+  m_Name: Emisson2 1
   m_Shader: {fileID: -6465566751694194690, guid: 17c95df6def40434f8808182080f3434, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -50,8 +50,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _EmissionIntensity: 1.2925632
+    - _EmissionIntensity: 1.1565762
     m_Colors:
-    - _Color: {r: 0, g: 0.52876043, b: 1.216786, a: 1}
-    - _EmissiveColor: {r: 0, g: 0.682353, b: 1.4980394, a: 3.388}
+    - _Color: {r: 1.2167859, g: 0.7634735, b: 0, a: 1}
+    - _EmissiveColor: {r: 1.223414, g: 1.4980392, b: 0, a: 1.54}
   m_BuildTextureStacks: []

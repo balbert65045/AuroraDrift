@@ -14,6 +14,7 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] GameObject RedDamageFontPrefab;
     [SerializeField] GameObject PurpleDamageFontPrefab;
     [SerializeField] GameObject OrangeDamageFontPrefab;
+    [SerializeField] GameObject YellowDamageFontPrefab;
     [SerializeField] GameObject DamagedPrefab;
 
     PlayerChargeController playerChargeController;
@@ -25,40 +26,37 @@ public class EnemyHealth : MonoBehaviour
     }
 
     public EventHandler<HealthStruct> OnTakeDamage;
-    public int damageAmount;
-    public void TakeDamage(GameObject fromWhat)
+    public void TakeDamage(GameObject fromWhat, float amount)
     {
         GameObject fontPrefab = DamageFontPredab;
         if (fromWhat.GetComponent<PlayerMovement>() || fromWhat.GetComponent<RedOrbController>())
         {
             //Handle Player Damage
-            damageAmount = CalculateDamageAmount();
             if (fromWhat.GetComponent<PlayerMovement>() != null)
             {
                 if (fromWhat.GetComponent<PlayerMovement>().Orbiting == true)
                 {
                     fontPrefab = PurpleDamageFontPrefab;
                 }
-                if (fromWhat.GetComponent<PlayerMovement>().dashing == true)
-                {
-                    //damageAmount = (int)(CalculateDamageAmount()*1.5f);
-                }
             }
             else if (fromWhat.GetComponent<RedOrbController>() != null)
             {
                 fontPrefab = OrangeDamageFontPrefab;
+                if (fromWhat.GetComponent<RedOrbController>().ChargeThrown)
+                {
+                    fontPrefab = YellowDamageFontPrefab;
+                }
             }
             playerChargeController.PauseCharge();
         }
         else
         {
             //Handle Missels hitting
-            damageAmount = 10;
             fontPrefab = RedDamageFontPrefab;
         }
 
-        currentHealth -= damageAmount;
-        float increase = damageAmount >= 10 ? 1.5f : 1;
+        currentHealth -= amount;
+        float increase = amount >= 7 ? 1.5f : 1;
         if (currentHealth <= 0)
         {
             Explode();
@@ -69,7 +67,7 @@ public class EnemyHealth : MonoBehaviour
         }
 
         GameObject fontObj = Instantiate(fontPrefab, transform.position, Quaternion.identity);
-        fontObj.GetComponent<DamageFont>().DisplayPain(damageAmount, Color.red, increase);
+        fontObj.GetComponent<DamageFont>().DisplayPain(Mathf.FloorToInt(amount), Color.red, increase);
         if (OnTakeDamage != null) { OnTakeDamage.Invoke(this, new HealthStruct(currentHealth, MaxHealth)); }
     }
 
@@ -88,13 +86,5 @@ public class EnemyHealth : MonoBehaviour
     void SpawnDamaged()
     {
         Instantiate(DamagedPrefab, transform.position, Quaternion.identity);
-    }
-
-    int CalculateDamageAmount()
-    {
-        int baseDamage = 1;
-        int chargeIncreaseMax = 15;
-        int damageAmount = baseDamage + (int)Mathf.Ceil(playerChargeController.GetPercentage() * chargeIncreaseMax);
-        return damageAmount;
     }
 }

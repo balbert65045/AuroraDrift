@@ -11,6 +11,7 @@ public class PlayerCollisionController : MonoBehaviour
     PlayerMovement pm;
     PlayerPullController pullController;
     PlayerOrbitController orbitController;
+    OrbDamageController orbDamageController;
     [SerializeField] RedOrbController redOrb;
     private void Start()
     {
@@ -21,6 +22,7 @@ public class PlayerCollisionController : MonoBehaviour
         pm = GetComponent<PlayerMovement>();
         pullController = GetComponent<PlayerPullController>();
         orbitController = GetComponent<PlayerOrbitController>();
+        orbDamageController = GetComponent<OrbDamageController>();
     }
 
     private void OnCollisionEnter2D(Collision2D coll)
@@ -43,7 +45,7 @@ public class PlayerCollisionController : MonoBehaviour
             }
         return;
         }
-        if(coll.transform.GetComponent<Enemy>() != null || coll.transform.GetComponent<Ship>())
+        if(coll.transform.GetComponent<Enemy>() != null || coll.transform.GetComponent<Ship>() || coll.transform.GetComponent<Shield>())
         {
             Vector2 reflectAngle = Vector2.Reflect(pm.prevVel, coll.contacts[0].normal);
 
@@ -65,6 +67,16 @@ public class PlayerCollisionController : MonoBehaviour
                 pm.AdjustVel(reflectAngle);
                 pm.DissableInputForBriefMoment();
                 pullController.OutsideStopPulling();
+            }
+
+            if(coll.transform.GetComponent<Ship>() != null)
+            {
+                float force = 40 + (pm.GetComponent<MovableObject>().prevVel.magnitude / 7f);
+                if (pm.dashing)
+                {
+                    force = 60 + (pm.GetComponent<MovableObject>().prevVel.magnitude / 7f);
+                }
+                coll.transform.GetComponent<Ship>().TakeDamge(this.gameObject, orbDamageController.CalculateDamage(), force);
             }
         }
     }
