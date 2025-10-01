@@ -12,6 +12,7 @@ public class Shield : MonoBehaviour
 {
     public ShieldType myShieldType;
 
+    Animator animator;
     SpriteRenderer mySpriteRenderer;
     CircleCollider2D myCircleCollider;
 
@@ -21,6 +22,7 @@ public class Shield : MonoBehaviour
         pm = FindObjectOfType<PlayerMovement>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         myCircleCollider = GetComponent<CircleCollider2D>();
+        animator = GetComponent<Animator>();
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -43,7 +45,8 @@ public class Shield : MonoBehaviour
 
     public void Shatter()
     {
-        mySpriteRenderer.enabled = false;
+        //mySpriteRenderer.enabled = false;
+        animator.SetTrigger("Break");
         myCircleCollider.enabled = false;
     }
 }
