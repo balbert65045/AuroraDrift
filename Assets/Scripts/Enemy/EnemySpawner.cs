@@ -53,8 +53,18 @@ public class EnemySpawner : MonoBehaviour
             }
             else
             {
-                Spawn(profile.waves[currentWaveIndex]);
+                StartCoroutine("WaitThenLevelThenSpawn");
+                //FindObjectOfType<UpgradeSystem>().ShowPossibleUpgrades();
+                //Spawn(profile.waves[currentWaveIndex]);
             }
         }
+    }
+
+    IEnumerator WaitThenLevelThenSpawn()
+    {
+        yield return new WaitForSeconds(.2f);
+        FindObjectOfType<UpgradeSystem>().ShowPossibleUpgrades();
+        yield return new WaitForSeconds(.2f);
+        Spawn(profile.waves[currentWaveIndex]);
     }
 }

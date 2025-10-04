@@ -37,6 +37,7 @@ public class PlayerInputController : MonoBehaviour
     bool pullingBlue = false;
     void Update()
     {
+        if(Time.timeScale == 0) { return; }
         //MOVEMENT//
         float inputX = Input.GetAxisRaw(horizontalAxis);
         float inputY = Input.GetAxisRaw(verticalAxis);
