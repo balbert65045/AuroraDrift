@@ -26,10 +26,17 @@ public class EnemySpawner : MonoBehaviour
         Spawn(profile.waves[currentWaveIndex]);
     }
 
+    public void SpawnNextWave()
+    {
+        if (enemiesOut.Count == 0)
+        {
+            Spawn(profile.waves[currentWaveIndex]);
+        }
+    }
 
     void Spawn(Wave wave)
     {
-
+        LastEnemyDestroyed = false;
         currentWaveIndex++;
 
         foreach (GameObject enemyToSpawn in wave.EnemiesForWave)
@@ -41,19 +48,28 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    bool LastEnemyDestroyed = false;
     void OnEnemyDestroyed(object sender, GameObject enemy)
     {
         enemiesOut.Remove(enemy);
-        if (enemiesOut.Count == 0)
+        if (enemiesOut.Count == 0 && !LastEnemyDestroyed)
         {
-            if(currentWaveIndex >= profile.waves.Count)
+            LastEnemyDestroyed = true;
+            if (currentWaveIndex >= profile.waves.Count)
             {
                 //All waves done -> Complete Level
                 FindObjectOfType<GameManager>().CompleteLevel();
             }
             else
             {
-                StartCoroutine("WaitThenLevelThenSpawn");
+                if (profile.waves[currentWaveIndex - 1].LevelUp)
+                {
+                    StartCoroutine("WaitThenLevelThenSpawn");
+                }
+                else
+                {
+                    Spawn(profile.waves[currentWaveIndex]);
+                }
                 //FindObjectOfType<UpgradeSystem>().ShowPossibleUpgrades();
                 //Spawn(profile.waves[currentWaveIndex]);
             }
@@ -62,8 +78,11 @@ public class EnemySpawner : MonoBehaviour
 
     IEnumerator WaitThenLevelThenSpawn()
     {
-        yield return new WaitForSeconds(.2f);
-        FindObjectOfType<UpgradeSystem>().ShowPossibleUpgrades();
+        yield return new WaitForSeconds(.4f);
+        if (FindObjectOfType<UpgradeSystem>())
+        {
+            FindObjectOfType<UpgradeSystem>().ShowPossibleUpgrades();
+        }
         yield return new WaitForSeconds(.2f);
         Spawn(profile.waves[currentWaveIndex]);
     }

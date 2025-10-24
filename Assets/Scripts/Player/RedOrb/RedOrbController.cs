@@ -49,6 +49,29 @@ public class RedOrbController : MovableObject
         redOrbCollision = GetComponentInChildren<RedOrbCollision>();
         redOrbCollision.gameObject.SetActive(false);
         redOrbTracker = FindObjectOfType<RedOrbTracker>();
+
+
+        PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        playerAbilityController.OnSwapBegin += Freeze;
+        playerAbilityController.OnSwapEnd += UnFreeze;
+    }
+
+    public Vector3 freezeVel;
+    bool stopped = false;
+    void Freeze(float _time)
+    {
+        //freezeVel = pm.GetComponent<Rigidbody2D>().velocity;
+        freezeVel = rb.velocity;
+        rb.velocity = Vector2.zero;
+        currentVelocity = Vector2.zero;
+        stopped = true;
+    }
+
+    void UnFreeze()
+    {
+        rb.velocity = freezeVel;
+        currentVelocity = freezeVel;
+        stopped = false;
     }
 
     void Update()
@@ -68,6 +91,7 @@ public class RedOrbController : MovableObject
     }
     protected override void FixedUpdate()
     {
+        if (stopped) { return; }
         base.FixedUpdate();
         //if(rb.velocity.magnitude < 2f) { RemoveChargeThrown(); }
         if (retracting)
@@ -184,7 +208,7 @@ public class RedOrbController : MovableObject
         ChargeThrown = true;
         float perfectAmount = 170f;
         float maxAmount = 155f;
-        float minAmount = 85f;
+        float minAmount = 100f;
         float diff = maxAmount - minAmount;
         float amount = minAmount + percentage * diff;
         if (perfect)

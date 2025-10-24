@@ -2,13 +2,14 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using System;
-using UnityEditor.Build;
 
 public class PlayerMovement : MovableObject
 {
     [Header("Movement Settings")]
     [Tooltip("Maximum speed the player can reach.")]
     public float maxSpeed = 5f;
+    float baseMaxSpeed;
+
     [Tooltip("Rate at which the player accelerates towards max speed.")]
     public float acceleration = 10f;
     [Tooltip("Rate at which the player decelerates when no input is given.")]
@@ -44,6 +45,7 @@ public class PlayerMovement : MovableObject
     Vector2 inputDirection;
 
     float MaxDashSpeed = 200;
+    float MaxOrbitingSpeed = 120;
 
     public void ReceiveMovment(object sender, Vector2 moveDir)
     {
@@ -149,14 +151,43 @@ public class PlayerMovement : MovableObject
         return deceleration * decelerationMultiplieer;
     }
 
-    PlayerChargeController chargeController;
     void Start()
     {
+        baseMaxSpeed = maxSpeed;
+
+        redOrb = FindObjectOfType<RedOrbController>();
         PlayerInputController playerInputController = FindObjectOfType<PlayerInputController>();
         playerInputController.OnMoveInput += ReceiveMovment;
         playerInputController.OnDashInput += ReceiveDash;
         pullController = GetComponent<PlayerPullController>();
-        chargeController = FindObjectOfType<PlayerChargeController>();
+
+        PlayerPassiveController playerPassiveController = FindObjectOfType<PlayerPassiveController>();
+        playerPassiveController.OnSpeedPercentageIncrease += IncreaseMaxSpeed;
+
+        PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        playerAbilityController.OnSwapBegin += Freeze;
+        playerAbilityController.OnSwapEnd += UnFreeze;
+    }
+
+    public Vector3 freezeVel;
+    void Freeze(float _time)
+    {
+        freezeVel = rb.velocity;
+        rb.velocity = Vector2.zero;
+        currentVelocity = Vector2.zero;
+        stopped = true;
+    }
+
+    void UnFreeze()
+    {
+        rb.velocity = freezeVel;
+        currentVelocity = freezeVel;
+        stopped = false;
+    }
+
+    void IncreaseMaxSpeed(float increasePercentage)
+    {
+        maxSpeed = baseMaxSpeed + (baseMaxSpeed * increasePercentage);
     }
 
     
@@ -265,7 +296,7 @@ public class PlayerMovement : MovableObject
             if (currentVelocity.magnitude > 4)
             {
                 currentVelocity += (perp * 2) * currentVelocity.magnitude / 40;
-                float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, 120);
+                float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, MaxOrbitingSpeed);
                 currentVelocity = currentVelocity.normalized * maxval;
             }       
         }
@@ -287,7 +318,7 @@ public class PlayerMovement : MovableObject
         if (currentVelocity.magnitude > 4)
         {
             currentVelocity += (perp*2) * currentVelocity.magnitude / 40;
-            float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, 120);
+            float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, MaxOrbitingSpeed);
             currentVelocity = currentVelocity.normalized * maxval;
         }
     }
@@ -306,7 +337,7 @@ public class PlayerMovement : MovableObject
             if (currentVelocity.magnitude > 4)
             {
                 currentVelocity += (perp * 2) * currentVelocity.magnitude / 40;
-                float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, 120);
+                float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, MaxOrbitingSpeed);
                 currentVelocity = currentVelocity.normalized * maxval;
             }
         }

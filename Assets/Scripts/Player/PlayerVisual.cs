@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerVisual : MonoBehaviour
 {
@@ -15,29 +16,7 @@ public class PlayerVisual : MonoBehaviour
     [SerializeField] Color chargedColor;
     [SerializeField] Material chargedMaterial;
 
-    //private void Start()
-    //{
-    //    //rb
-    //    Material trailMat = new Material(Shader.Find("Unlit/Transparent"));
-    //    trailMat.mainTexture = GenerateGradientTexture(Color.white, new Color(1, 1, 1, 0));
-    //    GetComponent<TrailRenderer>().material = trailMat;
-    //}
 
-    //Texture2D GenerateGradientTexture(Color startColor, Color endColor, int width = 256, int height = 1)
-    //{
-    //    Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
-    //    for (int x = 0; x < width; x++)
-    //    {
-    //        float t = (float)x / (width - 1);
-    //        Color color = Color.Lerp(startColor, endColor, t);
-    //        for (int y = 0; y < height; y++)
-    //        {
-    //            texture.SetPixel(x, y, color);
-    //        }
-    //    }
-    //    texture.Apply();
-    //    return texture;
-    //}
 
     PlayerMovement pm;
     private void Start()
@@ -47,6 +26,58 @@ public class PlayerVisual : MonoBehaviour
         pm.OnDash += OnDash;
         pm.OnRechargeDash += OnDashRecharge;
 
+        PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        playerAbilityController.OnSwapBegin += Shrink;
+        playerAbilityController.OnSwapEnd += Grow;
+    }
+
+    TimerClass shrinkTimer;
+    TimerClass growTimer;
+    bool shrinkin = false;
+    bool growing = false;
+    Vector3 OGSize;
+    float growShrinkTime;
+    void Shrink(float swapTime)
+    {
+        growShrinkTime = swapTime;
+        shrinkTimer = new TimerClass(true, growShrinkTime, Time.time);
+        OGSize = transform.localScale;
+        shrinkin = true;
+    }
+
+    void Grow()
+    {
+        growTimer = new TimerClass(true, growShrinkTime, Time.time);
+        growing = true;
+        shrinkin = false;
+    }
+
+    private void Update()
+    {
+        if(shrinkin)
+        {
+            if(shrinkTimer.TimerStillGoing(Time.time))
+            {
+                float percentage = shrinkTimer.percentageComplete(Time.time);
+                transform.localScale = OGSize - (OGSize * percentage);
+            }
+            else
+            {
+                shrinkin = false;
+            }
+        }
+        else if (growing)
+        {
+            if (growTimer.TimerStillGoing(Time.time))
+            {
+                float percentage = growTimer.percentageComplete(Time.time);
+                transform.localScale = (OGSize * percentage);
+            }
+            else
+            {
+                growing = false;
+            }
+        }
     }
 
     void BeginCharge()

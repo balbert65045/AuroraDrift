@@ -15,8 +15,12 @@ public class  PauseCanvas : MonoBehaviour
 
     float ogCamSize;
     Vector3 ogSize;
+
+    UpgradeSystem upgradeSystem;
+
     private void Start()
     {
+        upgradeSystem = FindObjectOfType<UpgradeSystem>();
         ogSize = transform.localScale;
         ogCamSize = cam.orthographicSize;
     }
@@ -55,7 +59,11 @@ public class  PauseCanvas : MonoBehaviour
     public void ResumeGame()
     {
         paused = false;
-        Time.timeScale = 1;
+
+        if (!upgradeSystem.GetPaused())
+        {
+            Time.timeScale = 1;
+        }
         Panel.SetActive(false);
     }
 }

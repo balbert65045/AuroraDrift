@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Build;
 using UnityEngine;
 
 public class RedOrbVisual : MonoBehaviour
@@ -44,6 +43,59 @@ public class RedOrbVisual : MonoBehaviour
 
         RedOrbController redOrb = FindObjectOfType<RedOrbController>();
         redOrb.OnRemoveChargeThrown += ChargeRemoved;
+
+        PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        playerAbilityController.OnSwapBegin += Shrink;
+        playerAbilityController.OnSwapEnd += Grow;
+    }
+
+    TimerClass shrinkTimer;
+    TimerClass growTimer;
+    bool shrinkin = false;
+    bool growing = false;
+    Vector3 OGSize;
+    float growShrinkTime;
+    void Shrink(float swapTime)
+    {
+        growShrinkTime = swapTime;
+        shrinkTimer = new TimerClass(true, growShrinkTime, Time.time);
+        OGSize = transform.localScale;
+        shrinkin = true;
+    }
+
+    void Grow()
+    {
+        growTimer = new TimerClass(true, growShrinkTime/2, Time.time);
+        growing = true;
+        shrinkin = false;
+    }
+
+    private void Update()
+    {
+        if (shrinkin)
+        {
+            if (shrinkTimer.TimerStillGoing(Time.time))
+            {
+                float percentage = shrinkTimer.percentageComplete(Time.time);
+                transform.localScale = OGSize - (OGSize * percentage);
+            }
+            else
+            {
+                shrinkin = false;
+            }
+        }
+        else if (growing)
+        {
+            if (growTimer.TimerStillGoing(Time.time))
+            {
+                float percentage = growTimer.percentageComplete(Time.time);
+                transform.localScale = (OGSize * percentage);
+            }
+            else
+            {
+                growing = false;
+            }
+        }
     }
 
     bool charging = false;

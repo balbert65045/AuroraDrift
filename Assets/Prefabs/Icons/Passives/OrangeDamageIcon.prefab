@@ -28,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 3682862333689610655}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.00003905734}
-  m_LocalScale: {x: 0.28406, y: 0.28406, z: 0.28406}
+  m_LocalScale: {x: -0.28406, y: 0.28406, z: 0.28406}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2565704384083691650}
@@ -89,6 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57ed876c757e4004ea507c6d38973883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  QuantityText: {fileID: 5270035642191036480}
   passiveType: 1
   orbType: 2
 --- !u!1 &5645549065323596283

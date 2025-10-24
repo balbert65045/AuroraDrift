@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4421609116237804130}
   - component: {fileID: 6234086687550073660}
   m_Layer: 5
-  m_Name: Description (1)
+  m_Name: NewText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -864,7 +864,7 @@ GameObject:
   - component: {fileID: 4059318638138058141}
   - component: {fileID: 1555566006748924049}
   m_Layer: 5
-  m_Name: Description (2)
+  m_Name: PreviousText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1131,6 +1131,7 @@ GameObject:
   - component: {fileID: 1929664784395008059}
   - component: {fileID: 2967820068681407330}
   - component: {fileID: 4328289753805143440}
+  - component: {fileID: 3160789314278954251}
   m_Layer: 5
   m_Name: MaxHealthCard
   m_TagString: Untagged
@@ -1184,6 +1185,8 @@ MonoBehaviour:
   CardPassiveType: 0
   CardOrbType: 0
   AmountIncrease: 20
+  PreviousAmount: {fileID: 1555566006748924049}
+  NewAmount: {fileID: 6234086687550073660}
 --- !u!114 &4328289753805143440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1240,3 +1243,24 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!95 &3160789314278954251
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8411729369042365454}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a5190ce431fb95141a8ed75bd53aaf47, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 2
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

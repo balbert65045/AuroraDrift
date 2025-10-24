@@ -29,7 +29,42 @@ public class TrailController : MonoBehaviour
 
         abilityController.OnBeginCharge += BeginCharge;
         abilityController.OnReleaseCharge += ReleaseCharge;
+
+        abilityController.OnSwapBegin += SwapBegin;
+        abilityController.OnSwapEnd += SwapEnd;
     }
+
+    void SwapBegin(float _time)
+    {
+        
+        trail.Clear();
+        trail.emitting = false;
+    }
+
+    void SwapEnd()
+    {
+        StartCoroutine("DelaySwap");
+    }
+
+    IEnumerator DelaySwap()
+    {
+        trail.Clear();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+
+
+        trail.emitting = true;
+    }
+
 
     TimerClass currentTimer;
 
@@ -52,6 +87,8 @@ public class TrailController : MonoBehaviour
             return;
         }
         if (pm && pm.dashing) { return; }
+
+        //This was 34
         desiredTime = (Mathf.Max((squishController.rb.velocity.magnitude - 34f), 0f) / 40f) * maxTime;
         if(desiredTime < .01f) { trail.enabled = false; }
         else { trail.enabled = true; }

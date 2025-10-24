@@ -22,6 +22,7 @@ public class PlayerInputController : MonoBehaviour
     public Action OnPullBlueInput;
     public Action OnReleaseBlueInput;
 
+    public Action OnSkill2Input;
 
     public bool GetHoldingDown()
     {
@@ -53,7 +54,11 @@ public class PlayerInputController : MonoBehaviour
         {
             ReleaseDash();
         }
-        
+
+        if (Input.GetButtonDown("DoSkill2"))
+        {
+            DoSkill2();
+        }
 
         //PushPull//
         if (UseController)
@@ -118,6 +123,11 @@ public class PlayerInputController : MonoBehaviour
     void DoStopPullBlue()
     {
         if(OnReleaseBlueInput != null) { OnReleaseBlueInput.Invoke(); }
+    }
+
+    void DoSkill2()
+    {
+        if (OnSkill2Input != null) { OnSkill2Input.Invoke(); }
     }
 
     void DoDash()

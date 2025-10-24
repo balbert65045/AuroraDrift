@@ -23,6 +23,28 @@ public class PlayerCollisionController : MonoBehaviour
         pullController = GetComponent<PlayerPullController>();
         orbitController = GetComponent<PlayerOrbitController>();
         orbDamageController = GetComponent<OrbDamageController>();
+
+        pm.OnDash += PlayerDashed;
+    }
+
+    void PlayerDashed()
+    {
+        recentlyDashed = true;
+        TimeDashed = Time.timeSinceLevelLoad;
+    }
+
+    bool recentlyDashed = false;
+    float DashTime = .5f;
+    float TimeDashed;
+    private void Update()
+    {
+        if (recentlyDashed)
+        {
+            if(Time.timeSinceLevelLoad > DashTime + TimeDashed)
+            {
+                recentlyDashed = false;
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D coll)
@@ -42,12 +64,22 @@ public class PlayerCollisionController : MonoBehaviour
                 float magnitude = (rotMinus * reflectAngle).magnitude;
                 magnitude = Mathf.Clamp(magnitude, 0, 100);
                 redOrb.AdjustVel(dir * magnitude);
+                return;
             }
-        return;
         }
         if(coll.transform.GetComponent<Enemy>() != null || coll.transform.GetComponent<Ship>() || coll.transform.GetComponent<Shield>())
         {
             Vector2 reflectAngle = Vector2.Reflect(pm.prevVel, coll.contacts[0].normal);
+
+            if (coll.transform.GetComponent<Ship>() != null)
+            {
+                float force = 40 + (pm.GetComponent<MovableObject>().prevVel.magnitude / 7f);
+                if (pm.dashing)
+                {
+                    force = 70 + (pm.GetComponent<MovableObject>().prevVel.magnitude / 7f);
+                }
+                coll.transform.GetComponent<Ship>().TakeDamge(this.gameObject, orbDamageController.CalculateDamage(), force);
+            }
 
             if (pm.Orbiting)
             {
@@ -64,20 +96,15 @@ public class PlayerCollisionController : MonoBehaviour
             }
             else
             {
-                pm.AdjustVel(reflectAngle);
+                if (!pm.dashing && !recentlyDashed)
+                {
+                    pm.AdjustVel(reflectAngle);
+                }
                 pm.DissableInputForBriefMoment();
                 pullController.OutsideStopPulling();
             }
 
-            if(coll.transform.GetComponent<Ship>() != null)
-            {
-                float force = 40 + (pm.GetComponent<MovableObject>().prevVel.magnitude / 7f);
-                if (pm.dashing)
-                {
-                    force = 60 + (pm.GetComponent<MovableObject>().prevVel.magnitude / 7f);
-                }
-                coll.transform.GetComponent<Ship>().TakeDamge(this.gameObject, orbDamageController.CalculateDamage(), force);
-            }
+           
         }
     }
 

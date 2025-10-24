@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57b086c4bffcd64498a96256b4b5887d, type: 3}
+  m_Name: Level1
+  m_EditorClassIdentifier: 
+  waves:
+  - EnemiesForWave:
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    LevelUp: 1
+  - EnemiesForWave:
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    LevelUp: 0
+  - EnemiesForWave:
+    - {fileID: 709493369619094721, guid: 935930658620597469be5aaa221e4baf, type: 3}
+    LevelUp: 1
+  - EnemiesForWave:
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    LevelUp: 0
+  - EnemiesForWave:
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 709493369619094721, guid: 935930658620597469be5aaa221e4baf, type: 3}
+    LevelUp: 1
+  - EnemiesForWave:
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    LevelUp: 0
+  - EnemiesForWave:
+    - {fileID: 709493369619094721, guid: 935930658620597469be5aaa221e4baf, type: 3}
+    - {fileID: 709493369619094721, guid: 935930658620597469be5aaa221e4baf, type: 3}
+    LevelUp: 0

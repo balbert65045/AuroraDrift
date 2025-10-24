@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerPullController : MonoBehaviour
 {
     public float PushPullSpeed = 70;
+
+    float basePushPullSpeed;
+    float baseMaxPullSpeed;
     //[SerializeField] float MinPullSpeed = 20f;
     [SerializeField] float MaxPullSpeed = 120;
 
@@ -17,6 +20,12 @@ public class PlayerPullController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        basePushPullSpeed = PushPullSpeed;
+        baseMaxPullSpeed = MaxPullSpeed;
+
+        PlayerPassiveController playerPassiveController = FindObjectOfType<PlayerPassiveController>();
+        playerPassiveController.OnSpeedPercentageIncrease += IncreaseSpeed;
+
         pv = FindObjectOfType<PlayerVisual>();
         if(redOrb == null)
         {
@@ -30,6 +39,12 @@ public class PlayerPullController : MonoBehaviour
         inputController.OnReleaseBlueInput += ReceiveThrow_StopPullBlue;
         inputController.OnPullRedInput += ReceivePullRed;
         inputController.OnReleaseRedInput += ReceiveThrow_StopPullRed;
+    }
+
+    void IncreaseSpeed(float increaseAmount)
+    {
+        PushPullSpeed = basePushPullSpeed + (basePushPullSpeed * increaseAmount);
+        MaxPullSpeed = baseMaxPullSpeed + (baseMaxPullSpeed * increaseAmount);
     }
 
     public float GetAdjustedPull()
