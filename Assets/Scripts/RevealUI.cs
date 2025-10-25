@@ -15,7 +15,10 @@ public class RevealUI : MonoBehaviour
     IEnumerator WaitAndThenSelect()
     {
         yield return new WaitForSeconds(Delay);
-        FindObjectOfType<EventSystem>().firstSelectedGameObject = FirstSelectObj;
-        FindObjectOfType<EventSystem>().SetSelectedGameObject(FirstSelectObj);
+        if (ControllerChecker.instance.usingController)
+        {
+            FindObjectOfType<EventSystem>().firstSelectedGameObject = FirstSelectObj;
+            FindObjectOfType<EventSystem>().SetSelectedGameObject(FirstSelectObj);
+        }
     }
 }

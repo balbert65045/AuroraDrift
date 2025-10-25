@@ -14,7 +14,7 @@ public class PlayerAbilityController : MonoBehaviour
     PlayerMovement pm;
     PlayerOrbitController orbitController;
 
-    bool canOrbLaunch = false;
+    bool canOrbLaunch = true;
     bool canOrbSwap = true;
 
     [SerializeField] float SwapTime = .1f;
@@ -26,7 +26,7 @@ public class PlayerAbilityController : MonoBehaviour
     public Action ActuallyLaunch;
 
     [SerializeField] float MaxChargeTime = 2f;
-    TimerClass chargeTimer = new TimerClass(false);
+    public TimerClass chargeTimer = new TimerClass(false);
 
     public bool InPerfectRange()
     {
@@ -39,11 +39,16 @@ public class PlayerAbilityController : MonoBehaviour
     {
         orbLaunchAmount = BaseOrbLaunchAmount;
         UpgradeSystem upgradeSystem = FindObjectOfType<UpgradeSystem>();
-        upgradeSystem.OnSelectAbility += AbilitySelected;
+        if (upgradeSystem != null)
+        {
+            upgradeSystem.OnSelectAbility += AbilitySelected;
+        }
 
         PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
         inputController.OnDashInput += BeginCharge;
         inputController.OnDashRelease += RelaseCharge;
+        inputController.OnReleaseRedInput += RelaseCharge;
+        inputController.OnReleaseBlueInput += RelaseCharge;
 
         inputController.OnSkill2Input += Swap;
 
@@ -103,6 +108,7 @@ public class PlayerAbilityController : MonoBehaviour
 
     void CancelCharge()
     {
+        Debug.Log("Cancel Dash");
         if (chargeTimer.IsOn())
         {
             chargeTimer.TurnOff();
@@ -139,6 +145,7 @@ public class PlayerAbilityController : MonoBehaviour
 
     void BeginCharge()
     {
+
         if (canOrbLaunch)
         {
             if (pm.Orbiting)

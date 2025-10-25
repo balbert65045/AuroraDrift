@@ -17,9 +17,11 @@ public class OrbitDashVisual : MonoBehaviour
     SpriteRenderer t2SpriteRenderer;
 
     PlayerAbilityController playerAbilityController;
+    PlayerInputController playerInputController;
     // Start is called before the first frame update
     void Start()
     {
+        playerInputController = FindObjectOfType<PlayerInputController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         t2SpriteRenderer = t2.GetComponent<SpriteRenderer>();
         playerAbilityController = FindObjectOfType<PlayerAbilityController>();

@@ -78,7 +78,9 @@ public class PlayerCollisionController : MonoBehaviour
                 {
                     force = 70 + (pm.GetComponent<MovableObject>().prevVel.magnitude / 7f);
                 }
-                coll.transform.GetComponent<Ship>().TakeDamge(this.gameObject, orbDamageController.CalculateDamage(), force);
+
+                Vector2 dir = (transform.position - coll.transform.position).normalized;
+                coll.transform.GetComponent<Ship>().TakeDamge(this.gameObject, orbDamageController.CalculateDamage(), -dir *force);
             }
 
             if (pm.Orbiting)

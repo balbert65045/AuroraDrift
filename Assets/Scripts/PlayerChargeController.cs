@@ -58,6 +58,8 @@ public class PlayerChargeController : MonoBehaviour
 
     public float GetPercentage()
     {
+
+        //
         return currentCharge / MaxCharge;
     }
     // Update is called once per frame

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CardUpgrade : MonoBehaviour, ISelectHandler, IDeselectHandler
+public class CardUpgrade : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] GameObject SelectVisual;
     Upgrade upgrade;
@@ -46,5 +46,17 @@ public class CardUpgrade : MonoBehaviour, ISelectHandler, IDeselectHandler
     void Update()
     {
         
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        SelectVisual.SetActive(true);
+        animator.SetBool("Grow", true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        SelectVisual.SetActive(false);
+        animator.SetBool("Grow", false);
     }
 }

@@ -60,7 +60,7 @@ public class  PauseCanvas : MonoBehaviour
     {
         paused = false;
 
-        if (!upgradeSystem.GetPaused())
+        if (upgradeSystem == null || !upgradeSystem.GetPaused())
         {
             Time.timeScale = 1;
         }

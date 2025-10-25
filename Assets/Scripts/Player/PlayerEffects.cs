@@ -58,6 +58,9 @@ public class PlayerEffects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        transform.position = pm.transform.position;
+
+        if (trail == null) { return; }
         if (timer.TimerStillGoing(Time.time))
         {
             float percentage = timer.percentageComplete(Time.time);
@@ -69,6 +72,6 @@ public class PlayerEffects : MonoBehaviour
             trail.emitting = false;
             trail2.emitting = false;
         }
-        transform.position = pm.transform.position;
+        //transform.position = pm.transform.position;
     }
 }

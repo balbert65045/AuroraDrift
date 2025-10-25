@@ -15,7 +15,14 @@ public class ShipVisual : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         Ship ship = GetComponentInParent<Ship>();
-        ship.OnAboutToShoot += PrepateToAttack;
+        ship.OnAboutToAttack += PrepateToAttack;
+        ship.OnFinishedAttack += FinishedAttack;
+    }
+
+    void FinishedAttack()
+    {
+        changing = false;
+        spriteRenderer.color = new Color(1, 1, 1);
     }
 
     void PrepateToAttack(object sender, float time)
@@ -35,12 +42,6 @@ public class ShipVisual : MonoBehaviour
                 float percentage = (Time.time - timeStartedToChange) / changetime;
                 float diff = (1 - colorToTurnTo.g) * percentage;
                 spriteRenderer.color = new Color(1, 1 - diff, 1 - diff);
-            }
-            else
-            {
-                changing = false;
-                spriteRenderer.color = new Color(1, 1, 1);
-
             }
         }
     }

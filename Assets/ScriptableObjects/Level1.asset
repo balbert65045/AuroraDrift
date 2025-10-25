@@ -24,7 +24,7 @@ MonoBehaviour:
     - {fileID: 709493369619094721, guid: 935930658620597469be5aaa221e4baf, type: 3}
     LevelUp: 1
   - EnemiesForWave:
-    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 1834860428015096802, guid: 8e7982eec017a804083cc98cefcecca3, type: 3}
     - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
     - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
     LevelUp: 0
@@ -34,10 +34,10 @@ MonoBehaviour:
     - {fileID: 709493369619094721, guid: 935930658620597469be5aaa221e4baf, type: 3}
     LevelUp: 1
   - EnemiesForWave:
+    - {fileID: 1834860428015096802, guid: 8e7982eec017a804083cc98cefcecca3, type: 3}
     - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
     - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
-    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
-    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 1834860428015096802, guid: 8e7982eec017a804083cc98cefcecca3, type: 3}
     LevelUp: 0
   - EnemiesForWave:
     - {fileID: 709493369619094721, guid: 935930658620597469be5aaa221e4baf, type: 3}

@@ -45,44 +45,45 @@ public class PlayerMovement : MovableObject
     Vector2 inputDirection;
 
     float MaxDashSpeed = 200;
-    float MaxOrbitingSpeed = 120;
-
+    float MaxOrbitingSpeed = 90;
+    //was 120
     public void ReceiveMovment(object sender, Vector2 moveDir)
     {
         //inputDirection = new Vector2(x, y).normalized;
         inputDirection = moveDir;
 
-        if (dashing)
-        {
-            if (CheckStillDashing(inputDirection)) { return; }
-        }
-        //Pulling
-        if (pulling)
-        {
+        //Test moving this to Fixed Update
+        //if (dashing)
+        //{
+        //    if (CheckStillDashing(inputDirection)) { return; }
+        //}
+        ////Pulling
+        //if (pulling)
+        //{
 
-            GetPulled(inputDirection);
-            return;
-        }
+        //    GetPulled(inputDirection);
+        //    return;
+        //}
 
 
-        //NormalMovement
-        if (inputDirection.sqrMagnitude > 0f && !Orbiting)
-        {
-            DoNormalMovement(inputDirection);
-        }
-        //Orbiting Movement
-        else if (Orbiting)
-        {
-            if (!stopped)
-            {
-                DoOrbitingMovement(inputDirection);
-            }
-        }
-        //Slowing Down
-        else
-        {
-            DoSlowDown(inputDirection);
-        }
+        ////NormalMovement
+        //if (inputDirection.sqrMagnitude > 0f && !Orbiting)
+        //{
+        //    DoNormalMovement(inputDirection);
+        //}
+        ////Orbiting Movement
+        //else if (Orbiting)
+        //{
+        //    if (!stopped)
+        //    {
+        //        DoOrbitingMovement(inputDirection);
+        //    }
+        //}
+        ////Slowing Down
+        //else
+        //{
+        //    DoSlowDown(inputDirection);
+        //}
     }
 
     bool stopped = false;
@@ -107,7 +108,12 @@ public class PlayerMovement : MovableObject
         {
             if (CheckStillDashing(inputDirection)) { return; }
         }
-        Dash(inputDirection);
+        Vector2 dir = inputDirection;
+        if(inputDirection == Vector2.zero)
+        {
+            dir = Vector2.right;
+        }
+        Dash(dir);
         //chargeController.LoseCharge(50);
     }
 
@@ -162,7 +168,10 @@ public class PlayerMovement : MovableObject
         pullController = GetComponent<PlayerPullController>();
 
         PlayerPassiveController playerPassiveController = FindObjectOfType<PlayerPassiveController>();
-        playerPassiveController.OnSpeedPercentageIncrease += IncreaseMaxSpeed;
+        if(playerPassiveController != null)
+        {
+            playerPassiveController.OnSpeedPercentageIncrease += IncreaseMaxSpeed;
+        }
 
         PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
         playerAbilityController.OnSwapBegin += Freeze;
@@ -223,6 +232,7 @@ public class PlayerMovement : MovableObject
         this.redOrb = redOrb;
         Vector2 moveDir = redOrb.transform.position - transform.position;
         currentVelocity = pullController.PushPullSpeed * moveDir.normalized;
+        rb.velocity = currentVelocity;
         pulling = true;
     }
 
@@ -240,6 +250,7 @@ public class PlayerMovement : MovableObject
         float maxSpeed = Mathf.Max(GetSpeed() * DashMultiplier, currentVelocity.magnitude * DashMultiplier * .6f);
         float dashSpeed = Mathf.Min(maxSpeed, MaxDashSpeed);
         currentVelocity = direction * dashSpeed;
+        rb.velocity = currentVelocity;
         // if(Orbiting == false) { canDash = false; }
         canDash = false;
         if (OnDash != null) { OnDash.Invoke(); }
@@ -288,6 +299,7 @@ public class PlayerMovement : MovableObject
         {
             currentVelocity = Vector2.MoveTowards(currentVelocity, dir * GetSpeed(), GetDecelleration() / 3 * Time.deltaTime);
 
+            float magnitude = currentVelocity.magnitude;
             Vector2 refference = currentVelocity.normalized;
             Vector2 projection = (Vector2.Dot(dir, refference) / Vector2.Dot(refference, refference)) * refference;
             Vector2 perp = dir - projection;
@@ -295,10 +307,12 @@ public class PlayerMovement : MovableObject
 
             if (currentVelocity.magnitude > 4)
             {
-                currentVelocity += (perp * 2) * currentVelocity.magnitude / 40;
+                currentVelocity += (perp * 8) * currentVelocity.magnitude / 40;
                 float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, MaxOrbitingSpeed);
-                currentVelocity = currentVelocity.normalized * maxval;
-            }       
+                currentVelocity = currentVelocity.normalized * magnitude;
+            }
+            //currentVelocity = Vector2.MoveTowards(currentVelocity, dir * GetSpeed(), GetAcceleration() * Time.deltaTime);
+
         }
         else
         {
@@ -317,7 +331,7 @@ public class PlayerMovement : MovableObject
 //        currentVelocity = currentVelocity.normalized * pullController.PushPullSpeed;
         if (currentVelocity.magnitude > 4)
         {
-            currentVelocity += (perp*2) * currentVelocity.magnitude / 40;
+            currentVelocity += (perp*6) * currentVelocity.magnitude / 40;
             float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, MaxOrbitingSpeed);
             currentVelocity = currentVelocity.normalized * maxval;
         }
@@ -340,6 +354,8 @@ public class PlayerMovement : MovableObject
                 float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, MaxOrbitingSpeed);
                 currentVelocity = currentVelocity.normalized * maxval;
             }
+            //currentVelocity = Vector2.MoveTowards(currentVelocity, Vector2.zero, GetDecelleration() * Time.deltaTime);
+
         }
         else
         {
@@ -360,8 +376,44 @@ public class PlayerMovement : MovableObject
         }
     }
 
+    void CalculateVelocity()
+    {
+        if (dashing)
+        {
+            if (CheckStillDashing(inputDirection)) { return; }
+        }
+        //Pulling
+        if (pulling)
+        {
+
+            GetPulled(inputDirection);
+            return;
+        }
+
+
+        //NormalMovement
+        if (inputDirection.sqrMagnitude > 0f && !Orbiting)
+        {
+            DoNormalMovement(inputDirection);
+        }
+        //Orbiting Movement
+        else if (Orbiting)
+        {
+            if (!stopped)
+            {
+                DoOrbitingMovement(inputDirection);
+            }
+        }
+        //Slowing Down
+        else
+        {
+            DoSlowDown(inputDirection);
+        }
+    }
+
     protected override void FixedUpdate()
     {
+        CalculateVelocity();
         base.FixedUpdate();
         if (InControl)
         {

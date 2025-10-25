@@ -15,7 +15,7 @@ public class BigShipVisual : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         ogColor = spriteRenderer.color;
         Ship ship = GetComponentInParent<Ship>();
-        ship.OnAboutToShoot += PrepateToAttack;
+        ship.OnAboutToAttack += PrepateToAttack;
     }
 
     void PrepateToAttack(object sender, float time)

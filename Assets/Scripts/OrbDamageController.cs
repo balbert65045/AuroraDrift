@@ -17,8 +17,11 @@ public class OrbDamageController : MonoBehaviour
         playerAbilityController = FindObjectOfType<PlayerAbilityController>();
         playerChargeController = FindObjectOfType<PlayerChargeController>();
         PlayerPassiveController playerPassiveController = FindObjectOfType<PlayerPassiveController>();
-        playerPassiveController.OnBlueDamageIncrease += IncreaseBlueDamage;
-        playerPassiveController.OnRedDamageIncrease += IncreaseRedDamage;
+        if (playerPassiveController != null)
+        {
+            playerPassiveController.OnBlueDamageIncrease += IncreaseBlueDamage;
+            playerPassiveController.OnRedDamageIncrease += IncreaseRedDamage;
+        }
     }
 
     void IncreaseRedDamage(float damageIncrease)
@@ -38,9 +41,17 @@ public class OrbDamageController : MonoBehaviour
         BaseDamage = originalBaseDamage + (originalBaseDamage * damageIncrease);
     }
 
+    float GetChargePercentage()
+    {
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        float speed = Mathf.Min(rb.velocity.magnitude, 70);
+        Debug.Log(speed);
+        return speed / 70;
+    }
+
     public float CalculateDamage()
     {
-
+        //float chargePercentage = GetChargePercentage();
         float chargePercentage = playerChargeController.GetCurrentChargePercentage();
         if (GetComponent<RedOrbController>() != null)
         {
@@ -77,5 +88,6 @@ public class OrbDamageController : MonoBehaviour
         float Variation = BaseDamage * .2f;
         float Roll = Random.Range(-Variation, Variation);
         return BaseDamage + Roll;
+        //return BaseDamage;
     }
 }

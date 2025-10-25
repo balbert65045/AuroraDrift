@@ -20,7 +20,7 @@ public class ShipAttackPreview : MonoBehaviour
     void Start()
     {
         ship = GetComponentInParent<Ship>();
-        ship.OnAboutToShoot += AboutToShoot;
+        ship.OnAboutToAttack += AboutToShoot;
         currentAngle = StartingAngle;
     }
 
@@ -72,7 +72,7 @@ public class ShipAttackPreview : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (showAttack)
         {

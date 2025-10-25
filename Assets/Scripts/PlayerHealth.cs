@@ -39,7 +39,10 @@ public class PlayerHealth : MonoBehaviour
         playerChargeController = FindObjectOfType<PlayerChargeController>();
         
         PlayerPassiveController playerPassiveController = FindObjectOfType<PlayerPassiveController>();
-        playerPassiveController.OnHealthIncrease += SetNewMaxHealth;
+        if(playerPassiveController != null )
+        {
+            playerPassiveController.OnHealthIncrease += SetNewMaxHealth;
+        }
     }
 
     void SetNewMaxHealth(float healthIncrease)

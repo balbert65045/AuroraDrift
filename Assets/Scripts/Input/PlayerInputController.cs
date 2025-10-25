@@ -11,9 +11,6 @@ public class PlayerInputController : MonoBehaviour
     [Tooltip("Name of the vertical input axis.")]
     public string verticalAxis = "Vertical";
 
-
-    [SerializeField] bool UseController = true;
-
     public EventHandler<Vector2> OnMoveInput;
     public Action OnDashInput;
     public Action OnDashRelease;
@@ -24,14 +21,17 @@ public class PlayerInputController : MonoBehaviour
 
     public Action OnSkill2Input;
 
+    public Action<Vector2> OnMouseDirChanged;
+
+    PlayerMovement pm;
     public bool GetHoldingDown()
     {
         return (Input.GetAxisRaw("PullRed") == 1 || Input.GetAxis("PullBlue") == 1);
     }
 
-    void Start()
+    private void Awake()
     {
-        Cursor.visible = false;
+        pm = FindObjectOfType<PlayerMovement>();
     }
 
     bool pullingRed = false;
@@ -60,8 +60,9 @@ public class PlayerInputController : MonoBehaviour
             DoSkill2();
         }
 
+
         //PushPull//
-        if (UseController)
+        if (ControllerChecker.instance.usingController)
         {
             float PullRedAxis = Input.GetAxisRaw("PullRed");
             float PullBlueAxis = Input.GetAxisRaw("PullBlue");
@@ -77,12 +78,12 @@ public class PlayerInputController : MonoBehaviour
                 DoStopPullRed();
             }
 
-            if(PullBlueAxis > .5f && !pullingBlue)
+            if (PullBlueAxis > .5f && !pullingBlue)
             {
                 pullingBlue = true;
                 DoPullBlue();
             }
-            else if(pullingBlue && PullBlueAxis == 0)
+            else if (pullingBlue && PullBlueAxis == 0)
             {
                 pullingBlue = false;
                 DoStopPullBlue();
@@ -101,8 +102,20 @@ public class PlayerInputController : MonoBehaviour
                 DoPullBlue();
             }
             else if (Input.GetButtonUp("PullBlue")) { DoStopPullBlue(); }
+            UpdateMouseDir();
         }
+
+
         //
+    }
+
+    void UpdateMouseDir()
+    {
+        Vector3 screenMousePos = Input.mousePosition;
+        Vector3 worldMousePos = Camera.main.ScreenToWorldPoint(new Vector3(screenMousePos.x, screenMousePos.y, Camera.main.nearClipPlane));
+        Vector2 mouseWorldPos2D = new Vector2(worldMousePos.x, worldMousePos.y);
+        Vector2 dir = (mouseWorldPos2D - (Vector2)pm.transform.position).normalized;
+        if (OnMouseDirChanged != null) { OnMouseDirChanged(dir); }
     }
 
     void DoPullRed() {

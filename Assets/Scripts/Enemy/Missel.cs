@@ -103,7 +103,9 @@ public class Missel : MovableObject
         }
         if(collision.GetComponent<Ship>() != null && !shortDissable)
         {
-            collision.GetComponent<Ship>().TakeDamge(this.gameObject, Damage, Force);
+            Vector2 dir = (transform.position - collision.transform.position).normalized;
+
+            collision.GetComponent<Ship>().TakeDamge(this.gameObject, Damage, -dir * Force);
 
             Explode();
         }

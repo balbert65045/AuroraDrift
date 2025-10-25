@@ -15,33 +15,28 @@ public class Ship : MonoBehaviour
 
     public float speed = 100f;
 
-    [SerializeField] float FireRadius = 50f;
+    [SerializeField] float AttackRadius = 50f;
 
-    [SerializeField] float fireRate = 2f;
-    [SerializeField] GameObject MisselPrefab;
-    [SerializeField] float initialShotDelay = .5f;
+    [SerializeField] float attackRate = 2f;
+    [SerializeField] float initialattackDelay = .5f;
 
     public float turnRateDeg = 180f;
 
 
-    float timeSinceLastShot;
+    float timeSinceLastAttack;
     Vector2 currentVelocity;
 
-    PlayerMovement pm;
-    Rigidbody2D rb;
+    protected PlayerMovement pm;
+    protected Rigidbody2D rb;
 
-    bool inShotRange = false;
-    float enterShotRangeTime;
-    bool firstShot = true;
+    bool firstAttack = true;
 
-    public EventHandler<float> OnAboutToShoot;
-    bool show = false;
+    public EventHandler<float> OnAboutToAttack;
     public List<Ship> allEnemies = new List<Ship>();
-    [SerializeField] int numerOfMisselsPerShot = 1;
     // Start is called before the first frame update
     void Start()
     {
-        timeSinceLastShot = Time.timeSinceLevelLoad;
+        timeSinceLastAttack = Time.timeSinceLevelLoad;
         pm = FindObjectOfType<PlayerMovement>();
         rb = GetComponent<Rigidbody2D>();
 
@@ -55,12 +50,12 @@ public class Ship : MonoBehaviour
 
     void AboutToAttack()
     {
-        if(OnAboutToShoot != null) { OnAboutToShoot.Invoke(this, AboutToAttackTime); }
+        if(OnAboutToAttack != null) { OnAboutToAttack.Invoke(this, AboutToAttackTime); }
     }
 
     bool inShotProces = false;
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         if (knockBack)
         {
@@ -77,12 +72,12 @@ public class Ship : MonoBehaviour
 
         Vector2 dir = (pm.transform.position - transform.position).normalized;
 
-        if ((transform.position - pm.transform.position).magnitude <= FireRadius)
+        if ((transform.position - pm.transform.position).magnitude <= AttackRadius)
         {
-            if (!inShotProces && Time.time > timeSinceLastShot + fireRate)
+            if (!inShotProces && Time.time > timeSinceLastAttack + attackRate)
             {
                 inShotProces = true;
-                StartCoroutine("BeginShotProcess");
+                StartCoroutine("BeginAttackProcess");
             }
 
             Vector3 moveDirection = Vector3.zero;
@@ -118,8 +113,7 @@ public class Ship : MonoBehaviour
         }
         else
         {
-            inShotRange = false;
-            firstShot = true;
+            firstAttack = true;
             //Move closer
             currentVelocity = Vector2.MoveTowards(currentVelocity, dir * speed, acceleration * Time.deltaTime);
 
@@ -131,40 +125,34 @@ public class Ship : MonoBehaviour
         }
     }
 
-
-    IEnumerator BeginShotProcess()
+    public Action OnFinishedAttack;
+    protected void FinishedAttacking()
     {
-        if (!firstShot)
-        {
-            yield return new WaitForSeconds(initialShotDelay);
-        }
-        AboutToAttack();
-        yield return new WaitForSeconds(AboutToAttackTime);
-        ShootMissel();
-        firstShot = false;
+        timeSinceLastAttack = Time.time;
         inShotProces = false;
+        if(OnFinishedAttack != null)
+        {
+            OnFinishedAttack.Invoke();
+        }
     }
 
 
-    void ShootMissel()
+    IEnumerator BeginAttackProcess()
     {
-        timeSinceLastShot = Time.time;
-        if(numerOfMisselsPerShot == 1)
+        if (!firstAttack)
         {
-            GameObject missel = Instantiate(MisselPrefab, transform.position, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 90));
-            missel.GetComponent<Missel>().SetCreator(this.gameObject);
+            yield return new WaitForSeconds(initialattackDelay);
         }
-        if(numerOfMisselsPerShot == 3)
-        {
-            GameObject missel1 = Instantiate(MisselPrefab, transform.position, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 90));
-            GameObject missel2 = Instantiate(MisselPrefab, transform.position + transform.right * 2f, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z));
-            GameObject missel3 = Instantiate(MisselPrefab, transform.position - transform.right * 2f, Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 180));
-            missel1.GetComponent<Missel>().SetCreator(this.gameObject);
-            missel2.GetComponent<Missel>().SetCreator(this.gameObject);
-            missel3.GetComponent<Missel>().SetCreator(this.gameObject);
+        AboutToAttack();
+        yield return new WaitForSeconds(AboutToAttackTime);
+        Attack();
+        firstAttack = false;
+    }
 
-
-        }
+    public Action OnAttack;
+    protected virtual void Attack()
+    {
+        FinishedAttacking();
     }
 
     float timeSinceKnockedBack;
@@ -172,7 +160,7 @@ public class Ship : MonoBehaviour
 
     Vector2 knockBackVel;
     bool knockBack = false;
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if(!knockBack)
         {
@@ -193,7 +181,7 @@ public class Ship : MonoBehaviour
     GameObject recentDamageObj;
     float lastDamagedTime;
 
-    public void TakeDamge(GameObject fromWhat, float damage, float force)
+    public void TakeDamge(GameObject fromWhat, float damage, Vector2 force)
     {
         if(recentDamageObj == fromWhat && Time.timeSinceLevelLoad < lastDamagedTime + .2f)
         {
@@ -202,16 +190,16 @@ public class Ship : MonoBehaviour
         recentDamageObj = fromWhat;
         lastDamagedTime = Time.timeSinceLevelLoad;
         GetComponent<EnemyHealth>().TakeDamage(fromWhat, damage);
-        KnockBack(fromWhat.transform.position, force);
+        KnockBack(force);
     }
 
 
 
-    void KnockBack(Vector2 pos, float force)
+    void KnockBack(Vector2 force)
     {
         knockBack = true;
         timeSinceKnockedBack = Time.time;
-        Vector2 dir = (pos - (Vector2)transform.position).normalized;
-        knockBackVel = -dir * force;
+       // Vector2 dir = (pos - (Vector2)transform.position).normalized;
+        knockBackVel = force;
     }
 }

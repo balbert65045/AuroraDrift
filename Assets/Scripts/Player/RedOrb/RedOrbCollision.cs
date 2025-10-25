@@ -36,9 +36,10 @@ public class RedOrbCollision : MonoBehaviour
                 {
                     force = 60 + (redOrb.GetComponent<MovableObject>().prevVel.magnitude / 7f);
                 }
+                Vector2 dir = (transform.position - collision.transform.position).normalized;
 
 
-                collision.transform.GetComponent<Ship>().TakeDamge(redOrb.gameObject, orbDamageController.CalculateDamage(), force);
+                collision.transform.GetComponent<Ship>().TakeDamge(redOrb.gameObject, orbDamageController.CalculateDamage(), -dir * force);
             }
             redOrb.RemoveChargeThrown();
             //collision.transform.GetComponent<Enemy>().AddVelocity(PreviousVel.normalized * KnockBack);

@@ -50,7 +50,10 @@ public class AvailableUpgradeViewer : MonoBehaviour
 
     public void SelectCard()
     {
-        eventSystem.SetSelectedGameObject(firstCard);
+        if (ControllerChecker.instance.usingController)
+        {
+            eventSystem.SetSelectedGameObject(firstCard);
+        }
     }
 
     GameObject FindCardUpgrade(Upgrade upgrade)

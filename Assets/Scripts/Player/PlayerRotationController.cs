@@ -24,10 +24,28 @@ public class PlayerRotationController : MonoBehaviour
     private void Start()
     {
         PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
-        inputController.OnMoveInput += ReceiveLookDir;
+        if (ControllerChecker.instance.usingController)
+        {
+            inputController.OnMoveInput += ReceiveLookDir;
+        }
+        else
+        {
+            Debug.Log("Using Mouse");
+            inputController.OnMouseDirChanged += PointInLookDir;
+        }
+        //inputController.OnMoveInput += ReceiveLookDir;
     }
 
     void ReceiveLookDir(object sender, Vector2 dir)
+    {
+        // Compute the angle in radians and then convert to degrees
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        // Apply the rotation around the Z axis to point at the mouse
+        transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
+    }
+
+    void PointInLookDir(Vector2 dir)
     {
         // Compute the angle in radians and then convert to degrees
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

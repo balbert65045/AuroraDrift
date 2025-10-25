@@ -17,6 +17,8 @@ public class PlayerPullController : MonoBehaviour
     PlayerMovement pm;
     PlayerOrbitController orbitController;
     PlayerVisual pv;
+
+    PlayerAbilityController abilityController;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +26,10 @@ public class PlayerPullController : MonoBehaviour
         baseMaxPullSpeed = MaxPullSpeed;
 
         PlayerPassiveController playerPassiveController = FindObjectOfType<PlayerPassiveController>();
-        playerPassiveController.OnSpeedPercentageIncrease += IncreaseSpeed;
+        if(playerPassiveController != null)
+        {
+            playerPassiveController.OnSpeedPercentageIncrease += IncreaseSpeed;
+        }
 
         pv = FindObjectOfType<PlayerVisual>();
         if(redOrb == null)
@@ -33,6 +38,7 @@ public class PlayerPullController : MonoBehaviour
         }
         pm = GetComponent<PlayerMovement>();
         orbitController = GetComponent<PlayerOrbitController>();
+        abilityController = FindObjectOfType<PlayerAbilityController>();
 
         PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
         inputController.OnPullBlueInput += RecivePullBlue;
@@ -63,6 +69,7 @@ public class PlayerPullController : MonoBehaviour
     public void ReceiveThrow_StopPullRed()
     {
         if (!redOrb.gameObject.activeSelf) { return; }
+        if (abilityController.chargeTimer.IsOn()) { return; }
         if (redOrb.GetHeld())
         {
             ThrowRed();
@@ -86,6 +93,7 @@ public class PlayerPullController : MonoBehaviour
     {
         //ThrowBlue
         if (!redOrb.gameObject.activeSelf) { return; }
+        if (abilityController.chargeTimer.IsOn()) { return; }
         if (redOrb.GetHeld())
         {
             ThrowBlue();
@@ -102,6 +110,7 @@ public class PlayerPullController : MonoBehaviour
         if (!redOrb.gameObject.activeSelf) { return; }
         if (!redOrb.GetHeld())
         {
+            Debug.Log("Attempting to pull blue");
             PullBlue();
         }
     }
