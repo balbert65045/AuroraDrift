@@ -69,6 +69,7 @@ public class Ship : MonoBehaviour
             }
         }
 
+        if (stunned) { return; }
 
         Vector2 dir = (pm.transform.position - transform.position).normalized;
 
@@ -177,7 +178,8 @@ public class Ship : MonoBehaviour
 
     }
 
-    public EventHandler<HealthStruct> OnTakeDamage;
+    public Action OnTakeDamage;
+
     GameObject recentDamageObj;
     float lastDamagedTime;
 
@@ -191,9 +193,15 @@ public class Ship : MonoBehaviour
         lastDamagedTime = Time.timeSinceLevelLoad;
         GetComponent<EnemyHealth>().TakeDamage(fromWhat, damage);
         KnockBack(force);
+
+        if(OnTakeDamage != null) { OnTakeDamage.Invoke(); }
     }
 
-
+    bool stunned = false;
+    public void Stunned()
+    {
+        stunned = true;
+    }
 
     void KnockBack(Vector2 force)
     {

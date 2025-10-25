@@ -17,6 +17,16 @@ public class ShipVisual : MonoBehaviour
         Ship ship = GetComponentInParent<Ship>();
         ship.OnAboutToAttack += PrepateToAttack;
         ship.OnFinishedAttack += FinishedAttack;
+        EnemyStagger stagger = GetComponentInParent<EnemyStagger>();
+        if(stagger != null)
+        {
+            stagger.OnStagger += OnStagger;
+        }
+    }
+
+    void OnStagger()
+    {
+        spriteRenderer.color = Color.yellow;
     }
 
     void FinishedAttack()
