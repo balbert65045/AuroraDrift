@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,9 +20,27 @@ public class TrailController : MonoBehaviour
     PlayerMovement pm;
 
     bool charging = false;
+
+    [SerializeField] bool blue = false;
     // Start is called before the first frame update
     void Start()
     {
+        if (blue)
+        {
+            BlueOrbStateController stateController = FindObjectOfType<BlueOrbStateController>();
+            stateController.OnEnterBlackHole += EnterBlackHole;
+            stateController.OnExitBlackHole += ExitBlackHole;
+            stateController.OnShrink += Shrink;
+
+        }
+        else
+        {
+            RedOrbStateController stateController = FindAnyObjectByType<RedOrbStateController>();
+            stateController.OnEnterBlackHole += EnterBlackHole;
+            stateController.OnExitBlackHole += ExitBlackHole;
+            stateController.OnShrink += Shrink;
+        }
+
         trail = GetComponent<TrailRenderer>();
         squishController = GetComponent<PlayerSquishController>();
         pm = squishController.rb.GetComponent<PlayerMovement>();
@@ -32,6 +51,30 @@ public class TrailController : MonoBehaviour
 
         abilityController.OnSwapBegin += SwapBegin;
         abilityController.OnSwapEnd += SwapEnd;
+    }
+
+    TimerClass ShrinkTimer = new TimerClass(false);
+    float initStartWidth;
+    float initEndWith;
+    void Shrink(float time)
+    {
+        initStartWidth = trail.startWidth;
+        initEndWith = trail.endWidth;
+        ShrinkTimer = new TimerClass(true, time, Time.time);
+        //trail.emitting = false;
+    }
+
+    bool inBlackHole = false;
+    void EnterBlackHole(Transform _t, Transform BlackHolePos)
+    {
+        trail.enabled = true;
+        trail.emitting = true;
+        inBlackHole = true;
+    }
+
+    void ExitBlackHole()
+    {
+        inBlackHole = false;
     }
 
     void SwapBegin(float _time)
@@ -81,6 +124,26 @@ public class TrailController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (ShrinkTimer.IsOn())
+        {
+            if (ShrinkTimer.TimerStillGoing(Time.time))
+            {
+                float percentage = ShrinkTimer.percentageComplete(Time.time);
+                trail.startWidth = initStartWidth - (initStartWidth * percentage);
+                trail.endWidth = initEndWith - (initEndWith * percentage);
+            }
+            else
+            {
+                trail.emitting = false;
+            }
+            return;
+        }
+        
+        if (inBlackHole)
+        {
+            trail.time = Mathf.Max(trail.time - Time.deltaTime, .5f);
+            return;
+        }
         if (charging)
         {
             trail.time = Mathf.Max(trail.time - Time.deltaTime, .06f);

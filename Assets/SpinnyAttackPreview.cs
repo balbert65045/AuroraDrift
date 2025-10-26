@@ -21,10 +21,19 @@ public class SpinnyAttackPreview : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        EnemyStagger stagger = GetComponentInParent<EnemyStagger>();
+        stagger.OnStagger += GotStaggered;
         ship = GetComponentInParent<Ship>();
         ship.OnAboutToAttack += AboutToShoot;
         initScale = image.transform.localScale;
         initColor = image.color;
+    }
+
+    void GotStaggered(float time)
+    {
+        image.enabled = false;
+        range.enabled = false;
+        previewTimer.TurnOff();
     }
 
     void AboutToShoot(object sender, float time)

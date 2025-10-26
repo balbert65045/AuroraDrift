@@ -40,6 +40,14 @@ public class RedOrbController : MovableObject
 
     void Start()
     {
+        RedOrbStateController stateController = FindObjectOfType<RedOrbStateController>();
+        stateController.OnEnterBlackHole += EnterBlackHole;
+        stateController.OnExitBlackHole += ExitBlackHole;
+
+        BlueOrbStateController blueStateController = FindObjectOfType<BlueOrbStateController>();
+        blueStateController.OnEnterBlackHole += BlueEnterBlackHole;
+        blueStateController.OnExitBlackHole += BlueExitBlackHole;
+
         orbitController = FindObjectOfType <PlayerOrbitController>();
         orbitController.OnBeginOrbit += RemoveChargeThrown;
 
@@ -54,6 +62,35 @@ public class RedOrbController : MovableObject
         PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
         playerAbilityController.OnSwapBegin += Freeze;
         playerAbilityController.OnSwapEnd += UnFreeze;
+    }
+
+    bool blueInBlackHole;
+    bool redInBlackHole;
+    public void BlueEnterBlackHole(Transform _follow, Transform blackHole)
+    {
+        blueInBlackHole = true;
+        canCatch = false;
+    }
+
+    public void BlueExitBlackHole()
+    {
+        blueInBlackHole = false;
+        canCatch = !redInBlackHole && !blueInBlackHole;
+    }
+
+    public void EnterBlackHole(Transform _follow, Transform blackHole)
+    {
+        redInBlackHole = true;
+        rb.velocity = Vector2.zero;
+        currentVelocity = Vector2.zero;
+        canCatch = false;
+        transform.position = blackHole.position;
+    }
+
+    void ExitBlackHole()
+    {
+        redInBlackHole = false;
+        canCatch = !redInBlackHole && !blueInBlackHole;
     }
 
     public Vector3 freezeVel;

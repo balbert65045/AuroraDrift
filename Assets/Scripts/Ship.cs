@@ -144,9 +144,18 @@ public class Ship : MonoBehaviour
         {
             yield return new WaitForSeconds(initialattackDelay);
         }
-        AboutToAttack();
-        yield return new WaitForSeconds(AboutToAttackTime);
-        Attack();
+        if (!stunned)
+        {
+            AboutToAttack();
+            yield return new WaitForSeconds(AboutToAttackTime);
+            if (!stunned)
+            {
+                Attack();
+            }
+        }
+        //AboutToAttack();
+        //yield return new WaitForSeconds(AboutToAttackTime);
+        //Attack();
         firstAttack = false;
     }
 
@@ -191,6 +200,11 @@ public class Ship : MonoBehaviour
         }
         recentDamageObj = fromWhat;
         lastDamagedTime = Time.timeSinceLevelLoad;
+
+        if (stunned)
+        {
+            damage = damage * 2;
+        }
         GetComponent<EnemyHealth>().TakeDamage(fromWhat, damage);
         KnockBack(force);
 
@@ -201,6 +215,11 @@ public class Ship : MonoBehaviour
     public void Stunned()
     {
         stunned = true;
+    }
+
+    public void UnStunn()
+    {
+        stunned = false;
     }
 
     void KnockBack(Vector2 force)

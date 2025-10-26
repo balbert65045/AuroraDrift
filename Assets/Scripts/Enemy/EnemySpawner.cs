@@ -23,15 +23,26 @@ public class EnemySpawner : MonoBehaviour
     void Start()
     {
         pm = FindObjectOfType<PlayerMovement>();
+        StartCoroutine("WaitThenSpawnInitalWave");
+        //Spawn(profile.waves[currentWaveIndex]);
+    }
+
+    IEnumerator WaitThenSpawnInitalWave()
+    {
+        yield return new WaitForSeconds(1);
         Spawn(profile.waves[currentWaveIndex]);
+
     }
 
     public void SpawnNextWave()
     {
+        Spawn(profile.waves[currentWaveIndex]);
+/*
         if (enemiesOut.Count == 0)
         {
             Spawn(profile.waves[currentWaveIndex]);
         }
+*/
     }
 
     void Spawn(Wave wave)
@@ -42,7 +53,13 @@ public class EnemySpawner : MonoBehaviour
         foreach (GameObject enemyToSpawn in wave.EnemiesForWave)
         {
             Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
-            GameObject spawn = Instantiate(enemyToSpawn, (Vector2)pm.transform.position + (randomDir * Radius), Quaternion.identity);
+
+            float spawnRadius = Radius;
+            if (!enemyToSpawn.GetComponentInChildren<Ship>())
+            {
+                spawnRadius = Radius / 2;
+            }
+            GameObject spawn = Instantiate(enemyToSpawn, (Vector2)pm.transform.position + (randomDir * spawnRadius), Quaternion.identity);
             enemiesOut.Add(spawn);
             spawn.GetComponentInChildren<EnemyHealth>().OnDeath += OnEnemyDestroyed;
         }

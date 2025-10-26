@@ -24,8 +24,10 @@ public class ShipVisual : MonoBehaviour
         }
     }
 
-    void OnStagger()
+    TimerClass staggerTimer = new TimerClass(false);
+    void OnStagger(float staggerTime)
     {
+        staggerTimer = new TimerClass(true, staggerTime, Time.time);
         spriteRenderer.color = Color.yellow;
     }
 
@@ -45,6 +47,19 @@ public class ShipVisual : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (staggerTimer.IsOn())
+        {
+            if (staggerTimer.TimerStillGoing(Time.time))
+            {
+                float rotateSpeed = 2;
+                transform.Rotate(Vector3.forward, rotateSpeed);
+            }
+            else
+            {
+                spriteRenderer.color = Color.white;
+            }
+            return;
+        }
         if(changing)
         {
             if(Time.time < timeStartedToChange + changetime)

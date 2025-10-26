@@ -53,8 +53,18 @@ public class PlayerOrbitController : MonoBehaviour
             redOrb = FindObjectOfType<RedOrbController>();
         }
         pm = FindObjectOfType<PlayerMovement>();
+        BlueOrbStateController blueOrbStateController = FindObjectOfType<BlueOrbStateController>();
+        blueOrbStateController.OnEnterBlackHole += EnterBlackHole;
     }
 
+    void EnterBlackHole(Transform _t, Transform BlackHole)
+    {
+        if (Orbiting)
+        {
+            EndOrbit();
+            redOrb.EnterBlackHole(_t, BlackHole);
+        }
+    }
 
     private void Update()
     {

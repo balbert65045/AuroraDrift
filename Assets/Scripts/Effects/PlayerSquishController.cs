@@ -35,9 +35,22 @@ public class PlayerSquishController : MonoBehaviour
         charging = true;
     }
 
+    bool pause = false;
+    public void PauseSquish()
+    {
+        transform.localScale = new Vector3(1f, 1f, 1f);
+        pause = true;
+    }
+
+    public void UnPauseSquish()
+    {
+        pause = false;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (pause) { return; }
         if (charging) { return; }
         if(rb.velocity.magnitude > squishThreshold)
         {

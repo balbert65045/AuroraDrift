@@ -225,6 +225,7 @@ GameObject:
   - component: {fileID: 3084822592191530992}
   - component: {fileID: 2392673410577796537}
   - component: {fileID: 6968661613972614474}
+  - component: {fileID: 3444140832033777394}
   m_Layer: 8
   m_Name: Ship (3)
   m_TagString: Untagged
@@ -359,7 +360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7fbec3bc9b509e4f9d9065cecf2c467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 30
+  MaxHealth: 50
   ExplosionPrefab: {fileID: 2252694052019634547, guid: fae1502a319ef3847ba2f8ecdc91457d, type: 3}
   DamageFontPredab: {fileID: 4804521131095430709, guid: ad928f043242b0643840c13e0e18f30e, type: 3}
   RedDamageFontPrefab: {fileID: 5902712214896093622, guid: f88f9376856881f4fb97217957a815c0, type: 3}
@@ -367,6 +368,20 @@ MonoBehaviour:
   OrangeDamageFontPrefab: {fileID: 7755958452440329513, guid: b4fb3e85160dd8b40b1301ac2ff02879, type: 3}
   YellowDamageFontPrefab: {fileID: 6460919195899316000, guid: 860a1c59088048943bbf852df78c9139, type: 3}
   DamagedPrefab: {fileID: 3978922889842738559, guid: 3adfd253e09b4874fa97aa002110cf1c, type: 3}
+--- !u!114 &3444140832033777394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215482357536131049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f115f41beff2b5c46aed03f91ca62cd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StaggerTime: 2
+  MaxStagger: 30
 --- !u!1 &2061490801785366664
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,6 +935,7 @@ GameObject:
   - component: {fileID: 2770372263320206026}
   - component: {fileID: 5469997367925835959}
   - component: {fileID: 4718415189718975122}
+  - component: {fileID: 1241934193801696750}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -1024,7 +1040,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f58d9316f7d1a2b4e9206f4600ba8577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StaggerBar: {fileID: 1029859905949097264}
   damageBar: {fileID: 8614472935245995000}
   image: {fileID: 6799581355738208793}
   enemyHealth: {fileID: 6968661613972614474}
@@ -1041,6 +1056,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followObj: {fileID: 2228922720120315249}
+--- !u!114 &1241934193801696750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5414399360294385006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef02b3685506cf44ca39289622239b10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  staggerBar: {fileID: 1029859905949097264}
+  enemyStagger: {fileID: 3444140832033777394}
 --- !u!1 &5655634596852750257
 GameObject:
   m_ObjectHideFlags: 0

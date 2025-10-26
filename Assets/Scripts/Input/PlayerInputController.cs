@@ -34,6 +34,28 @@ public class PlayerInputController : MonoBehaviour
         pm = FindObjectOfType<PlayerMovement>();
     }
 
+    bool dashEnabled = true;
+    public void DissableDash()
+    {
+        dashEnabled = false;
+    }
+
+    public void EnableDash()
+    {
+        dashEnabled = true;
+    }
+
+    BlackHoleExit exitAvailable;
+    public void EnableNextLevel(BlackHoleExit exit)
+    {
+        exitAvailable = exit;
+    }
+
+    public void DissableNextLevel()
+    {
+        exitAvailable = null;
+    }
+
     bool pullingRed = false;
     bool pullingBlue = false;
     void Update()
@@ -48,11 +70,21 @@ public class PlayerInputController : MonoBehaviour
         //DASH
         if (Input.GetButtonDown("Dash"))
         {
-            DoDash();
+            if (dashEnabled)
+            {
+                DoDash();
+            }
+            if(exitAvailable != null)
+            {
+                exitAvailable.ShrinkAndExit();
+            }
         }
         else if (Input.GetButtonUp("Dash"))
         {
-            ReleaseDash();
+            if (dashEnabled)
+            {
+                ReleaseDash();
+            }
         }
 
         if (Input.GetButtonDown("DoSkill2"))

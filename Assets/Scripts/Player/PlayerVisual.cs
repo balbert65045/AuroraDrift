@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class PlayerVisual : MonoBehaviour
 {
@@ -21,6 +20,15 @@ public class PlayerVisual : MonoBehaviour
     PlayerMovement pm;
     private void Start()
     {
+        OGSize = transform.localScale;
+        transform.localScale = Vector3.zero;
+        growShrinkTime = .3f;
+        Grow();
+
+        BlueOrbStateController stateController = FindObjectOfType<BlueOrbStateController>();
+        stateController.OnEnterBlackHole += EnterBlackHole;
+        stateController.OnExitBlackHole += ExitBlackHole;
+        stateController.OnShrink += Shrink;
 
         pm = FindObjectOfType<PlayerMovement>();
         pm.OnDash += OnDash;
@@ -39,6 +47,7 @@ public class PlayerVisual : MonoBehaviour
     float growShrinkTime;
     void Shrink(float swapTime)
     {
+        Debug.Log("Shrinking");
         growShrinkTime = swapTime;
         shrinkTimer = new TimerClass(true, growShrinkTime, Time.time);
         OGSize = transform.localScale;
@@ -47,6 +56,7 @@ public class PlayerVisual : MonoBehaviour
 
     void Grow()
     {
+        GetComponent<PlayerSquishController>().PauseSquish();
         growTimer = new TimerClass(true, growShrinkTime, Time.time);
         growing = true;
         shrinkin = false;
@@ -63,6 +73,7 @@ public class PlayerVisual : MonoBehaviour
             }
             else
             {
+                transform.localScale = Vector3.zero;
                 shrinkin = false;
             }
         }
@@ -75,6 +86,7 @@ public class PlayerVisual : MonoBehaviour
             }
             else
             {
+                GetComponent<PlayerSquishController>().UnPauseSquish();
                 growing = false;
             }
         }
@@ -112,6 +124,23 @@ public class PlayerVisual : MonoBehaviour
         GetComponent<PlayerSquishController>().rb = rb;
     }
 
+    Transform blackHolePos;
+    TimerClass EnterBlackHoleTimer = new TimerClass(false);
+    void EnterBlackHole(Transform t, Transform BlackHolePos)
+    {
+        GetComponent<PlayerSquishController>().PauseSquish();
+        blackHolePos = t;
+        EnterBlackHoleTimer = new TimerClass(true, 1, Time.time);
+    }
+
+    TimerClass ExitBlackHoleTimer = new TimerClass(false);
+    void ExitBlackHole()
+    {
+        GetComponent<PlayerSquishController>().UnPauseSquish();
+        blackHolePos = null;
+        ExitBlackHoleTimer = new TimerClass(true, 1, Time.time);
+    }
+
     public void SetTrail(bool value)
     {
         //if (value)
@@ -127,6 +156,33 @@ public class PlayerVisual : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(blackHolePos != null)
+        {
+            if (EnterBlackHoleTimer.IsOn())
+            {
+                if (EnterBlackHoleTimer.TimerStillGoing(Time.time))
+                {
+                    float percentage = EnterBlackHoleTimer.percentageComplete(Time.time);
+                    Vector2 diff = blackHolePos.transform.position - transform.position;
+                    transform.position = (Vector2)transform.position + diff * percentage;
+                }
+                return;
+            }
+            transform.position = Vector2.Lerp(blackHolePos.position, transform.position, Time.deltaTime * speed);
+
+            //transform.position = Vector2.Lerp(transform.position, blackHolePos.position, Time.deltaTime * 3);
+            return;
+        }
+        if(ExitBlackHoleTimer.IsOn())
+        {
+            if (ExitBlackHoleTimer.TimerStillGoing(Time.time))
+            {
+                float percentage = ExitBlackHoleTimer.percentageComplete(Time.time);
+                Vector2 diff = TrackObject.transform.position - transform.position;
+                transform.position =  (Vector2)transform.position + diff * percentage;
+            }
+            return;
+        }
         transform.position = Vector2.Lerp(TrackObject.transform.position, transform.position, Time.deltaTime * speed);
     }
 }

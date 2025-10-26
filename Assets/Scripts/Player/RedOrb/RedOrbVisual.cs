@@ -35,6 +35,17 @@ public class RedOrbVisual : MonoBehaviour
     TrailRenderer trailRenderer;
     private void Start()
     {
+        OGSize = transform.localScale;
+        transform.localScale = Vector3.zero;
+        growShrinkTime = .3f;
+        Grow();
+
+        RedOrbStateController stateController = FindObjectOfType<RedOrbStateController>();
+        stateController.OnEnterBlackHole += EnterBlackHole;
+        stateController.OnExitBlackHole += ExitBlackHole;
+        stateController.OnShrink += Shrink;
+
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         trailRenderer = GetComponent<TrailRenderer>();
         OGColor = spriteRenderer.color;
@@ -65,6 +76,7 @@ public class RedOrbVisual : MonoBehaviour
 
     void Grow()
     {
+        GetComponent<PlayerSquishController>().PauseSquish();
         growTimer = new TimerClass(true, growShrinkTime/2, Time.time);
         growing = true;
         shrinkin = false;
@@ -81,6 +93,7 @@ public class RedOrbVisual : MonoBehaviour
             }
             else
             {
+                transform.localScale = Vector3.zero;
                 shrinkin = false;
             }
         }
@@ -93,6 +106,7 @@ public class RedOrbVisual : MonoBehaviour
             }
             else
             {
+                GetComponent<PlayerSquishController>().UnPauseSquish();
                 growing = false;
             }
         }
@@ -123,9 +137,56 @@ public class RedOrbVisual : MonoBehaviour
         GetComponent<PlayerSquishController>().rb = rb;
     }
 
+    Transform blackHolePos;
+    TimerClass EnterBlackHoleTimer = new TimerClass(false);
+
+    void EnterBlackHole(Transform t, Transform BlackHolePos)
+    {
+        GetComponent<PlayerSquishController>().PauseSquish();
+        blackHolePos = t;
+        EnterBlackHoleTimer = new TimerClass(true, 1, Time.time);
+
+    }
+
+    TimerClass ExitBlackHoleTimer = new TimerClass(false);
+
+    void ExitBlackHole()
+    {
+        GetComponent<PlayerSquishController>().UnPauseSquish();
+        blackHolePos = null;
+        ExitBlackHoleTimer = new TimerClass(true, 1, Time.time);
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (blackHolePos != null)
+        {
+            if (EnterBlackHoleTimer.IsOn())
+            {
+                if (EnterBlackHoleTimer.TimerStillGoing(Time.time))
+                {
+                    float percentage = EnterBlackHoleTimer.percentageComplete(Time.time);
+                    Vector2 diff = blackHolePos.transform.position - transform.position;
+                    transform.position = (Vector2)transform.position + diff * percentage;
+                }
+                return;
+            }
+            transform.position = Vector2.Lerp(blackHolePos.position, transform.position, Time.deltaTime * speed);
+
+            //transform.position = Vector2.Lerp(transform.position, blackHolePos.position, Time.deltaTime * 3);
+            return;
+        }
+        if (ExitBlackHoleTimer.IsOn())
+        {
+            if (ExitBlackHoleTimer.TimerStillGoing(Time.time))
+            {
+                float percentage = ExitBlackHoleTimer.percentageComplete(Time.time);
+                Vector2 diff = TrackObject.transform.position - transform.position;
+                transform.position = (Vector2)transform.position + diff * percentage;
+            }
+            return;
+        }
         transform.position = Vector2.Lerp(TrackObject.transform.position, transform.position, Time.deltaTime * speed);
         if (charging && currentTimer.IsOn())
         {

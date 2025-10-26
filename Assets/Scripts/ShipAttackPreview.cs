@@ -19,9 +19,18 @@ public class ShipAttackPreview : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        EnemyStagger stagger = GetComponentInParent<EnemyStagger>();
+        stagger.OnStagger += GotStaggered;
         ship = GetComponentInParent<Ship>();
         ship.OnAboutToAttack += AboutToShoot;
         currentAngle = StartingAngle;
+    }
+
+    void GotStaggered(float time)
+    {
+        showAttack = false;
+        lineRenderer.enabled = false;
+        lineRenderer2.enabled = false;
     }
 
     void AboutToShoot(object sender, float time)

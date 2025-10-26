@@ -12,6 +12,7 @@ public class EnemyStaggerBar : MonoBehaviour
     void Start()
     {
         enemyStagger.OnStaggerChanged += OnStaggerChanged;
+        enemyStagger.OnStagger += Staggered;
     }
 
     void OnStaggerChanged(HealthStruct staggerStruct)
@@ -20,9 +21,22 @@ public class EnemyStaggerBar : MonoBehaviour
         staggerBar.fillAmount = percentage;
     }
 
+    TimerClass timerClass = new TimerClass(false);
+    void Staggered(float time)
+    {
+        timerClass = new TimerClass(true, time, Time.time);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if (timerClass.IsOn())
+        {
+            if (timerClass.TimerStillGoing(Time.time))
+            {
+                float percentage = timerClass.percentageComplete(Time.time);
+                staggerBar.fillAmount = 1 - percentage;
+            }
+        }
     }
 }

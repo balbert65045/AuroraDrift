@@ -176,6 +176,17 @@ public class PlayerMovement : MovableObject
         PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
         playerAbilityController.OnSwapBegin += Freeze;
         playerAbilityController.OnSwapEnd += UnFreeze;
+
+        BlueOrbStateController stateController = FindObjectOfType<BlueOrbStateController>();
+        stateController.OnEnterBlackHole += EnterBlackHole;
+    }
+
+    void EnterBlackHole(Transform _followPos, Transform BlackHolePos)
+    {
+        rb.velocity = Vector3.zero;
+        currentVelocity = Vector2.zero;
+        transform.position = BlackHolePos.position;
+
     }
 
     public Vector3 freezeVel;
