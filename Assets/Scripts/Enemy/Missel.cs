@@ -98,7 +98,7 @@ public class Missel : MovableObject
         {
             Vector2 dir = (transform.position - collision.transform.position).normalized;
             collision.GetComponent<PlayerCollisionController>().Reflect(-dir* Force);
-            collision.GetComponent<PlayerHealth>().LoseHealth(10);
+            PassiveAndAbilitiesManager.instance.playerHealth.LoseHealth(10);
             Explode();
         }
         if(collision.GetComponent<Ship>() != null && !shortDissable)

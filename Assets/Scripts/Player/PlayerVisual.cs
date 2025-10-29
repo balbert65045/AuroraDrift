@@ -34,7 +34,7 @@ public class PlayerVisual : MonoBehaviour
         pm.OnDash += OnDash;
         pm.OnRechargeDash += OnDashRecharge;
 
-        PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        PlayerAbilityController playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
         playerAbilityController.OnSwapBegin += Shrink;
         playerAbilityController.OnSwapEnd += Grow;
     }
@@ -45,6 +45,15 @@ public class PlayerVisual : MonoBehaviour
     bool growing = false;
     Vector3 OGSize;
     float growShrinkTime;
+
+    private void OnDestroy()
+    {
+        if(playerAbilityController != null)
+        {
+            playerAbilityController.OnSwapBegin -= Shrink;
+            playerAbilityController.OnSwapEnd -= Grow;
+        }
+    }
     void Shrink(float swapTime)
     {
         Debug.Log("Shrinking");

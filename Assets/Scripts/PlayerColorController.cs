@@ -17,8 +17,13 @@ public class PlayerColorController : MonoBehaviour
     {
         ogColor = spriteRenderer.color;
 
-        PlayerHealth playerHealth = GetComponent<PlayerHealth>();
+        PlayerHealth playerHealth = PassiveAndAbilitiesManager.instance.playerHealth;
         playerHealth.OnHealthChanged += TakeDamageBlink;
+    }
+
+    private void OnDestroy()
+    {
+        PassiveAndAbilitiesManager.instance.playerHealth.OnHealthChanged -= TakeDamageBlink;
     }
 
 

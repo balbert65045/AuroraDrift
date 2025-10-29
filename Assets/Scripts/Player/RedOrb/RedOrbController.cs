@@ -37,6 +37,7 @@ public class RedOrbController : MovableObject
     PlayerRotationController rotationController;
     RedOrbTracker redOrbTracker;
     PlayerOrbitController orbitController;
+    PlayerAbilityController playerAbilityController;
 
     void Start()
     {
@@ -59,9 +60,15 @@ public class RedOrbController : MovableObject
         redOrbTracker = FindObjectOfType<RedOrbTracker>();
 
 
-        PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
         playerAbilityController.OnSwapBegin += Freeze;
         playerAbilityController.OnSwapEnd += UnFreeze;
+    }
+
+    private void OnDestroy()
+    {
+        playerAbilityController.OnSwapBegin -= Freeze;
+        playerAbilityController.OnSwapEnd -= UnFreeze;
     }
 
     bool blueInBlackHole;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AbilityVisualController : MonoBehaviour
@@ -18,8 +19,13 @@ public class AbilityVisualController : MonoBehaviour
         inputController = FindObjectOfType<PlayerInputController>();
         inputController.OnMoveInput += CaptureLastInput;
         pm = FindObjectOfType<PlayerMovement>();
-        abilityController = GetComponent<PlayerAbilityController>();
+        abilityController = PassiveAndAbilitiesManager.instance.abilityController;
         abilityController.ActuallyLaunch += Launched;
+    }
+
+    private void OnDestroy()
+    {
+        abilityController.ActuallyLaunch -= Launched;
     }
 
     Vector2 lastInput;
@@ -30,6 +36,7 @@ public class AbilityVisualController : MonoBehaviour
 
     void Launched()
     {
+        Debug.Log("Launched");
         if (abilityController.InPerfectRange())
         {
             Instantiate(PerfectTextPrefab, pm.transform.position, Quaternion.identity);

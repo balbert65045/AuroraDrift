@@ -34,14 +34,26 @@ public class PlayerAbilityController : MonoBehaviour
         return (percentage > .65f && percentage < .85);
     }
 
+    void ResetValues()
+    {
+        canOrbLaunch = false;
+        canOrbSwap = false;
+    }
+
+
+    private void Start()
+    {
+        Reconnect();
+    }
     // Start is called before the first frame update
-    void Start()
+    public void Reconnect()
     {
         orbLaunchAmount = BaseOrbLaunchAmount;
         UpgradeSystem upgradeSystem = FindObjectOfType<UpgradeSystem>();
         if (upgradeSystem != null)
         {
             upgradeSystem.OnSelectAbility += AbilitySelected;
+            upgradeSystem.OnClearUpgrades += ResetValues;
         }
 
         PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
@@ -108,7 +120,6 @@ public class PlayerAbilityController : MonoBehaviour
 
     void CancelCharge()
     {
-        Debug.Log("Cancel Dash");
         if (chargeTimer.IsOn())
         {
             chargeTimer.TurnOff();

@@ -5,24 +5,37 @@ using UnityEngine;
 
 public class PlayerPassiveController : MonoBehaviour
 {
+    float StartHealthIncrease = 0;
+    float StartSpeedIncrease = 0;
+    float StartRedDamageIncrease = 0;
+    float StartBlueDamageIncrease = 0;
+
     float HealthIncrease = 0;
-    
-    float SpeedIncrease = 0;
-    
-    float RedDamageIncrease = 0;
-    float BlueDamageIncrease = 0;
+    public float SpeedIncrease = 0;
+    public float RedDamageIncrease = 0;
+    public float BlueDamageIncrease = 0;
 
     UpgradeSystem upgradeSystem;
 
     public Action<float> OnHealthIncrease;
-    public Action<float> OnSpeedPercentageIncrease;
-    public Action<float> OnRedDamageIncrease;
-    public Action<float> OnBlueDamageIncrease;
+
+
+    public Action<float, float> SetupHealth;
     private void Start()
     {
         upgradeSystem = FindObjectOfType<UpgradeSystem>();
         upgradeSystem.OnSelectPassive += SetPassive;
+        upgradeSystem.OnClearUpgrades += ResetValues;
     }
+
+    void ResetValues()
+    {
+        HealthIncrease = StartHealthIncrease;
+        SpeedIncrease = StartSpeedIncrease;
+        RedDamageIncrease = StartRedDamageIncrease;
+        BlueDamageIncrease = StartBlueDamageIncrease;
+    }
+
 
     public void SetPassive(Upgrade passiveUpgrade)
     {
@@ -34,18 +47,15 @@ public class PlayerPassiveController : MonoBehaviour
                 break;
             case PassiveType.Speed:
                 SpeedIncrease = passiveUpgrade.GetTotalAmount();
-                if (OnSpeedPercentageIncrease != null) { OnSpeedPercentageIncrease.Invoke(SpeedIncrease); }
                 break;
             case PassiveType.Damage:
                 if(passiveUpgrade.orbType == OrbType.Blue)
                 {
                     BlueDamageIncrease = passiveUpgrade.GetTotalAmount();
-                    if (OnBlueDamageIncrease != null) { OnBlueDamageIncrease.Invoke(BlueDamageIncrease); }
                 }
                 else if(passiveUpgrade.orbType == OrbType.Red)
                 {
                     RedDamageIncrease = passiveUpgrade.GetTotalAmount();
-                    if (OnRedDamageIncrease != null) { OnRedDamageIncrease.Invoke(RedDamageIncrease); }
                 }
                 break;
         }

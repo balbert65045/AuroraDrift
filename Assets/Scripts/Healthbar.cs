@@ -49,12 +49,21 @@ public class Healthbar : MonoBehaviour
         pm.OnDash += Dashed;
         pm.OnRechargeDash += RechargeDash;
 
-        PlayerHealth player = FindObjectOfType<PlayerHealth>();
+        PlayerHealth player = PassiveAndAbilitiesManager.instance.playerHealth;
         player.OnHealthChanged += SetHealth;
 
         noise = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         noise.m_AmplitudeGain = 0f;
+    }
 
+    private void OnDestroy()
+    {
+        PassiveAndAbilitiesManager.instance.playerHealth.OnHealthChanged -= SetHealth;
+    }
+
+    public void SetupHealth(HealthStruct healthStruct)
+    {
+        healthbarMiddle.fillAmount = healthStruct.Health / healthStruct.MaxHealth;
     }
 
     void Dashed()

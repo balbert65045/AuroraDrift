@@ -10,8 +10,6 @@ public class AvailableUpgradeViewer : MonoBehaviour
     [SerializeField] CardAbility[] CardAbilityUpgradePrefabs;
     UpgradeSystem upgradeSystem;
 
-    EventSystem eventSystem;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +17,6 @@ public class AvailableUpgradeViewer : MonoBehaviour
         upgradeSystem.OnShowUpgrades += ShowUpgrades;
         upgradeSystem.OnSelectUpgrade += HideUpgrades;
 
-        eventSystem = FindObjectOfType<EventSystem>();
     }
 
     void HideUpgrades()
@@ -52,6 +49,7 @@ public class AvailableUpgradeViewer : MonoBehaviour
     {
         if (ControllerChecker.instance.usingController)
         {
+            EventSystem eventSystem = FindObjectOfType<EventSystem>();
             eventSystem.SetSelectedGameObject(firstCard);
         }
     }

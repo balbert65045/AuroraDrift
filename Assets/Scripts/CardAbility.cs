@@ -26,7 +26,7 @@ public class CardAbility : CardUpgrade
         {
            case AbilityType.OrbLaunch:
                 valueTitle.text = "Base Damage";
-                baseAmount = FindObjectOfType<PlayerAbilityController>().GetBaseOrbLaunchAmount();
+                baseAmount = PassiveAndAbilitiesManager.instance.abilityController.GetBaseOrbLaunchAmount();
                 break;
         }
 

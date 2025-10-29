@@ -44,7 +44,7 @@ public class BlackHoleExit : MonoBehaviour
             else
             {
                 //Done shrinking
-                LevelManager.instance.ReloadLevel();
+                FindObjectOfType<ScreenTransition>().Grow(transform.position);
             }
         }
     }

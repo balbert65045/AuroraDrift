@@ -49,15 +49,20 @@ public class RedOrbVisual : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         trailRenderer = GetComponent<TrailRenderer>();
         OGColor = spriteRenderer.color;
-        pbc = FindObjectOfType<PlayerAbilityController>();
+        pbc = PassiveAndAbilitiesManager.instance.abilityController;
         pbc.OnBeginCharge += ChargeHappening;
+        pbc.OnSwapBegin += Shrink;
+        pbc.OnSwapEnd += Grow;
 
         RedOrbController redOrb = FindObjectOfType<RedOrbController>();
         redOrb.OnRemoveChargeThrown += ChargeRemoved;
+    }
 
-        PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
-        playerAbilityController.OnSwapBegin += Shrink;
-        playerAbilityController.OnSwapEnd += Grow;
+    private void OnDestroy()
+    {
+        pbc.OnBeginCharge -= ChargeHappening;
+        pbc.OnSwapBegin -= Shrink;
+        pbc.OnSwapEnd -= Grow;
     }
 
     TimerClass shrinkTimer;

@@ -13,6 +13,16 @@ public class AbilityIconManager : MonoBehaviour
     {
         upgradeSystem = FindObjectOfType<UpgradeSystem>();
         upgradeSystem.OnSelectAbility += AbilitySelected;
+        upgradeSystem.OnClearUpgrades += ClearUpgrades;
+    }
+
+    void ClearUpgrades()
+    {
+        foreach (AbilityIcon icon in CurrentIcons)
+        {
+            Destroy(icon.gameObject);
+        }
+        CurrentIcons.Clear();
     }
 
     void AbilitySelected(Upgrade abilityUpgrade)

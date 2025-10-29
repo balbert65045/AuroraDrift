@@ -13,6 +13,16 @@ public class PassiveIconManager : MonoBehaviour
     {
         upgradeSystem = FindObjectOfType<UpgradeSystem>();
         upgradeSystem.OnSelectPassive += PassiveSelected;
+        upgradeSystem.OnClearUpgrades += ClearUpgrades;
+    }
+
+    void ClearUpgrades()
+    {
+        foreach (PassiveIcon icon in CurrentIcons)
+        {
+            Destroy(icon.gameObject);
+        }
+        CurrentIcons.Clear();
     }
 
     void PassiveSelected(Upgrade passiveUpgrade)

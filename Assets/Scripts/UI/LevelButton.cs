@@ -14,7 +14,7 @@ public class LevelButton : MonoBehaviour
     public void ReloadLevel()
     {
         Time.timeScale = 1;
-        LevelManager.instance.ReloadLevel();
+        LevelManager.instance.LoadLevel("Level");
     }
 
     public void QuitLevel()

@@ -14,7 +14,7 @@ public class AttackCollision : MonoBehaviour
         if (collision.GetComponent<PlayerMovement>() != null)
         {
             collision.GetComponent<PlayerCollisionController>().Reflect(perp * Force);
-            collision.GetComponent<PlayerHealth>().LoseHealth(10);
+            PassiveAndAbilitiesManager.instance.playerHealth.LoseHealth(10);
         }
         if (collision.GetComponent<RedOrbController>())
         {

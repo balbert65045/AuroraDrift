@@ -18,7 +18,7 @@ public class TimerUI : MonoBehaviour
     {
         text = GetComponent<TMP_Text>();
         GameManager gameManager = FindObjectOfType<GameManager>();
-        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+        PlayerHealth playerHealth = PassiveAndAbilitiesManager.instance.playerHealth;
         gameManager.OnCompleteLevel += StopTimer;
         playerHealth.OnDied += StopTimer;
     }

@@ -54,6 +54,7 @@ public class UpgradeSystem : MonoBehaviour
     public Action<Upgrade> OnSelectPassive;
     public Action<Upgrade> OnSelectAbility;
     public Action OnSelectUpgrade;
+    public Action OnClearUpgrades;
     // Start is called before the first frame update
 
     bool allowUnpause = false;
@@ -167,6 +168,15 @@ public class UpgradeSystem : MonoBehaviour
             }
         }
         return tier;
+    }
+
+    public void ClearUpgrades()
+    {
+        CurrentUpgrades.Clear();
+        if (OnClearUpgrades != null)
+        {
+            OnClearUpgrades.Invoke();
+        }
     }
 
     public void SelectUpgrade(Upgrade selectedUpgrade)

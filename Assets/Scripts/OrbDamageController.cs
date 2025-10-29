@@ -14,31 +14,16 @@ public class OrbDamageController : MonoBehaviour
     private void Start()
     {
         originalBaseDamage = BaseDamage;
-        playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
         playerChargeController = FindObjectOfType<PlayerChargeController>();
-        PlayerPassiveController playerPassiveController = FindObjectOfType<PlayerPassiveController>();
-        if (playerPassiveController != null)
-        {
-            playerPassiveController.OnBlueDamageIncrease += IncreaseBlueDamage;
-            playerPassiveController.OnRedDamageIncrease += IncreaseRedDamage;
-        }
     }
 
-    void IncreaseRedDamage(float damageIncrease)
-    {
-        if(orbType != OrbType.Red) { return; }
-        IncreaseDamage(damageIncrease);
-    }
 
-    void IncreaseBlueDamage(float damageIncrease)
-    {
-        if (orbType != OrbType.Blue) { return; }
-        IncreaseDamage(damageIncrease);
-    }
 
-    void IncreaseDamage(float damageIncrease)
+    float GetBaseDamage()
     {
-        BaseDamage = originalBaseDamage + (originalBaseDamage * damageIncrease);
+        float damageIncrease = (orbType == OrbType.Blue) ? PassiveAndAbilitiesManager.instance.playerPassiveController.BlueDamageIncrease : PassiveAndAbilitiesManager.instance.playerPassiveController.RedDamageIncrease;
+        return originalBaseDamage + (originalBaseDamage * damageIncrease);
     }
 
     float GetChargePercentage()
@@ -85,9 +70,9 @@ public class OrbDamageController : MonoBehaviour
 
     float RollBaseDamage()
     {
-        float Variation = BaseDamage * .2f;
+        float Variation = GetBaseDamage() * .2f;
         float Roll = Random.Range(-Variation, Variation);
-        return BaseDamage + Roll;
+        return GetBaseDamage() + Roll;
         //return BaseDamage;
     }
 }

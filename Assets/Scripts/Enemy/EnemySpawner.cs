@@ -5,18 +5,17 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [SerializeField] GameObject LevelupBlock;
+    [SerializeField] GameObject BlackHole;
     [SerializeField] EnemySpawnProfile profile;
-    [SerializeField] List<float> Rarities;
 
 
     [SerializeField] float Radius = 20f;
     [SerializeField] float SpawnRate = 2f;
 
-    float timeSinceLastSpawn;
 
     PlayerMovement pm;
     int currentWaveIndex = 0;
-    int enemiesAliveInWave;
 
     public List<GameObject> enemiesOut = new List<GameObject>();
     // Start is called before the first frame update
@@ -36,7 +35,12 @@ public class EnemySpawner : MonoBehaviour
 
     public void SpawnNextWave()
     {
-        Spawn(profile.waves[currentWaveIndex]);
+        Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
+        float spawnRadius = Radius / 3;
+        Instantiate(BlackHole, (Vector2)pm.transform.position + (randomDir * spawnRadius), Quaternion.identity);
+
+        //Spawn(profile.waves[currentWaveIndex]);
+
 /*
         if (enemiesOut.Count == 0)
         {
@@ -55,13 +59,13 @@ public class EnemySpawner : MonoBehaviour
             Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
 
             float spawnRadius = Radius;
-            if (!enemyToSpawn.GetComponentInChildren<Ship>())
-            {
-                spawnRadius = Radius / 2;
-            }
+           
             GameObject spawn = Instantiate(enemyToSpawn, (Vector2)pm.transform.position + (randomDir * spawnRadius), Quaternion.identity);
             enemiesOut.Add(spawn);
-            spawn.GetComponentInChildren<EnemyHealth>().OnDeath += OnEnemyDestroyed;
+            if (spawn.GetComponentInChildren<EnemyHealth>())
+            {
+                spawn.GetComponentInChildren<EnemyHealth>().OnDeath += OnEnemyDestroyed;
+            }
         }
     }
 
@@ -74,21 +78,17 @@ public class EnemySpawner : MonoBehaviour
             LastEnemyDestroyed = true;
             if (currentWaveIndex >= profile.waves.Count)
             {
-                //All waves done -> Complete Level
-                FindObjectOfType<GameManager>().CompleteLevel();
+                //All waves done -> Level Up
+                //FindObjectOfType<GameManager>().CompleteLevel();
+
+                Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
+                float spawnRadius = Radius / 3;
+                Instantiate(LevelupBlock, (Vector2)pm.transform.position + (randomDir * spawnRadius), Quaternion.identity);
+
             }
             else
             {
-                if (profile.waves[currentWaveIndex - 1].LevelUp)
-                {
-                    StartCoroutine("WaitThenLevelThenSpawn");
-                }
-                else
-                {
-                    Spawn(profile.waves[currentWaveIndex]);
-                }
-                //FindObjectOfType<UpgradeSystem>().ShowPossibleUpgrades();
-                //Spawn(profile.waves[currentWaveIndex]);
+                Spawn(profile.waves[currentWaveIndex]);
             }
         }
     }

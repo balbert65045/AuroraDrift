@@ -8,6 +8,9 @@ public class TutorialController : MonoBehaviour
     [SerializeField] GameObject Ship;
     [SerializeField] GameObject Ship2;
     [SerializeField] GameObject Ship3;
+    [SerializeField] GameObject Ship4;
+    [SerializeField] GameObject BlackHole;
+
 
     [SerializeField] GameObject[] TutorialPompts;
     [SerializeField] GameObject Previous;
@@ -114,6 +117,20 @@ public class TutorialController : MonoBehaviour
             PlayerMovement pm = FindObjectOfType<PlayerMovement>();
             Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
             Ship3.transform.position = pos;
+        }
+        if (currentIndex == 8)
+        {
+            Ship4.SetActive(true);
+            PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+            Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
+            Ship4.transform.position = pos;
+        }
+        if(currentIndex == 9)
+        {
+            BlackHole.SetActive(true);
+            PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+            Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
+            BlackHole.transform.position = pos;
         }
     }
 

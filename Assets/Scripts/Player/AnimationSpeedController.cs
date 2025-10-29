@@ -14,9 +14,16 @@ public class AnimationSpeedController : MonoBehaviour
     void Start()
     {
         pullController = FindObjectOfType<PlayerPullController>();
-        abilityController = FindObjectOfType<PlayerAbilityController>();
+        abilityController = PassiveAndAbilitiesManager.instance.abilityController;
         abilityController.OnBeginCharge += BeginCharge;
         abilityController.OnReleaseCharge += ReleaseCharge;
+    }
+
+
+    private void OnDestroy()
+    {
+        abilityController.OnBeginCharge -= BeginCharge;
+        abilityController.OnReleaseCharge -= ReleaseCharge;
     }
 
     bool charging = false;

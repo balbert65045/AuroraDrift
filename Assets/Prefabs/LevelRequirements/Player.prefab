@@ -867,6 +867,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxTime: 0.2
   Timespeed: 10
+  blue: 0
 --- !u!1 &3145887459964578320
 GameObject:
   m_ObjectHideFlags: 0
@@ -5930,7 +5931,6 @@ GameObject:
   - component: {fileID: 6633451593365942636}
   - component: {fileID: 8911352543015329342}
   - component: {fileID: 4620609781407507811}
-  - component: {fileID: 6496730378544308878}
   - component: {fileID: 1377419909073120609}
   - component: {fileID: 5443817145168458299}
   m_Layer: 7
@@ -6160,23 +6160,6 @@ MonoBehaviour:
   rb: {fileID: 3989914040833046108}
   squishThreshold: 40
   inverse: 0
---- !u!114 &6496730378544308878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5563305820427324356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91867f7d4dd4f9c4da3664da115efe76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  redOrbController: {fileID: 7631918587377507854}
-  BlueVisual: {fileID: 7890520432792237986}
-  RedVisual: {fileID: 2859843770194196633}
-  MaxHealth: 100
-  currentHealth: 0
 --- !u!114 &1377419909073120609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6806,6 +6789,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxTime: 0.2
   Timespeed: 10
+  blue: 0
 --- !u!1 &8044468074381916711
 GameObject:
   m_ObjectHideFlags: 0

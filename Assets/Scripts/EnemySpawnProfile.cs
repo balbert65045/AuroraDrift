@@ -5,7 +5,6 @@ using UnityEngine;
 [System.Serializable]   
 public class Wave {
     public List<GameObject> EnemiesForWave;
-    public bool LevelUp = false;
 }
 
 [CreateAssetMenu(fileName = "EnemySpawnProfile", menuName = "ScriptableObjects/EnemySpawnProfile", order = 1)]

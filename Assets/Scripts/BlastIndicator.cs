@@ -5,11 +5,18 @@ using UnityEngine;
 public class BlastIndicator : MonoBehaviour
 {
     [SerializeField] GameObject indicator;
+
+    PlayerAbilityController controller;
     // Start is called before the first frame update
     void Start()
     {
-        PlayerAbilityController controller = FindObjectOfType<PlayerAbilityController>();
+        controller = PassiveAndAbilitiesManager.instance.abilityController;
         controller.OnReleaseCharge += ShowHideIndicator;
+    }
+
+    private void OnDestroy()
+    {
+        controller.OnReleaseCharge -= ShowHideIndicator;
     }
 
     void ShowHideIndicator()

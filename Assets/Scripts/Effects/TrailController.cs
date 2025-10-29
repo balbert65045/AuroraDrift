@@ -44,13 +44,22 @@ public class TrailController : MonoBehaviour
         trail = GetComponent<TrailRenderer>();
         squishController = GetComponent<PlayerSquishController>();
         pm = squishController.rb.GetComponent<PlayerMovement>();
-        abilityController = FindObjectOfType<PlayerAbilityController>();
+        abilityController = PassiveAndAbilitiesManager.instance.abilityController;
 
         abilityController.OnBeginCharge += BeginCharge;
         abilityController.OnReleaseCharge += ReleaseCharge;
 
         abilityController.OnSwapBegin += SwapBegin;
         abilityController.OnSwapEnd += SwapEnd;
+    }
+
+    void OnDestroy()
+    {
+        abilityController.OnBeginCharge -= BeginCharge;
+        abilityController.OnReleaseCharge -= ReleaseCharge;
+
+        abilityController.OnSwapBegin -= SwapBegin;
+        abilityController.OnSwapEnd -= SwapEnd;
     }
 
     TimerClass ShrinkTimer = new TimerClass(false);

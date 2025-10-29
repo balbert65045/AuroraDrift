@@ -24,10 +24,17 @@ public class OrbitDashVisual : MonoBehaviour
         playerInputController = FindObjectOfType<PlayerInputController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         t2SpriteRenderer = t2.GetComponent<SpriteRenderer>();
-        playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
         playerAbilityController.OnBeginCharge += BeginCharge;
         playerAbilityController.OnReleaseCharge += ReleaseCharge;
         diff = maxSize - minSize;
+    }
+
+
+    private void OnDestroy()
+    {
+        playerAbilityController.OnBeginCharge -= BeginCharge;
+        playerAbilityController.OnReleaseCharge -= ReleaseCharge;
     }
 
     void ReleaseCharge()

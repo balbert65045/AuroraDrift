@@ -7,7 +7,7 @@ public class PlayerMovement : MovableObject
 {
     [Header("Movement Settings")]
     [Tooltip("Maximum speed the player can reach.")]
-    public float maxSpeed = 5f;
+    [SerializeField] float maxSpeed = 5f;
     float baseMaxSpeed;
 
     [Tooltip("Rate at which the player accelerates towards max speed.")]
@@ -157,6 +157,8 @@ public class PlayerMovement : MovableObject
         return deceleration * decelerationMultiplieer;
     }
 
+    PlayerAbilityController playerAbilityController;
+
     void Start()
     {
         baseMaxSpeed = maxSpeed;
@@ -167,18 +169,18 @@ public class PlayerMovement : MovableObject
         playerInputController.OnDashInput += ReceiveDash;
         pullController = GetComponent<PlayerPullController>();
 
-        PlayerPassiveController playerPassiveController = FindObjectOfType<PlayerPassiveController>();
-        if(playerPassiveController != null)
-        {
-            playerPassiveController.OnSpeedPercentageIncrease += IncreaseMaxSpeed;
-        }
-
-        PlayerAbilityController playerAbilityController = FindObjectOfType<PlayerAbilityController>();
+        playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
         playerAbilityController.OnSwapBegin += Freeze;
         playerAbilityController.OnSwapEnd += UnFreeze;
 
         BlueOrbStateController stateController = FindObjectOfType<BlueOrbStateController>();
         stateController.OnEnterBlackHole += EnterBlackHole;
+    }
+
+    private void OnDestroy()
+    {
+        playerAbilityController.OnSwapBegin -= Freeze;
+        playerAbilityController.OnSwapEnd -= UnFreeze;
     }
 
     void EnterBlackHole(Transform _followPos, Transform BlackHolePos)
@@ -205,9 +207,10 @@ public class PlayerMovement : MovableObject
         stopped = false;
     }
 
-    void IncreaseMaxSpeed(float increasePercentage)
+
+    public float GetMaxSpeed()
     {
-        maxSpeed = baseMaxSpeed + (baseMaxSpeed * increasePercentage);
+        return baseMaxSpeed + (baseMaxSpeed * PassiveAndAbilitiesManager.instance.playerPassiveController.SpeedIncrease);
     }
 
     
@@ -306,7 +309,7 @@ public class PlayerMovement : MovableObject
 
     void DoNormalMovement(Vector2 dir)
     {
-        if (currentVelocity.magnitude > maxSpeed)
+        if (currentVelocity.magnitude > GetMaxSpeed())
         {
             currentVelocity = Vector2.MoveTowards(currentVelocity, dir * GetSpeed(), GetDecelleration() / 3 * Time.deltaTime);
 
@@ -350,7 +353,7 @@ public class PlayerMovement : MovableObject
 
     void DoSlowDown(Vector2 dir)
     {
-        if (currentVelocity.magnitude > maxSpeed)
+        if (currentVelocity.magnitude > GetMaxSpeed())
         {
             currentVelocity = Vector2.MoveTowards(currentVelocity, Vector2.zero, GetDecelleration() / 3 * Time.deltaTime);
 

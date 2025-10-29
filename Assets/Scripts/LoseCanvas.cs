@@ -13,13 +13,13 @@ public class LoseCanvas : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayerHealth PlayerHealth = FindObjectOfType<PlayerHealth>();
+        PlayerHealth PlayerHealth = PassiveAndAbilitiesManager.instance.playerHealth;
         PlayerHealth.OnDied += Died;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        PassiveAndAbilitiesManager.instance.playerHealth.OnDied -= Died;
     }
+
 }

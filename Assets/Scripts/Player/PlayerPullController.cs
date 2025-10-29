@@ -25,12 +25,6 @@ public class PlayerPullController : MonoBehaviour
         basePushPullSpeed = PushPullSpeed;
         baseMaxPullSpeed = MaxPullSpeed;
 
-        PlayerPassiveController playerPassiveController = FindObjectOfType<PlayerPassiveController>();
-        if(playerPassiveController != null)
-        {
-            playerPassiveController.OnSpeedPercentageIncrease += IncreaseSpeed;
-        }
-
         pv = FindObjectOfType<PlayerVisual>();
         if(redOrb == null)
         {
@@ -38,7 +32,7 @@ public class PlayerPullController : MonoBehaviour
         }
         pm = GetComponent<PlayerMovement>();
         orbitController = GetComponent<PlayerOrbitController>();
-        abilityController = FindObjectOfType<PlayerAbilityController>();
+        abilityController = PassiveAndAbilitiesManager.instance.abilityController;
 
         PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
         inputController.OnPullBlueInput += RecivePullBlue;
@@ -47,16 +41,21 @@ public class PlayerPullController : MonoBehaviour
         inputController.OnReleaseRedInput += ReceiveThrow_StopPullRed;
     }
 
-    void IncreaseSpeed(float increaseAmount)
+
+    public float GetPushPullSpeed()
     {
-        PushPullSpeed = basePushPullSpeed + (basePushPullSpeed * increaseAmount);
-        MaxPullSpeed = baseMaxPullSpeed + (baseMaxPullSpeed * increaseAmount);
+        return basePushPullSpeed + (basePushPullSpeed * PassiveAndAbilitiesManager.instance.playerPassiveController.SpeedIncrease);
+    }
+
+    public float GetMaxPullSpeed()
+    {
+        return baseMaxPullSpeed + (baseMaxPullSpeed * PassiveAndAbilitiesManager.instance.playerPassiveController.SpeedIncrease);
     }
 
     public float GetAdjustedPull()
     {
-        float max = Mathf.Max(PushPullSpeed, MaxPullSpeed);
-        return Mathf.Min(PushPullSpeed + ((pm.transform.position - redOrb.transform.position).magnitude) / 1f, max);
+        float max = Mathf.Max(GetPushPullSpeed(), GetMaxPullSpeed());
+        return Mathf.Min(GetPushPullSpeed() + ((pm.transform.position - redOrb.transform.position).magnitude) / 1f, max);
         //return PushPullSpeed + ((pm.transform.position - sword.transform.position).magnitude)/1f;
     }
 
