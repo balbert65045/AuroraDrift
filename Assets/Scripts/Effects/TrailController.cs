@@ -6,6 +6,7 @@ using UnityEngine;
 public class TrailController : MonoBehaviour
 {
     PlayerAbilityController abilityController;
+    OrbLaunchController launchController;
 
     TrailRenderer trail;
     PlayerSquishController squishController;
@@ -45,21 +46,22 @@ public class TrailController : MonoBehaviour
         squishController = GetComponent<PlayerSquishController>();
         pm = squishController.rb.GetComponent<PlayerMovement>();
         abilityController = PassiveAndAbilitiesManager.instance.abilityController;
+        launchController = abilityController.launchController;
 
-        abilityController.OnBeginCharge += BeginCharge;
-        abilityController.OnReleaseCharge += ReleaseCharge;
+        launchController.OnBeginCharge += BeginCharge;
+        launchController.OnReleaseCharge += ReleaseCharge;
 
-        abilityController.OnSwapBegin += SwapBegin;
-        abilityController.OnSwapEnd += SwapEnd;
+        abilityController.swapController.OnSwapBegin += SwapBegin;
+        abilityController.swapController.OnSwapEnd += SwapEnd;
     }
 
     void OnDestroy()
     {
-        abilityController.OnBeginCharge -= BeginCharge;
-        abilityController.OnReleaseCharge -= ReleaseCharge;
+        launchController.OnBeginCharge -= BeginCharge;
+        launchController.OnReleaseCharge -= ReleaseCharge;
 
-        abilityController.OnSwapBegin -= SwapBegin;
-        abilityController.OnSwapEnd -= SwapEnd;
+        abilityController.swapController.OnSwapBegin -= SwapBegin;
+        abilityController.swapController.OnSwapEnd -= SwapEnd;
     }
 
     TimerClass ShrinkTimer = new TimerClass(false);

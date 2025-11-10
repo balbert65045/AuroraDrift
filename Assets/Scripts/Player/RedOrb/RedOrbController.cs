@@ -61,14 +61,14 @@ public class RedOrbController : MovableObject
 
 
         playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        playerAbilityController.OnSwapBegin += Freeze;
-        playerAbilityController.OnSwapEnd += UnFreeze;
+        playerAbilityController.swapController.OnSwapBegin += Freeze;
+        playerAbilityController.swapController.OnSwapEnd += UnFreeze;
     }
 
     private void OnDestroy()
     {
-        playerAbilityController.OnSwapBegin -= Freeze;
-        playerAbilityController.OnSwapEnd -= UnFreeze;
+        playerAbilityController.swapController.OnSwapBegin -= Freeze;
+        playerAbilityController.swapController.OnSwapEnd -= UnFreeze;
     }
 
     bool blueInBlackHole;
@@ -106,6 +106,8 @@ public class RedOrbController : MovableObject
     {
         //freezeVel = pm.GetComponent<Rigidbody2D>().velocity;
         freezeVel = rb.velocity;
+        Debug.Log(freezeVel);
+
         rb.velocity = Vector2.zero;
         currentVelocity = Vector2.zero;
         stopped = true;
@@ -113,6 +115,7 @@ public class RedOrbController : MovableObject
 
     void UnFreeze()
     {
+        Debug.Log(freezeVel);
         rb.velocity = freezeVel;
         currentVelocity = freezeVel;
         stopped = false;
@@ -211,6 +214,7 @@ public class RedOrbController : MovableObject
 
     public void SetRetracting(bool value)
     {
+        if(blueInBlackHole && redInBlackHole) { return; }
         //if (value)
         //{
         //    RemoveChargeThrown();

@@ -13,6 +13,7 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
     public PlayerHealth playerHealth;
     public UpgradeSystem upgradeSystem;
 
+    
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -41,6 +42,7 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
 
     void NewSceneEntered(Scene scene1, Scene scene2)
     {
+      if(LevelManager.instance.sceneNumber == 0) { return; }
       if(scene2.name == "Title")
         {
             //Reset

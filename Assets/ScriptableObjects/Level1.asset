@@ -14,4 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waves:
   - EnemiesForWave:
+    - {fileID: 4893522500698430482, guid: 12cf4c19807f56b448a1a8b6bd6728ac, type: 3}
+  - EnemiesForWave:
     - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+    - {fileID: 3287368728792600485, guid: 9adb2c9ab3a5960408efc97b55765217, type: 3}
+  - EnemiesForWave:
+    - {fileID: 709493369619094721, guid: 935930658620597469be5aaa221e4baf, type: 3}

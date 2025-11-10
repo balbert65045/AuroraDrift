@@ -31,6 +31,8 @@ public class Ship : MonoBehaviour
 
     bool firstAttack = true;
 
+    [SerializeField] float StopTurnBeforeAttackPercentage = 1f;
+    TimerClass AboutToAttackTimer = new TimerClass(false);
     public EventHandler<float> OnAboutToAttack;
     public List<Ship> allEnemies = new List<Ship>();
     // Start is called before the first frame update
@@ -50,7 +52,8 @@ public class Ship : MonoBehaviour
 
     void AboutToAttack()
     {
-        if(OnAboutToAttack != null) { OnAboutToAttack.Invoke(this, AboutToAttackTime); }
+        AboutToAttackTimer = new TimerClass(true, AboutToAttackTime, Time.time);
+        if (OnAboutToAttack != null) { OnAboutToAttack.Invoke(this, AboutToAttackTime); }
     }
 
     bool inShotProces = false;
@@ -73,12 +76,29 @@ public class Ship : MonoBehaviour
 
         Vector2 dir = (pm.transform.position - transform.position).normalized;
 
-        if ((transform.position - pm.transform.position).magnitude <= AttackRadius)
+        if ((transform.position - pm.transform.position).magnitude <= AttackRadius || AboutToAttackTimer.IsOn())
         {
+            //Check to Attack
             if (!inShotProces && Time.time > timeSinceLastAttack + attackRate)
             {
                 inShotProces = true;
                 StartCoroutine("BeginAttackProcess");
+            }
+
+            //Check to Stop
+            if (AboutToAttackTimer.IsOn())
+            {
+                if (AboutToAttackTimer.TimerStillGoing(Time.time))
+                {
+                    if (AboutToAttackTimer.percentageComplete(Time.time) > StopTurnBeforeAttackPercentage)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    AboutToAttackTimer.TurnOff();
+                }
             }
 
             Vector3 moveDirection = Vector3.zero;
@@ -104,7 +124,6 @@ public class Ship : MonoBehaviour
 
             }
 
-
             float desired = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             float current = transform.eulerAngles.z;
 
@@ -129,6 +148,7 @@ public class Ship : MonoBehaviour
     public Action OnFinishedAttack;
     protected void FinishedAttacking()
     {
+        AboutToAttackTimer.TurnOff();
         timeSinceLastAttack = Time.time;
         inShotProces = false;
         if(OnFinishedAttack != null)
@@ -214,6 +234,8 @@ public class Ship : MonoBehaviour
     bool stunned = false;
     public void Stunned()
     {
+        inShotProces = false;
+        AboutToAttackTimer.TurnOff();
         stunned = true;
     }
 

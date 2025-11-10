@@ -17,12 +17,16 @@ public class Shield : MonoBehaviour
     CircleCollider2D myCircleCollider;
 
     PlayerMovement pm;
+
+    FollowObj followObj;
     private void Start()
     {
         pm = FindObjectOfType<PlayerMovement>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         myCircleCollider = GetComponent<CircleCollider2D>();
         animator = GetComponent<Animator>();
+        followObj = GetComponent<FollowObj>();
+        followObj.followObj = transform.parent.GetComponentInChildren<Ship>().transform;
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {

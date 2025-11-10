@@ -30,6 +30,7 @@ public class PlayerMovement : MovableObject
 
     //Dash
     [SerializeField] float DashCooldown = .3f;
+    public float GetDashCooldown() { return DashCooldown; }
     [SerializeField] float DashMultiplier = 2f;
     [SerializeField] float DashTime = .5f;
     float timeSinceDashed = -5;
@@ -170,25 +171,50 @@ public class PlayerMovement : MovableObject
         pullController = GetComponent<PlayerPullController>();
 
         playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        playerAbilityController.OnSwapBegin += Freeze;
-        playerAbilityController.OnSwapEnd += UnFreeze;
+        playerAbilityController.swapController.OnSwapBegin += Freeze;
+        playerAbilityController.swapController.OnSwapEnd += UnFreeze;
 
         BlueOrbStateController stateController = FindObjectOfType<BlueOrbStateController>();
-        stateController.OnEnterBlackHole += EnterBlackHole;
+        stateController.OnEnterBlackHole += EnterBlackHoleBlue;
+        stateController.OnExitBlackHole += ExitBlackHoleBlue;
+
+        BlueOrbStateController redStateController = FindObjectOfType<BlueOrbStateController>();
+        redStateController.OnEnterBlackHole += EnterBlackHoleRed;
+        redStateController.OnExitBlackHole += ExitBlackHoleRed;
+
     }
 
     private void OnDestroy()
     {
-        playerAbilityController.OnSwapBegin -= Freeze;
-        playerAbilityController.OnSwapEnd -= UnFreeze;
+        playerAbilityController.swapController.OnSwapBegin -= Freeze;
+        playerAbilityController.swapController.OnSwapEnd -= UnFreeze;
     }
 
-    void EnterBlackHole(Transform _followPos, Transform BlackHolePos)
+    bool InBlackHoleBlue = false;
+    bool InBlackHoleRed = false;
+
+    void EnterBlackHoleRed(Transform _t, Transform _p)
     {
+        InBlackHoleRed = true;
+    }
+
+    void ExitBlackHoleRed()
+    {
+        InBlackHoleRed = false;
+    }
+
+    void EnterBlackHoleBlue (Transform _followPos, Transform BlackHolePos)
+    {
+        InBlackHoleBlue = true;
         rb.velocity = Vector3.zero;
         currentVelocity = Vector2.zero;
         transform.position = BlackHolePos.position;
 
+    }
+
+    void ExitBlackHoleBlue()
+    {
+        InBlackHoleBlue = false;
     }
 
     public Vector3 freezeVel;
@@ -243,6 +269,7 @@ public class PlayerMovement : MovableObject
 
     public void PullTowardsRed(RedOrbController redOrb)
     {
+        if(InBlackHoleBlue && InBlackHoleRed) { return; }
         this.redOrb = redOrb;
         Vector2 moveDir = redOrb.transform.position - transform.position;
         currentVelocity = pullController.PushPullSpeed * moveDir.normalized;

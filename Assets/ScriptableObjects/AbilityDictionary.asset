@@ -15,3 +15,7 @@ MonoBehaviour:
   abilityDictionaries:
   - type: 0
     Value: 3
+    Cooldown: 0
+  - type: 1
+    Value: 1
+    Cooldown: 2

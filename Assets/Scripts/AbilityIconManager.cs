@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class AbilityIconManager : MonoBehaviour
 {
+    [SerializeField] AbilityContainer dashAbilityRegion;
+    [SerializeField] AbilityContainer Ability2Region;
+    [SerializeField] AbilityContainer Ability3Region;
+
     List<AbilityIcon> CurrentIcons = new List<AbilityIcon>();
     [SerializeField] AbilityIcon[] abilityIconPrefabs;
 
@@ -27,37 +31,26 @@ public class AbilityIconManager : MonoBehaviour
 
     void AbilitySelected(Upgrade abilityUpgrade)
     {
-        
-        AbilityIcon currentIcon = IconAvailable(abilityUpgrade.abilityType);
-        if(currentIcon != null)
+        foreach (AbilityIcon abilityIcon in abilityIconPrefabs)
         {
-            currentIcon.IncreaseQuantity();
-        }
-        else
-        {
-
-            foreach (AbilityIcon abilityIcon in abilityIconPrefabs)
+            if (abilityIcon.GetAbilityType() == abilityUpgrade.abilityType)
             {
-                if (abilityIcon.GetAbilityType() == abilityUpgrade.abilityType)
+                switch (abilityIcon.GetAbilityRegion())
                 {
-                    GameObject AbilityIconObj = Instantiate(abilityIcon.gameObject, this.transform);
-                    CurrentIcons.Add(AbilityIconObj.GetComponent<AbilityIcon>());
-                    return;
+                    case AbilityRegion.Dash:
+                        dashAbilityRegion.SetAbility(abilityIcon.gameObject);
+                        break;
+                    case AbilityRegion.Ability2:
+                        Ability2Region.gameObject.SetActive(true);
+                        Ability2Region.SetAbility(abilityIcon.gameObject);
+                        break;
+                    case AbilityRegion.Ability3:
+                        Ability3Region.gameObject.SetActive(true);
+                        Ability3Region.SetAbility(abilityIcon.gameObject);
+                        break;
                 }
+                return;
             }
         }
-    }
-
-
-    AbilityIcon IconAvailable(AbilityType abilityType)
-    {
-        foreach (AbilityIcon icon in CurrentIcons)
-        {
-            if (icon.GetAbilityType() == abilityType)
-            {
-                return icon;
-            }
-        }
-        return null;
     }
 }

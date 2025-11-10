@@ -7,6 +7,10 @@ public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] float MaxHealth = 30;
     float currentHealth;
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
 
     [SerializeField] GameObject ExplosionPrefab;
     [SerializeField] GameObject DamageFontPredab;

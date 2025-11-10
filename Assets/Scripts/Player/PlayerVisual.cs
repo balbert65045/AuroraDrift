@@ -35,8 +35,8 @@ public class PlayerVisual : MonoBehaviour
         pm.OnRechargeDash += OnDashRecharge;
 
         PlayerAbilityController playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        playerAbilityController.OnSwapBegin += Shrink;
-        playerAbilityController.OnSwapEnd += Grow;
+        playerAbilityController.swapController.OnSwapBegin += Shrink;
+        playerAbilityController.swapController.OnSwapEnd += Grow;
     }
 
     TimerClass shrinkTimer;
@@ -48,10 +48,10 @@ public class PlayerVisual : MonoBehaviour
 
     private void OnDestroy()
     {
-        if(playerAbilityController != null)
+        if (PassiveAndAbilitiesManager.instance.abilityController != null)
         {
-            playerAbilityController.OnSwapBegin -= Shrink;
-            playerAbilityController.OnSwapEnd -= Grow;
+            PassiveAndAbilitiesManager.instance.abilityController.swapController.OnSwapBegin -= Shrink;
+            PassiveAndAbilitiesManager.instance.abilityController.swapController.OnSwapEnd -= Grow;
         }
     }
     void Shrink(float swapTime)
@@ -59,7 +59,8 @@ public class PlayerVisual : MonoBehaviour
         Debug.Log("Shrinking");
         growShrinkTime = swapTime;
         shrinkTimer = new TimerClass(true, growShrinkTime, Time.time);
-        OGSize = transform.localScale;
+        //OGSize = transform.localScale;
+        growing = false;
         shrinkin = true;
     }
 
@@ -75,7 +76,7 @@ public class PlayerVisual : MonoBehaviour
     {
         if(shrinkin)
         {
-            if(shrinkTimer.TimerStillGoing(Time.time))
+            if (shrinkTimer.TimerStillGoing(Time.time))
             {
                 float percentage = shrinkTimer.percentageComplete(Time.time);
                 transform.localScale = OGSize - (OGSize * percentage);
@@ -86,7 +87,7 @@ public class PlayerVisual : MonoBehaviour
                 shrinkin = false;
             }
         }
-        else if (growing)
+        else if (growing && blackHolePos == null)
         {
             if (growTimer.TimerStillGoing(Time.time))
             {

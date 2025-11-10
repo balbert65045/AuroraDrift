@@ -5,7 +5,8 @@ using UnityEngine;
 
 public enum AbilityType
 {
-    OrbLaunch
+    OrbLaunch,
+    Swap
 }
 public class CardAbility : CardUpgrade
 {
@@ -26,7 +27,7 @@ public class CardAbility : CardUpgrade
         {
            case AbilityType.OrbLaunch:
                 valueTitle.text = "Base Damage";
-                baseAmount = PassiveAndAbilitiesManager.instance.abilityController.GetBaseOrbLaunchAmount();
+                baseAmount = PassiveAndAbilitiesManager.instance.abilityController.launchController.GetBaseOrbLaunchAmount();
                 break;
         }
 

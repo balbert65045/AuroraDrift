@@ -19,6 +19,7 @@ public class PlayerPullController : MonoBehaviour
     PlayerVisual pv;
 
     PlayerAbilityController abilityController;
+    OrbLaunchController launchController;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +34,7 @@ public class PlayerPullController : MonoBehaviour
         pm = GetComponent<PlayerMovement>();
         orbitController = GetComponent<PlayerOrbitController>();
         abilityController = PassiveAndAbilitiesManager.instance.abilityController;
+        launchController = abilityController.launchController;
 
         PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
         inputController.OnPullBlueInput += RecivePullBlue;
@@ -68,7 +70,7 @@ public class PlayerPullController : MonoBehaviour
     public void ReceiveThrow_StopPullRed()
     {
         if (!redOrb.gameObject.activeSelf) { return; }
-        if (abilityController.chargeTimer.IsOn()) { return; }
+        if (launchController.chargeTimer.IsOn()) { return; }
         if (redOrb.GetHeld())
         {
             ThrowRed();
@@ -92,7 +94,7 @@ public class PlayerPullController : MonoBehaviour
     {
         //ThrowBlue
         if (!redOrb.gameObject.activeSelf) { return; }
-        if (abilityController.chargeTimer.IsOn()) { return; }
+        if (launchController.chargeTimer.IsOn()) { return; }
         if (redOrb.GetHeld())
         {
             ThrowBlue();

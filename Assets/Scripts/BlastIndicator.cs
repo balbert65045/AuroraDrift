@@ -7,16 +7,18 @@ public class BlastIndicator : MonoBehaviour
     [SerializeField] GameObject indicator;
 
     PlayerAbilityController controller;
+    OrbLaunchController launchController;
     // Start is called before the first frame update
     void Start()
     {
         controller = PassiveAndAbilitiesManager.instance.abilityController;
-        controller.OnReleaseCharge += ShowHideIndicator;
+        launchController = controller.launchController;
+        launchController.OnReleaseCharge += ShowHideIndicator;
     }
 
     private void OnDestroy()
     {
-        controller.OnReleaseCharge -= ShowHideIndicator;
+        launchController.OnReleaseCharge -= ShowHideIndicator;
     }
 
     void ShowHideIndicator()

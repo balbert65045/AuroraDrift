@@ -16,6 +16,7 @@ public class Upgrade
     public int tier;
 
     float amount;
+    public float cooldown;
 
     public Upgrade (UpgradeType type, PassiveType passiveType, AbilityType abilityType, OrbType orbType, int tier)
     {
@@ -29,6 +30,11 @@ public class Upgrade
     public void SetAmount(float amount)
     {
         this.amount = amount;
+    }
+
+    public void SetCooldown(float cooldown)
+    {
+        this.cooldown = cooldown;
     }
 
     public float GetBaseAmount()
@@ -60,6 +66,7 @@ public class UpgradeSystem : MonoBehaviour
     bool allowUnpause = false;
     bool paused = false;
     public bool GetPaused() { return paused; }
+
 
     private void LateUpdate()
     {
@@ -145,6 +152,7 @@ public class UpgradeSystem : MonoBehaviour
         else
         {
             selectedUpgrade.SetAmount(abilityList.GetValue(abilityType));
+            selectedUpgrade.SetCooldown(abilityList.GetCooldown(abilityType));
         }
         return selectedUpgrade;
     }

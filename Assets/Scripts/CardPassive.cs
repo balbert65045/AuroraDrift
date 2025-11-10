@@ -36,7 +36,7 @@ public class CardPassive : CardUpgrade
         switch (CardPassiveType)
         {
             case PassiveType.Health:
-                baseAmount = FindObjectOfType<PlayerHealth>().GetBaseMaxHealth();
+                baseAmount = PassiveAndAbilitiesManager.instance.playerHealth.GetBaseMaxHealth();
                 break;
         }
 

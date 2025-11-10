@@ -720,7 +720,8 @@ MonoBehaviour:
   AttackRadius: 50
   attackRate: 1
   initialattackDelay: 1
-  turnRateDeg: 180
+  turnRateDeg: 200
+  StopTurnBeforeAttackPercentage: 0.5
   allEnemies: []
   KnockBackTime: 0.4
   attackCollider: {fileID: 8147558824734690898}

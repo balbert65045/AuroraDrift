@@ -11,10 +11,12 @@ public class OrbDamageController : MonoBehaviour
 
     PlayerAbilityController playerAbilityController;
     PlayerChargeController playerChargeController;
+    OrbLaunchController launchController;
     private void Start()
     {
         originalBaseDamage = BaseDamage;
         playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
+        launchController = playerAbilityController.launchController;
         playerChargeController = FindObjectOfType<PlayerChargeController>();
     }
 
@@ -43,18 +45,18 @@ public class OrbDamageController : MonoBehaviour
             if (GetComponent<RedOrbController>().ChargeThrown)
             {
                 Debug.Log("Charge Thrown");
-                float abilityPercentage = playerAbilityController.GetLastChargeAmount();
-                if (playerAbilityController.WasPerfect)
+                float abilityPercentage = launchController.GetLastChargeAmount();
+                if (launchController.WasPerfect)
                 {
                     Debug.Log("Perfect");
 
-                    return playerAbilityController.GetOrbLaunchAmount() * 1.5f + (RollBaseDamage() * chargePercentage);
+                    return launchController.GetOrbLaunchAmount() * 1.5f + (RollBaseDamage() * chargePercentage);
                 }
                 else
                 {
                     Debug.Log("Not Perfect");
 
-                    return playerAbilityController.GetOrbLaunchAmount() * abilityPercentage + (RollBaseDamage() * chargePercentage);
+                    return launchController.GetOrbLaunchAmount() * abilityPercentage + (RollBaseDamage() * chargePercentage);
                 }
             }
         }
@@ -63,6 +65,10 @@ public class OrbDamageController : MonoBehaviour
             if (GetComponent<PlayerMovement>().dashing)
             {
                 return RollBaseDamage() * chargePercentage + DashDamage;
+            }
+            if (GetComponent<PlayerMovement>().Orbiting)
+            {
+                return RollBaseDamage()*2f * chargePercentage;
             }
         }
         return RollBaseDamage() * chargePercentage;

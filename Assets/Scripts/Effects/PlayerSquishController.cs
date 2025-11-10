@@ -8,19 +8,26 @@ public class PlayerSquishController : MonoBehaviour
     [SerializeField] float squishThreshold = 100f;
 
     [SerializeField] bool inverse = false;
-
+    OrbLaunchController launchController;
     bool charging = false;
     TimerClass currentTimer;
     // Start is called before the first frame update
     void Start()
     {
-        PlayerAbilityController abilityController = GetComponentInParent<PlayerAbilityController>();
+        PlayerAbilityController abilityController = PassiveAndAbilitiesManager.instance.abilityController;
+        launchController = abilityController.launchController;
         if (abilityController != null)
         {
-            abilityController.OnBeginCharge += BeginCharge;
-            abilityController.OnReleaseCharge += ReleaseCharge;
+            launchController.OnBeginCharge += BeginCharge;
+            launchController.OnReleaseCharge += ReleaseCharge;
         }
 
+    }
+
+    private void OnDestroy()
+    {
+        launchController.OnBeginCharge -= BeginCharge;
+        launchController.OnReleaseCharge -= ReleaseCharge;
     }
 
     void ReleaseCharge()

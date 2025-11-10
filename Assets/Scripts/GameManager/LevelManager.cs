@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
 {
 
     public static LevelManager instance;
+    public int sceneNumber = 0;
 
     private void Awake()
     {
@@ -23,17 +24,20 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel(string levelName)
     {
+        sceneNumber++;
         SceneManager.LoadScene(levelName);
     }
 
     public void LoadNextLevel()
     {
+        sceneNumber++;
         int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
         SceneManager.LoadScene(nextIndex);
     }
 
     public void ReloadLevel()
     {
+        sceneNumber++;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -12,7 +12,8 @@ public class SpinnyShip : Ship
     TimerClass dashTimer = new TimerClass(false);
     protected override void Attack()
     {
-        dashDirection = (pm.transform.position - transform.position).normalized;
+        dashDirection = transform.up;
+        //dashDirection = (pm.transform.position - transform.position).normalized;
         dashTimer = new TimerClass(true, DashTime, Time.time);
         attackCollider.enabled = true;
         GetComponent<BoxCollider2D>().enabled = false;

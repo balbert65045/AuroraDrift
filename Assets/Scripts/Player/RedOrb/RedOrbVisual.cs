@@ -29,6 +29,7 @@ public class RedOrbVisual : MonoBehaviour
     //    texture.Apply();
     //    return texture;
     //}
+    OrbLaunchController launchController;
     PlayerAbilityController pbc;
     Color OGColor;
     SpriteRenderer spriteRenderer;
@@ -50,9 +51,10 @@ public class RedOrbVisual : MonoBehaviour
         trailRenderer = GetComponent<TrailRenderer>();
         OGColor = spriteRenderer.color;
         pbc = PassiveAndAbilitiesManager.instance.abilityController;
-        pbc.OnBeginCharge += ChargeHappening;
-        pbc.OnSwapBegin += Shrink;
-        pbc.OnSwapEnd += Grow;
+        launchController = pbc.launchController;
+        launchController.OnBeginCharge += ChargeHappening;
+        pbc.swapController.OnSwapBegin += Shrink;
+        pbc.swapController.OnSwapEnd += Grow;
 
         RedOrbController redOrb = FindObjectOfType<RedOrbController>();
         redOrb.OnRemoveChargeThrown += ChargeRemoved;
@@ -60,9 +62,9 @@ public class RedOrbVisual : MonoBehaviour
 
     private void OnDestroy()
     {
-        pbc.OnBeginCharge -= ChargeHappening;
-        pbc.OnSwapBegin -= Shrink;
-        pbc.OnSwapEnd -= Grow;
+        launchController.OnBeginCharge -= ChargeHappening;
+        pbc.swapController.OnSwapBegin -= Shrink;
+        pbc.swapController.OnSwapEnd -= Grow;
     }
 
     TimerClass shrinkTimer;
@@ -75,8 +77,9 @@ public class RedOrbVisual : MonoBehaviour
     {
         growShrinkTime = swapTime;
         shrinkTimer = new TimerClass(true, growShrinkTime, Time.time);
-        OGSize = transform.localScale;
+        //OGSize = transform.localScale;
         shrinkin = true;
+        growing = false;
     }
 
     void Grow()
@@ -102,7 +105,7 @@ public class RedOrbVisual : MonoBehaviour
                 shrinkin = false;
             }
         }
-        else if (growing)
+        else if (growing && blackHolePos == null)
         {
             if (growTimer.TimerStillGoing(Time.time))
             {
@@ -196,7 +199,7 @@ public class RedOrbVisual : MonoBehaviour
         if (charging && currentTimer.IsOn())
         {
             Color currentColor = spriteRenderer.color;
-            float percentage = pbc.GetChargeAmount();
+            float percentage = launchController.GetChargeAmount();
             float diff = 1 - OGColor.g;
 
             Color color = new Color(currentColor.r, currentColor.g + diff*percentage, currentColor.b);

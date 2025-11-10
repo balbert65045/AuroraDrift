@@ -85,6 +85,13 @@ public class PlayerCollisionController : MonoBehaviour
 
             if (pm.Orbiting)
             {
+                if (coll.transform.GetComponent<Ship>())
+                {
+                    if(coll.transform.GetComponent<EnemyHealth>().GetCurrentHealth() < 0)
+                    {
+                        return;
+                    }
+                }
                 orbitController.EndOrbit();
                 Quaternion rotPlus = Quaternion.Euler(0, 0, 20);
                 Quaternion rotMinus = Quaternion.Euler(0, 0, -20);

@@ -12,7 +12,10 @@ public class AbilityVisualController : MonoBehaviour
     [SerializeField] GameObject PerfectTextPrefab;
     PlayerMovement pm;
     PlayerAbilityController abilityController;
+
     PlayerInputController inputController;
+
+    OrbLaunchController launchController;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,12 +23,13 @@ public class AbilityVisualController : MonoBehaviour
         inputController.OnMoveInput += CaptureLastInput;
         pm = FindObjectOfType<PlayerMovement>();
         abilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        abilityController.ActuallyLaunch += Launched;
+        launchController = abilityController.launchController;
+        launchController.ActuallyLaunch += Launched;
     }
 
     private void OnDestroy()
     {
-        abilityController.ActuallyLaunch -= Launched;
+        launchController.ActuallyLaunch -= Launched;
     }
 
     Vector2 lastInput;
@@ -37,7 +41,7 @@ public class AbilityVisualController : MonoBehaviour
     void Launched()
     {
         Debug.Log("Launched");
-        if (abilityController.InPerfectRange())
+        if (launchController.InPerfectRange())
         {
             Instantiate(PerfectTextPrefab, pm.transform.position, Quaternion.identity);
             

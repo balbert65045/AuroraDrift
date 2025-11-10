@@ -18,6 +18,7 @@ public class OrbitDashVisual : MonoBehaviour
 
     PlayerAbilityController playerAbilityController;
     PlayerInputController playerInputController;
+    OrbLaunchController launchController;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,16 +26,17 @@ public class OrbitDashVisual : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         t2SpriteRenderer = t2.GetComponent<SpriteRenderer>();
         playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        playerAbilityController.OnBeginCharge += BeginCharge;
-        playerAbilityController.OnReleaseCharge += ReleaseCharge;
+        launchController = playerAbilityController.launchController;
+        launchController.OnBeginCharge += BeginCharge;
+        launchController.OnReleaseCharge += ReleaseCharge;
         diff = maxSize - minSize;
     }
 
 
     private void OnDestroy()
     {
-        playerAbilityController.OnBeginCharge -= BeginCharge;
-        playerAbilityController.OnReleaseCharge -= ReleaseCharge;
+        launchController.OnBeginCharge -= BeginCharge;
+        launchController.OnReleaseCharge -= ReleaseCharge;
     }
 
     void ReleaseCharge()
@@ -59,7 +61,7 @@ public class OrbitDashVisual : MonoBehaviour
         if (charging)
         {
             float percentage = currentTimer.percentageComplete(Time.timeSinceLevelLoad);
-            float evaluation = playerAbilityController.ChargeAnimationCurve.Evaluate(percentage);
+            float evaluation = launchController.ChargeAnimationCurve.Evaluate(percentage);
             float colorEvaluation = evaluation < .95f ? evaluation - .1f : evaluation;
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, colorEvaluation);
             float ySize = minSize + evaluation * diff;

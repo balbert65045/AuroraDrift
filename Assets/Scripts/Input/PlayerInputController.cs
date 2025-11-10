@@ -70,13 +70,14 @@ public class PlayerInputController : MonoBehaviour
         //DASH
         if (Input.GetButtonDown("Dash"))
         {
+            if (exitAvailable != null)
+            {
+                exitAvailable.ShrinkAndExit();
+                return;
+            }
             if (dashEnabled)
             {
                 DoDash();
-            }
-            if(exitAvailable != null)
-            {
-                exitAvailable.ShrinkAndExit();
             }
         }
         else if (Input.GetButtonUp("Dash"))
@@ -89,6 +90,10 @@ public class PlayerInputController : MonoBehaviour
 
         if (Input.GetButtonDown("DoSkill2"))
         {
+            if (exitAvailable != null)
+            {
+                return;
+            }
             DoSkill2();
         }
 

@@ -22,12 +22,12 @@ public class PlayerEffects : MonoBehaviour
     void Start()
     {
         playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        playerAbilityController.OnSwapBegin += Teleport;
+        playerAbilityController.swapController.OnSwapBegin += Teleport;
     }
 
     private void OnDestroy()
     {
-        playerAbilityController.OnSwapBegin -= Teleport;
+        playerAbilityController.swapController.OnSwapBegin -= Teleport;
     }
 
 

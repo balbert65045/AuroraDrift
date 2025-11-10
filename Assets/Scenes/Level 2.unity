@@ -21106,6 +21106,63 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followObj: {fileID: 2106080363}
+--- !u!1001 &1913435369
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 300544860329382838, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_Name
+      value: LevelManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 246.52504
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 299.42328
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.805635
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247849025819224737, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e0c3d844d619e3c4382cf67e31af0fef, type: 3}
 --- !u!198 &1927112247 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 7257910620509915976, guid: 2d54b93a2e8060542b0b9b4efcbd9313, type: 3}
@@ -21534,6 +21591,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57cb5e08225fd7d49b3d695454a4da52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SpeedIncrease: 0
+  RedDamageIncrease: 0
+  BlueDamageIncrease: 0
 --- !u!114 &4929541311756791460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21613,6 +21673,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d850ec8025d7143971d065411f95bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
+  abilityController: {fileID: 0}
+  playerPassiveController: {fileID: 0}
+  playerHealth: {fileID: 0}
+  upgradeSystem: {fileID: 0}
 --- !u!1001 &5153139325779025896
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22082,3 +22147,4 @@ SceneRoots:
   - {fileID: 190378207734946246}
   - {fileID: 844043974733080121}
   - {fileID: 831828488}
+  - {fileID: 1913435369}
