@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityDictionaries:
   - type: 0
-    Value: 3
+    BaseValue: 15
+    ValueIncrease: 5
     Cooldown: 0
+    CooldownDecrease: 0
   - type: 1
-    Value: 1
+    BaseValue: 30
+    ValueIncrease: 10
     Cooldown: 2
+    CooldownDecrease: 0

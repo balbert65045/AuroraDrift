@@ -105,7 +105,7 @@ public class Missel : MovableObject
         {
             Vector2 dir = (transform.position - collision.transform.position).normalized;
 
-            collision.GetComponent<Ship>().TakeDamge(this.gameObject, Damage, -dir * Force);
+            collision.GetComponent<Ship>().TakeDamge(this.gameObject, Damage, -dir * Force, DamageType.Red);
 
             Explode();
         }

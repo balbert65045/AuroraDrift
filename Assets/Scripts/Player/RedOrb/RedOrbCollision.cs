@@ -39,10 +39,22 @@ public class RedOrbCollision : MonoBehaviour
                 Vector2 dir = (transform.position - collision.transform.position).normalized;
 
 
-                collision.transform.GetComponent<Ship>().TakeDamge(redOrb.gameObject, orbDamageController.CalculateDamage(), -dir * force);
+                collision.transform.GetComponent<Ship>().TakeDamge(redOrb.gameObject, orbDamageController.CalculateDamage(), -dir * force, DetermineDamageType());
             }
             redOrb.RemoveChargeThrown();
             //collision.transform.GetComponent<Enemy>().AddVelocity(PreviousVel.normalized * KnockBack);
+        }
+    }
+
+    DamageType DetermineDamageType()
+    {
+        if (redOrb.ChargeThrown)
+        {
+            return DamageType.Yellow;
+        }
+        else
+        {
+            return DamageType.Orange;
         }
     }
 }

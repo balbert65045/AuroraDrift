@@ -106,7 +106,6 @@ public class RedOrbController : MovableObject
     {
         //freezeVel = pm.GetComponent<Rigidbody2D>().velocity;
         freezeVel = rb.velocity;
-        Debug.Log(freezeVel);
 
         rb.velocity = Vector2.zero;
         currentVelocity = Vector2.zero;
@@ -115,7 +114,6 @@ public class RedOrbController : MovableObject
 
     void UnFreeze()
     {
-        Debug.Log(freezeVel);
         rb.velocity = freezeVel;
         currentVelocity = freezeVel;
         stopped = false;

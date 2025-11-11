@@ -22,7 +22,7 @@ public class AttackCollision : MonoBehaviour
         }
         if (collision.GetComponent<Ship>())
         {
-            collision.GetComponent<Ship>().TakeDamge(this.gameObject, 10, perp * Force);
+            collision.GetComponent<Ship>().TakeDamge(this.gameObject, 10, perp * Force, DamageType.Red);
         }
     }
 }

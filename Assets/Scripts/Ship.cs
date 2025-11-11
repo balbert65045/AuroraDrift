@@ -212,7 +212,7 @@ public class Ship : MonoBehaviour
     GameObject recentDamageObj;
     float lastDamagedTime;
 
-    public void TakeDamge(GameObject fromWhat, float damage, Vector2 force)
+    public void TakeDamge(GameObject fromWhat, float damage, Vector2 force, DamageType damageType)
     {
         if(recentDamageObj == fromWhat && Time.timeSinceLevelLoad < lastDamagedTime + .2f)
         {
@@ -225,7 +225,7 @@ public class Ship : MonoBehaviour
         {
             damage = damage * 2;
         }
-        GetComponent<EnemyHealth>().TakeDamage(fromWhat, damage);
+        GetComponent<EnemyHealth>().TakeDamage(damageType, damage);
         KnockBack(force);
 
         if(OnTakeDamage != null) { OnTakeDamage.Invoke(); }

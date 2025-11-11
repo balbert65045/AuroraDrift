@@ -2,7 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum DamageType
+{
+    Blue,
+    Orange,
+    Purple,
+    Red,
+    Yellow
+}
 public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] float MaxHealth = 30;
@@ -29,34 +36,53 @@ public class EnemyHealth : MonoBehaviour
         playerChargeController = FindObjectOfType<PlayerChargeController>();
     }
 
+    //public DamageType DetermineDamageType(GameObject obj)
+    //{
+    //    if (obj.GetComponent<PlayerMovement>() != null)
+    //    {
+    //        if (obj.GetComponent<PlayerMovement>().Orbiting == true)
+    //        {
+    //            return DamageType.Purple;
+    //        }
+    //        else
+    //        {
+    //            return DamageType.Blue;
+    //        }
+    //    }
+    //    else if (obj.GetComponent<RedOrbController>() != null)
+    //    {
+            
+    //    }
+    //}
+
     public EventHandler<HealthStruct> OnTakeDamage;
-    public void TakeDamage(GameObject fromWhat, float amount)
+    public void TakeDamage(DamageType damageType, float amount)
     {
         GameObject fontPrefab = DamageFontPredab;
-        if (fromWhat.GetComponent<PlayerMovement>() || fromWhat.GetComponent<RedOrbController>())
+        switch (damageType)
         {
-            //Handle Player Damage
-            if (fromWhat.GetComponent<PlayerMovement>() != null)
-            {
-                if (fromWhat.GetComponent<PlayerMovement>().Orbiting == true)
-                {
-                    fontPrefab = PurpleDamageFontPrefab;
-                }
-            }
-            else if (fromWhat.GetComponent<RedOrbController>() != null)
-            {
+            case DamageType.Blue:
+                playerChargeController.PauseCharge();
+
+                break;
+            case DamageType.Purple:
+                fontPrefab = PurpleDamageFontPrefab;
+                playerChargeController.PauseCharge();
+
+                break;
+            case DamageType.Orange:
                 fontPrefab = OrangeDamageFontPrefab;
-                if (fromWhat.GetComponent<RedOrbController>().ChargeThrown)
-                {
-                    fontPrefab = YellowDamageFontPrefab;
-                }
-            }
-            playerChargeController.PauseCharge();
-        }
-        else
-        {
-            //Handle Missels hitting
-            fontPrefab = RedDamageFontPrefab;
+                playerChargeController.PauseCharge();
+
+                break;
+            case DamageType.Yellow:
+                fontPrefab = YellowDamageFontPrefab;
+                playerChargeController.PauseCharge();
+
+                break;
+            case DamageType.Red:
+                fontPrefab = RedDamageFontPrefab;
+                break;
         }
 
         currentHealth -= amount;

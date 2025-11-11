@@ -56,7 +56,6 @@ public class PlayerVisual : MonoBehaviour
     }
     void Shrink(float swapTime)
     {
-        Debug.Log("Shrinking");
         growShrinkTime = swapTime;
         shrinkTimer = new TimerClass(true, growShrinkTime, Time.time);
         //OGSize = transform.localScale;

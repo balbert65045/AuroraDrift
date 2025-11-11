@@ -90,7 +90,6 @@ public class TrailController : MonoBehaviour
 
     void SwapBegin(float _time)
     {
-        
         trail.Clear();
         trail.emitting = false;
     }

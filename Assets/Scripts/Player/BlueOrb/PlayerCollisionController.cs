@@ -80,7 +80,7 @@ public class PlayerCollisionController : MonoBehaviour
                 }
 
                 Vector2 dir = (transform.position - coll.transform.position).normalized;
-                coll.transform.GetComponent<Ship>().TakeDamge(this.gameObject, orbDamageController.CalculateDamage(), -dir *force);
+                coll.transform.GetComponent<Ship>().TakeDamge(this.gameObject, orbDamageController.CalculateDamage(), -dir *force, DetermineDamageType());
             }
 
             if (pm.Orbiting)
@@ -118,7 +118,17 @@ public class PlayerCollisionController : MonoBehaviour
     }
 
 
-
+    DamageType DetermineDamageType()
+    {
+        if (pm.Orbiting)
+        {
+            return DamageType.Purple;
+        }
+        else
+        {
+            return DamageType.Blue;
+        }
+    }
 
     public void Reflect(Vector2 angle)
     {

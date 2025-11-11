@@ -15,6 +15,7 @@ public class Upgrade
     public OrbType orbType;
     public int tier;
 
+    public float baseAmount;
     float amount;
     public float cooldown;
 
@@ -27,6 +28,10 @@ public class Upgrade
         this.tier = tier;
     }
 
+    public void SetBaseAmount(float amount)
+    {
+        this.baseAmount = amount;
+    }
     public void SetAmount(float amount)
     {
         this.amount = amount;
@@ -39,19 +44,24 @@ public class Upgrade
 
     public float GetBaseAmount()
     {
-        return this.amount;
+        return this.baseAmount;
     }
 
     public float GetTotalAmount()
     {
         return this.amount * tier;
     }
+
+    public float GetTotalAmountCalculated()
+    {
+        return this.baseAmount + (tier - 1) * amount;
+    }
 }
 
 
 public class UpgradeSystem : MonoBehaviour
 {
-    [SerializeField] AbilityList abilityList;
+    public AbilityList abilityList;
     [SerializeField] PassiveList passiveList;
     [SerializeField] List<PassiveType> OrbSpecificPassives;
     public List<Upgrade> CurrentUpgrades = new List<Upgrade>();
@@ -151,7 +161,8 @@ public class UpgradeSystem : MonoBehaviour
         }
         else
         {
-            selectedUpgrade.SetAmount(abilityList.GetValue(abilityType));
+            selectedUpgrade.SetAmount(abilityList.GetValueIncrease(abilityType));
+            selectedUpgrade.SetBaseAmount(abilityList.GetBaseValue(abilityType));
             selectedUpgrade.SetCooldown(abilityList.GetCooldown(abilityType));
         }
         return selectedUpgrade;

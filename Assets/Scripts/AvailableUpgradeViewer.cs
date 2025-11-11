@@ -34,6 +34,7 @@ public class AvailableUpgradeViewer : MonoBehaviour
         foreach(Upgrade upgrade in upgrades)
         {
             GameObject prefab = FindCardUpgrade(upgrade);
+            Debug.Log(prefab.name);
             GameObject upgradeCard = Instantiate(prefab, this.transform);
             upgradeCard.GetComponent<CardUpgrade>().SetupUpgrade(upgrade);
             //upgradeCard.

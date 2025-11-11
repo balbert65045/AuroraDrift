@@ -5,15 +5,13 @@ using UnityEngine;
 
 public class OrbLaunchController : MonoBehaviour
 {
-    [SerializeField] float BaseOrbLaunchAmount = 15;
     public float GetOrbLaunchAmount() {
-        if(currentAbility == null) { return BaseOrbLaunchAmount; }
+        if(currentAbility == null) { return 0; }
         else
         {
-            return BaseOrbLaunchAmount + currentAbility.GetTotalAmount();
+            return currentAbility.GetTotalAmountCalculated();
         }
     }
-    public float GetBaseOrbLaunchAmount() { return BaseOrbLaunchAmount; }
 
     public AnimationCurve ChargeAnimationCurve;
     PlayerMovement pm;
