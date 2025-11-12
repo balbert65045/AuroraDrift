@@ -38,8 +38,10 @@ public class CardAbility : CardUpgrade
         }
         else
         {
-            AbilityDictionary abilityDictionary = PassiveAndAbilitiesManager.instance.upgradeSystem.abilityList.GetAbilityDictionary(AbilityType.OrbLaunch);
+            AbilityDictionary abilityDictionary = PassiveAndAbilitiesManager.instance.upgradeSystem.abilityList.GetAbilityDictionary(upgrade.abilityType);
             float baseAmount = abilityDictionary.BaseValue;
+            Debug.Log(baseAmount);
+            Debug.Log(upgrade.tier);
             float previousAmount = baseAmount + (upgrade.tier - 2) * abilityDictionary.ValueIncrease;
             float newAmount = baseAmount + (upgrade.tier - 1) * abilityDictionary.ValueIncrease;
             switch (CardAbilityType)
@@ -50,8 +52,8 @@ public class CardAbility : CardUpgrade
             }
 
 
-            oldValue.text = previousAmount.ToString();
-            newValue.text = newAmount.ToString();
+            oldValue.text = previousAmount.ToString() + " DMG";
+            newValue.text = newAmount.ToString() + " DMG";
         }
 
         ////Percentage
