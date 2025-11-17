@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1239414610448128148
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8802610037595522109}
+  - component: {fileID: 7555705627141112715}
+  - component: {fileID: 7627784709561139215}
+  m_Layer: 0
+  m_Name: ButtonDictionary
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8802610037595522109
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239414610448128148}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12.445993, y: -4.083234, z: 79.93177}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7555705627141112715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239414610448128148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28a0fa36eeae8de49ab29c9e1dd1035a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Controller_DashButton: {fileID: 21300000, guid: d5a5ee2480d4c2c4cb477692e6d2e756, type: 3}
+  Controller_Ability2Button: {fileID: 21300000, guid: ce5801eadae7f9442b327a6a89abf258, type: 3}
+  Controller_Ability3Button: {fileID: 21300000, guid: 1c360fe62e9dce64797c74dcbeb39959, type: 3}
+  Keyboard_DashButton: {fileID: 21300000, guid: 4dcbb3c7b0f8fa14295b80ee5791352b, type: 3}
+  Keyboard_Ability2Button: {fileID: 21300000, guid: 8e7376753f27bb44488f146403a0d432, type: 3}
+  Keyboard_Ability3Button: {fileID: 21300000, guid: 88699630e4245584281bdfb1cd6203f6, type: 3}
+--- !u!114 &7627784709561139215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239414610448128148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc4e10549b8d13144b9f39678aea4f23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Controller_Movement: {fileID: 21300000, guid: 6b679c2a524a75b46b102d69a5c7ff2e, type: 3}
+  Controller_Pull_Red: {fileID: 21300000, guid: b3ec58d848a7d6a468063f520a4a2d87, type: 3}
+  Controller_Pull_Blue: {fileID: 21300000, guid: b9b7cae747ddc96458d5a11ad9e0e553, type: 3}
+  Keyboard_Movement: {fileID: 21300000, guid: dd34692bde0e10c468984bd69e2aaef8, type: 3}
+  Keyboard_Pull_Red: {fileID: 21300000, guid: 3218f0a720aefe54a80e699c570c502c, type: 3}
+  Keyboard_Pull_Blue: {fileID: 21300000, guid: 11008a0f001b80149b1ccaabae3c9a1c, type: 3}

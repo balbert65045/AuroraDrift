@@ -30,8 +30,8 @@ public class CardPassive : CardUpgrade
     public override void SetupUpgrade(Upgrade upgrade)
     {
         base.SetupUpgrade(upgrade);
-        float previousAmount = (upgrade.tier - 1) * upgrade.GetBaseAmount();
-        float newAmount = upgrade.tier * upgrade.GetBaseAmount();
+        float previousAmount = (upgrade.tier - 1) * upgrade.GetAmount();
+        float newAmount = upgrade.tier * upgrade.GetAmount();
         float baseAmount = 0;
         switch (CardPassiveType)
         {

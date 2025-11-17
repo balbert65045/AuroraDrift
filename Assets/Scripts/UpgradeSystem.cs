@@ -42,6 +42,11 @@ public class Upgrade
         this.cooldown = cooldown;
     }
 
+    public float GetAmount()
+    {
+        return this.amount;
+    }
+
     public float GetBaseAmount()
     {
         return this.baseAmount;

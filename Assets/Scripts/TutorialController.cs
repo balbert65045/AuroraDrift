@@ -144,7 +144,10 @@ public class TutorialController : MonoBehaviour
         {
             
         }
+        if (currentIndex >= TutorialPompts.Length) { return; }
+
         TutorialPompts[currentIndex - 1].SetActive(false);
+
         TutorialPompts[currentIndex].transform.position = newPos;
         TutorialPompts[currentIndex].SetActive(true);
     }
