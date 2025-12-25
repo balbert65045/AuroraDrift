@@ -41,12 +41,12 @@ public class EnemySpawner : MonoBehaviour
 
         //Spawn(profile.waves[currentWaveIndex]);
 
-/*
-        if (enemiesOut.Count == 0)
-        {
-            Spawn(profile.waves[currentWaveIndex]);
-        }
-*/
+        /*
+                if (enemiesOut.Count == 0)
+                {
+                    Spawn(profile.waves[currentWaveIndex]);
+                }
+        */
     }
 
     void Spawn(Wave wave)
@@ -84,6 +84,8 @@ public class EnemySpawner : MonoBehaviour
                 Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
                 float spawnRadius = Radius / 3;
                 Instantiate(LevelupBlock, (Vector2)pm.transform.position + (randomDir * spawnRadius), Quaternion.identity);
+                FindObjectOfType<TimerUI>().StopTimer();
+
 
             }
             else

@@ -111,7 +111,6 @@ public class PlayerPullController : MonoBehaviour
         if (!redOrb.gameObject.activeSelf) { return; }
         if (!redOrb.GetHeld())
         {
-            Debug.Log("Attempting to pull blue");
             PullBlue();
         }
     }

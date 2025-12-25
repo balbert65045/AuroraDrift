@@ -13,6 +13,18 @@ public class TimerUI : MonoBehaviour
         return text.text;
     }
 
+    public void InitTimer(float time)
+    {
+        initTime = time;
+    }
+    float currentTime = 0;
+
+    public float GetCurrentTime()
+    {
+        return currentTime;
+    }
+
+    float initTime = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,9 +35,10 @@ public class TimerUI : MonoBehaviour
         playerHealth.OnDied += StopTimer;
     }
 
-    void StopTimer()
+    public void StopTimer()
     {
         RecordTime = false;
+        currentTime = Time.timeSinceLevelLoad + initTime;
     }
 
     string calculateTime(float time)
@@ -42,7 +55,7 @@ public class TimerUI : MonoBehaviour
     {
         if(RecordTime)
         {
-            text.text = calculateTime(Time.timeSinceLevelLoad);
+            text.text = calculateTime(initTime + Time.timeSinceLevelLoad);
         }
     }
 }

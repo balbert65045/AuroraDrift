@@ -316,6 +316,7 @@ public class PlayerMovement : MovableObject
         }
     }
 
+
     void GetPulled(Vector2 dir)
     {
         Vector2 moveDir = redOrb.transform.position - transform.position;
@@ -332,6 +333,16 @@ public class PlayerMovement : MovableObject
             //float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, 120);
             //currentVelocity = currentVelocity.normalized * maxval;
         }
+    }
+
+    bool thrown = false;
+    float timeThrown = .2f;
+    TimerClass thrownTimer = new TimerClass(false);
+    public void GetThrown(Vector2 vel)
+    {
+        currentVelocity = vel;
+        thrown = true;
+        thrownTimer = new TimerClass(true, timeThrown, Time.time);
     }
 
     void DoNormalMovement(Vector2 dir)
@@ -422,6 +433,18 @@ public class PlayerMovement : MovableObject
         if (dashing)
         {
             if (CheckStillDashing(inputDirection)) { return; }
+        }
+        if (thrown)
+        {
+            if (thrownTimer.TimerStillGoing(Time.time))
+            {
+                return;
+            }
+            else
+            {
+                currentVelocity = currentVelocity.normalized * 120;
+                thrown = false;
+            }
         }
         //Pulling
         if (pulling)

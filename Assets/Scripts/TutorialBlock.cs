@@ -17,8 +17,14 @@ public class TutorialBlock : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        ShowTutorial();
+        if (!showingTutorial)
+        {
+            showingTutorial = true;
+            ShowTutorial();
+        }
     }
+
+    bool showingTutorial = false;
 
     void ShowTutorial()
     {

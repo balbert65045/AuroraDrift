@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ScreenTransition : MonoBehaviour
 {
@@ -10,6 +11,13 @@ public class ScreenTransition : MonoBehaviour
     TimerClass growTimer = new TimerClass(false);
     public void Grow(Vector3 pos)
     {
+        if (SceneManager.GetActiveScene().buildIndex == SceneManager.sceneCountInBuildSettings - 1)
+        {
+            FindObjectOfType<WinPanel>().Win();
+            Debug.Log("Last Scene");
+            return;
+        }
+        PassiveAndAbilitiesManager.instance.SaveTime();
         transform.position = pos;
         StartCoroutine("DelayThenGrow");
     }

@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Playables;
 using UnityEngine;
 
 public class SwapController : MonoBehaviour
 {
     [SerializeField] LayerMask shipMask;
+
     [SerializeField] float SwapTime = .1f;
     public Action<float> OnSwapBegin;
     public Action OnSwapEnd;
@@ -63,23 +61,23 @@ public class SwapController : MonoBehaviour
         foreach (RaycastHit2D hit in hits)
         {
             Debug.Log(hit.transform.name);
-            Ship ship = hit.transform.GetComponent<Ship>();
-            if (ship)
+            IDamagable damagable = hit.transform.GetComponent<IDamagable>();
+            if (damagable != null)
             {
-                Vector2 forceDiff = (Vector2)hit.point - (Vector2)ship.transform.position;
+                Vector2 forceDiff = (Vector2)hit.point - (Vector2)hit.transform.position;
                 int roll = UnityEngine.Random.Range(0, 2);
                 Vector2 dir;
                 if(roll == 0)
                 {
-                    dir = forceDiff.normalized.Perpendicular1();
+                    dir = Vector2.Perpendicular(forceDiff.normalized);
                 }
                 else
                 {
-                    dir = forceDiff.normalized.Perpendicular2();
+                    dir = -Vector2.Perpendicular(forceDiff.normalized);
                 }
                 Vector2 force = dir * SwapDamageForce;
                 Debug.Log(force);
-                ship.TakeDamge(this.gameObject, currentAbility.GetTotalAmountCalculated(), force, DamageType.Purple);
+                damagable.TakeDamge(this.gameObject, currentAbility.GetTotalAmountCalculated(), force, DamageType.Purple);
             }
         }
 

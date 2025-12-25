@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2404341949801290883}
   - component: {fileID: 2188992758951506107}
   - component: {fileID: 5414953714597922709}
+  - component: {fileID: 771486116418580208}
   m_Layer: 5
   m_Name: WinCanvas
   m_TagString: Untagged
@@ -102,6 +103,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &771486116418580208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518757639311737210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 082baa3ff0f93ee40b8a773214b525f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Panel: {fileID: 2402757984230556176}
 --- !u!1 &580068216527454466
 GameObject:
   m_ObjectHideFlags: 0
@@ -1083,8 +1097,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4ad902754d24bf459fe08b7523b8665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LoseWindow: {fileID: 0}
-  WinWindow: {fileID: 0}
+  LoseWindow: {fileID: 1967278717827008644}
+  WinWindow: {fileID: 2402757984230556176}
   Panel: {fileID: 1020359221581232232}
   cam: {fileID: 0}
 --- !u!1 &2824116595203554232

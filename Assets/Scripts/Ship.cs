@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Ship : MonoBehaviour
+public class Ship : MonoBehaviour, IDamagable
 {
     [SerializeField] float minDistanceFromEnemies = 15f;
     [SerializeField] float AboutToAttackTime = .5f;
@@ -35,6 +35,8 @@ public class Ship : MonoBehaviour
     TimerClass AboutToAttackTimer = new TimerClass(false);
     public EventHandler<float> OnAboutToAttack;
     public List<Ship> allEnemies = new List<Ship>();
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -207,7 +209,6 @@ public class Ship : MonoBehaviour
 
     }
 
-    public Action OnTakeDamage;
 
     GameObject recentDamageObj;
     float lastDamagedTime;
@@ -232,6 +233,9 @@ public class Ship : MonoBehaviour
     }
 
     bool stunned = false;
+
+    public Action OnTakeDamage { get; set; }
+
     public void Stunned()
     {
         inShotProces = false;

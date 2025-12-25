@@ -75,7 +75,7 @@ public class TargetGroupController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>() || collision.GetComponent<RedOrbCamTracker>())
+        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>() || collision.GetComponent<RedOrbCamTracker>() || collision.transform.tag == "Enemy")
         {
             AddNewMember(collision.transform);
             //targetGroup.AddMember(collision.transform, 0, 5f);
@@ -109,7 +109,7 @@ public class TargetGroupController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>() || collision.GetComponent<RedOrbCamTracker>())
+        if (collision.GetComponent<Ship>() || collision.GetComponent<TutorialBlock>() || collision.GetComponent<RedOrbCamTracker>() || collision.transform.tag == "Enemy")
         {
             RemoveNewMember(collision.transform);
 

@@ -28,6 +28,30 @@ public class AbilityContainer : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        ClearAbility();
+    }
+
+    public void ClearAbility()
+    {
+        if(CurrentAbility != null)
+        {
+            switch (CurrentAbility.GetAbilityType())
+            {
+                case AbilityType.OrbLaunch:
+                    FindObjectOfType<OrbLaunchController>().OnEnableCharge -= EnableIcon;
+                    FindObjectOfType<OrbLaunchController>().OnDisableCharge -= DisableIcon;
+                    break;
+                case AbilityType.Swap:
+                    FindObjectOfType<SwapController>().OnStartCooldown -= SetAbilityOnCooldown;
+                    break;
+            }
+            Destroy(CurrentAbility.gameObject);
+            CurrentAbility = null;
+        }
+    }
+
     public void SetAbility(GameObject iconPrefab)
     {
         if(CurrentAbility != null)
@@ -62,14 +86,20 @@ public class AbilityContainer : MonoBehaviour
 
     void EnableIcon()
     {
-        CurrentAbility.gameObject.SetActive(true);
-        currentIcon.gameObject.SetActive(false);
+        if (CurrentAbility != null)
+        {
+            CurrentAbility.gameObject.SetActive(true);
+            currentIcon.gameObject.SetActive(false);
+        }
     }
 
     void DisableIcon()
     {
-        CurrentAbility.gameObject.SetActive(false);
-        currentIcon.gameObject.SetActive(true);
+        if(CurrentAbility != null)
+        {
+            CurrentAbility.gameObject.SetActive(false);
+            currentIcon.gameObject.SetActive(true);
+        }
     }
 
     TimerClass cooldownTimer = new TimerClass(false);

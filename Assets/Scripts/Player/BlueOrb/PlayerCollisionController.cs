@@ -67,11 +67,11 @@ public class PlayerCollisionController : MonoBehaviour
                 return;
             }
         }
-        if(coll.transform.GetComponent<Enemy>() != null || coll.transform.GetComponent<Ship>() || coll.transform.GetComponent<Shield>())
+        if(coll.transform.GetComponent<Enemy>() != null || coll.transform.GetComponent<IDamagable>() != null || coll.transform.GetComponent<Shield>())
         {
             Vector2 reflectAngle = Vector2.Reflect(pm.prevVel, coll.contacts[0].normal);
 
-            if (coll.transform.GetComponent<Ship>() != null)
+            if (coll.transform.GetComponent<IDamagable>() != null)
             {
                 float force = 40 + (pm.GetComponent<MovableObject>().prevVel.magnitude / 7f);
                 if (pm.dashing)
@@ -80,7 +80,7 @@ public class PlayerCollisionController : MonoBehaviour
                 }
 
                 Vector2 dir = (transform.position - coll.transform.position).normalized;
-                coll.transform.GetComponent<Ship>().TakeDamge(this.gameObject, orbDamageController.CalculateDamage(), -dir *force, DetermineDamageType());
+                coll.transform.GetComponent<IDamagable>().TakeDamge(this.gameObject, orbDamageController.CalculateDamage(), -dir *force, DetermineDamageType());
             }
 
             if (pm.Orbiting)
@@ -105,7 +105,7 @@ public class PlayerCollisionController : MonoBehaviour
             }
             else
             {
-                if (!pm.dashing && !recentlyDashed)
+                if ((!pm.dashing && !recentlyDashed) || coll.transform.GetComponent<BossBody>())
                 {
                     pm.AdjustVel(reflectAngle);
                 }

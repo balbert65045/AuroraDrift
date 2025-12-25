@@ -101,11 +101,11 @@ public class Missel : MovableObject
             PassiveAndAbilitiesManager.instance.playerHealth.LoseHealth(10);
             Explode();
         }
-        if(collision.GetComponent<Ship>() != null && !shortDissable)
+        if(collision.GetComponent<IDamagable>() != null && !shortDissable)
         {
             Vector2 dir = (transform.position - collision.transform.position).normalized;
 
-            collision.GetComponent<Ship>().TakeDamge(this.gameObject, Damage, -dir * Force, DamageType.Red);
+            collision.GetComponent<IDamagable>().TakeDamge(this.gameObject, Damage, -dir * Force, DamageType.Red);
 
             Explode();
         }

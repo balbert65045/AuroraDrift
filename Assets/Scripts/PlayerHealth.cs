@@ -89,6 +89,10 @@ public class PlayerHealth : MonoBehaviour
 
     public void LoseHealth(float amount)
     {
+        if (playerChargeController == null)
+        {
+            playerChargeController = FindObjectOfType<PlayerChargeController>();
+        }
         playerChargeController.LoseCharge(100);
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, MaxHealth);

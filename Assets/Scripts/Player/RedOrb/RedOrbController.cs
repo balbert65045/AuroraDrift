@@ -230,7 +230,7 @@ public class RedOrbController : MovableObject
         redOrbCollision.gameObject.SetActive(true);
         thrownDir = rotationController.transform.right;
         currentVelocity = thrownDir * pullController.PushPullSpeed * 1.4f;
-        //currentVelocity = thrownDir * 85f;
+        //currentVelocity = thrownDir * 100f;
         rb.velocity = currentVelocity;
         thrown = true;
 

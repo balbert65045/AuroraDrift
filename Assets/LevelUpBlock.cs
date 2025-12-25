@@ -43,9 +43,14 @@ public class LevelUpBlock : MonoBehaviour
         transform.Rotate(Vector3.forward, Time.fixedDeltaTime * RotateSpeed);
     }
 
+    bool showingUpgrade = false;
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        ShowUpgrade();
+        if (!showingUpgrade)
+        {
+            showingUpgrade = true;
+            ShowUpgrade();
+        }
     }
 
     void ShowUpgrade()

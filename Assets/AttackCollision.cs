@@ -20,9 +20,9 @@ public class AttackCollision : MonoBehaviour
         {
             collision.GetComponent<RedOrbController>().AdjustVel(perp * Force);
         }
-        if (collision.GetComponent<Ship>())
+        if (collision.GetComponent<IDamagable>() != null)
         {
-            collision.GetComponent<Ship>().TakeDamge(this.gameObject, 10, perp * Force, DamageType.Red);
+            collision.GetComponent<IDamagable>().TakeDamge(this.gameObject, 10, perp * Force, DamageType.Red);
         }
     }
 }

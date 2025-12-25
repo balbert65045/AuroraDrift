@@ -61,7 +61,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &8498104779618931453
 MonoBehaviour:
@@ -115,6 +115,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a016828043584b41bb6c15e7410bf8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   DisplayLifetime: 1
   MyText: {fileID: 5397077253002333827}
 --- !u!1 &8106037830976651700

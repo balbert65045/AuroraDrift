@@ -13,6 +13,12 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
     public PlayerHealth playerHealth;
     public UpgradeSystem upgradeSystem;
 
+    float currentTime = 0;
+
+    public void SaveTime()
+    {
+        currentTime = FindObjectOfType<TimerUI>().GetCurrentTime();
+    }
     
     private void Awake()
     {
@@ -42,7 +48,8 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
 
     void NewSceneEntered(Scene scene1, Scene scene2)
     {
-      if(LevelManager.instance.sceneNumber == 0) { return; }
+      if (instance != this) { return; }
+      if (LevelManager.instance.sceneNumber == 0) { return; }
       if(scene2.name == "Title")
         {
             //Reset
@@ -54,6 +61,10 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
             if (firstLevel)
             {
                 ResetValues();
+            }
+            else
+            {
+                FindObjectOfType<TimerUI>().InitTimer(currentTime);
             }
             abilityController.Reconnect();
             playerHealth.Setup(firstLevel);

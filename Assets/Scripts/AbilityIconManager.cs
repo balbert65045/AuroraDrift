@@ -8,25 +8,29 @@ public class AbilityIconManager : MonoBehaviour
     [SerializeField] AbilityContainer Ability2Region;
     [SerializeField] AbilityContainer Ability3Region;
 
-    List<AbilityIcon> CurrentIcons = new List<AbilityIcon>();
     [SerializeField] AbilityIcon[] abilityIconPrefabs;
 
     UpgradeSystem upgradeSystem;
     // Start is called before the first frame update
     void Start()
     {
-        upgradeSystem = FindObjectOfType<UpgradeSystem>();
-        upgradeSystem.OnSelectAbility += AbilitySelected;
-        upgradeSystem.OnClearUpgrades += ClearUpgrades;
+        PassiveAndAbilitiesManager.instance.upgradeSystem.OnSelectAbility += AbilitySelected;
+        PassiveAndAbilitiesManager.instance.upgradeSystem.OnClearUpgrades += ClearUpgrades;
+    }
+
+    private void OnDestroy()
+    {
+        PassiveAndAbilitiesManager.instance.upgradeSystem.OnSelectAbility -= AbilitySelected;
+        PassiveAndAbilitiesManager.instance.upgradeSystem.OnClearUpgrades -= ClearUpgrades;
     }
 
     void ClearUpgrades()
     {
-        foreach (AbilityIcon icon in CurrentIcons)
-        {
-            Destroy(icon.gameObject);
-        }
-        CurrentIcons.Clear();
+        Ability2Region.gameObject.SetActive(false);
+        Ability3Region.gameObject.SetActive(false);
+        dashAbilityRegion.ClearAbility();
+        Ability2Region.ClearAbility();
+        Ability3Region.ClearAbility();
     }
 
     void AbilitySelected(Upgrade abilityUpgrade)

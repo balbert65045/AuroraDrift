@@ -13,12 +13,12 @@ public class EnemyStagger : MonoBehaviour
     public Action<HealthStruct> OnStaggerChanged;
     public Action<float> OnStagger;
 
-    Ship ship;
+    IDamagable damagable;
     // Start is called before the first frame update
     void Start()
     {
-        ship = GetComponent<Ship>();
-        ship.OnTakeDamage += TakeStaggerDamage;
+        damagable = GetComponent<IDamagable>();
+        damagable.OnTakeDamage += TakeStaggerDamage;
     }
 
     public void TakeStaggerDamage()
@@ -38,7 +38,7 @@ public class EnemyStagger : MonoBehaviour
     void Stagger()
     {
         staggerTimer = new TimerClass(true, StaggerTime, Time.time);
-        ship.Stunned();
+        damagable.Stunned();
         OnStagger.Invoke(StaggerTime);
     }
 
@@ -54,7 +54,7 @@ public class EnemyStagger : MonoBehaviour
             else
             {
                 currentStagger = 0;
-                ship.UnStunn();
+                damagable.UnStunn();
             }
         }
     }

@@ -11,9 +11,14 @@ public class PassiveIconManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        upgradeSystem = FindObjectOfType<UpgradeSystem>();
-        upgradeSystem.OnSelectPassive += PassiveSelected;
-        upgradeSystem.OnClearUpgrades += ClearUpgrades;
+        PassiveAndAbilitiesManager.instance.upgradeSystem.OnSelectPassive += PassiveSelected;
+        PassiveAndAbilitiesManager.instance.upgradeSystem.OnClearUpgrades += ClearUpgrades;
+    }
+
+    private void OnDestroy()
+    {
+        PassiveAndAbilitiesManager.instance.upgradeSystem.OnSelectPassive -= PassiveSelected;
+        PassiveAndAbilitiesManager.instance.upgradeSystem.OnClearUpgrades -= ClearUpgrades;
     }
 
     void ClearUpgrades()
