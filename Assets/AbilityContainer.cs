@@ -16,6 +16,7 @@ public class AbilityContainer : MonoBehaviour
 
     [SerializeField] AbilityIcon CurrentAbility;
     [SerializeField] Image currentIcon;
+    [SerializeField] Image altIcon;
 
     // Start is called before the first frame update
     void Start()
@@ -24,8 +25,26 @@ public class AbilityContainer : MonoBehaviour
         {
             case AbilityRegion.Dash:
                 FindObjectOfType<PlayerAbilityController>().OnDashAbility += SetAbilityOnCooldown;
+                FindObjectOfType<PlayerOrbitController>().OnBeginOrbit += SwitchToAlt;
+                FindObjectOfType<PlayerOrbitController>().OnEndOrbit += SwitchOffAlt;
                 break;
         }
+    }
+
+    void SwitchToAlt()
+    {
+        if(altIcon == null) { return; }
+        if(CurrentAbility != null) { return; }
+        altIcon.gameObject.SetActive(true);
+        currentIcon.gameObject.SetActive(false);
+    }
+
+    void SwitchOffAlt()
+    {
+        if (altIcon == null) { return; }
+        if (CurrentAbility != null) { return; }
+        altIcon.gameObject.SetActive(false);
+        currentIcon.gameObject.SetActive(true);
     }
 
     private void OnDestroy()
@@ -35,7 +54,17 @@ public class AbilityContainer : MonoBehaviour
 
     public void ClearAbility()
     {
-        if(CurrentAbility != null)
+        switch (abilityRegion)
+        {
+            case AbilityRegion.Dash:
+                //if()
+                //FindObjectOfType<PlayerAbilityController>().OnDashAbility -= SetAbilityOnCooldown;
+                FindObjectOfType<PlayerOrbitController>().OnBeginOrbit -= SwitchToAlt;
+                FindObjectOfType<PlayerOrbitController>().OnEndOrbit -= SwitchOffAlt;
+                break;
+        }
+
+        if (CurrentAbility != null)
         {
             switch (CurrentAbility.GetAbilityType())
             {
@@ -82,6 +111,13 @@ public class AbilityContainer : MonoBehaviour
                 FindObjectOfType<SwapController>().OnStartCooldown += SetAbilityOnCooldown;
                 break;
         }
+    }
+
+    public void Setup()
+    {
+        Debug.Log("Setting up");
+        FindObjectOfType<PlayerOrbitController>().OnBeginOrbit += SwitchToAlt;
+        FindObjectOfType<PlayerOrbitController>().OnEndOrbit += SwitchOffAlt;
     }
 
     void EnableIcon()

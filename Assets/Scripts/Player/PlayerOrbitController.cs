@@ -100,9 +100,12 @@ public class PlayerOrbitController : MonoBehaviour
         //ThrowPlayer
         Vector2 thrownDir = FindObjectOfType<PlayerRotationController>().transform.right;
         //1.4 before
-        Vector2 velocity = thrownDir * FindObjectOfType<PlayerPullController>().PushPullSpeed * 1.6f;
+        //Vector2 velocity = thrownDir * FindObjectOfType<PlayerPullController>().PushPullSpeed * 1.6f;
+        float velocityEnd = FindObjectOfType<PlayerPullController>().PushPullSpeed * 1.6f;
+        Vector2 velocity = thrownDir * 200;
+
         //Vector2 velocity = thrownDir * 85f;
-        pm.AdjustVel(velocity);
+        pm.GetThrown(velocity, velocityEnd);
     }
 
 

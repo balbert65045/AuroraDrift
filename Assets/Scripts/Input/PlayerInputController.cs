@@ -24,6 +24,18 @@ public class PlayerInputController : MonoBehaviour
     public Action<Vector2> OnMouseDirChanged;
 
     PlayerMovement pm;
+
+    bool InControl = true;
+    public void TakeControl()
+    {
+        InControl = false;
+    }
+
+    public void ReleaseControl()
+    {
+        InControl = true;
+    }
+
     public bool GetHoldingDown()
     {
         return (Input.GetAxisRaw("PullRed") == 1 || Input.GetAxis("PullBlue") == 1);
@@ -60,6 +72,7 @@ public class PlayerInputController : MonoBehaviour
     bool pullingBlue = false;
     void Update()
     {
+        if (!InControl) { return; }
         if(Time.timeScale == 0) { return; }
         //MOVEMENT//
         float inputX = Input.GetAxisRaw(horizontalAxis);

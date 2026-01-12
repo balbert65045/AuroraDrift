@@ -14,6 +14,11 @@ public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] float MaxHealth = 30;
     float currentHealth;
+
+    public float GetCurrentHealthPercentage()
+    {
+        return currentHealth / MaxHealth;
+    }
     public float GetCurrentHealth()
     {
         return currentHealth;

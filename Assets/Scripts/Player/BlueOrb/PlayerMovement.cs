@@ -101,7 +101,7 @@ public class PlayerMovement : MovableObject
 
     public void ReceiveDash()
     {
-        if(Orbiting) { return; }
+        if(Orbiting && FindObjectOfType<OrbLaunchController>().IsAbilityOn()) { return; }
         if (!canDash) { return; }
         //if(Time.timeSinceLevelLoad < timeSinceDashed + DashCooldown) { return; }
         //if (chargeController.CurrentCharge() < 50) { return; }
@@ -290,6 +290,11 @@ public class PlayerMovement : MovableObject
         velocityBeforeDash = currentVelocity;
         float maxSpeed = Mathf.Max(GetSpeed() * DashMultiplier, currentVelocity.magnitude * DashMultiplier * .6f);
         float dashSpeed = Mathf.Min(maxSpeed, MaxDashSpeed);
+        if (Orbiting)
+        {
+            maxSpeed = maxSpeed * 1.2f;
+            dashSpeed = dashSpeed * 1.2f;
+        }
         currentVelocity = direction * dashSpeed;
         rb.velocity = currentVelocity;
         // if(Orbiting == false) { canDash = false; }
@@ -308,6 +313,7 @@ public class PlayerMovement : MovableObject
             //rb.GetComponent<CircleCollider2D>().isTrigger = false;
 
             currentVelocity = dir * velocityBeforeDash.magnitude;
+            rb.velocity = currentVelocity;
             return false;
         }
         else
@@ -336,11 +342,14 @@ public class PlayerMovement : MovableObject
     }
 
     bool thrown = false;
-    float timeThrown = .2f;
+    float timeThrown = .1f;
     TimerClass thrownTimer = new TimerClass(false);
-    public void GetThrown(Vector2 vel)
+    float endMagnitude;
+
+    public void GetThrown(Vector2 velStart, float velEndMag)
     {
-        currentVelocity = vel;
+        endMagnitude = velEndMag;
+        currentVelocity = velStart;
         thrown = true;
         thrownTimer = new TimerClass(true, timeThrown, Time.time);
     }
@@ -442,7 +451,7 @@ public class PlayerMovement : MovableObject
             }
             else
             {
-                currentVelocity = currentVelocity.normalized * 120;
+                currentVelocity = currentVelocity.normalized * endMagnitude;
                 thrown = false;
             }
         }

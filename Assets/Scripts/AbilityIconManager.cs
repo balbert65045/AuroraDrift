@@ -24,6 +24,11 @@ public class AbilityIconManager : MonoBehaviour
         PassiveAndAbilitiesManager.instance.upgradeSystem.OnClearUpgrades -= ClearUpgrades;
     }
 
+    public void SetupDash()
+    {
+        dashAbilityRegion.Setup();
+    }
+
     void ClearUpgrades()
     {
         Ability2Region.gameObject.SetActive(false);

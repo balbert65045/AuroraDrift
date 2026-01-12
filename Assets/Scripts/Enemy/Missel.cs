@@ -53,7 +53,7 @@ public class Missel : MovableObject
 
     }
 
-    void Explode()
+    public void Explode()
     {
         Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
         Destroy(this.gameObject);
@@ -91,6 +91,10 @@ public class Missel : MovableObject
     {
         if(collision.GetComponent<Shield>() != null)
         {
+            if (MyCreator == null) { 
+                Explode();
+                return;
+            }
             if (MyCreator.transform.parent.GetComponentInChildren<Shield>() != null && MyCreator.transform.parent.GetComponentInChildren<Shield>() == collision.GetComponent<Shield>()) { }
             else { Explode(); }
         }

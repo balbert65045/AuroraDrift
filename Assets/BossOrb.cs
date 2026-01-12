@@ -5,11 +5,19 @@ using UnityEngine;
 
 public class BossOrb : MonoBehaviour
 {
+    [SerializeField] GameObject BossMisselPrefab;
+    [SerializeField] Transform[] MisselPositions;
     [SerializeField] LineRenderer lineRenderer;
 
     [SerializeField] float Force = 10f;
     [SerializeField] Transform IdleHandSpot;
     [SerializeField] Transform AttackHandSpot;
+    [SerializeField] Transform FireMisselSpot;
+
+    [SerializeField] Transform AttackHandSpotPhase2;
+    [SerializeField] Transform FireMisselSpotPhase2;
+
+
     Boss1 Boss1;
     Rigidbody2D Rigidbody2;
     PlayerMovement pm;
@@ -42,9 +50,17 @@ public class BossOrb : MonoBehaviour
         //lineRenderer.widthMultiplier = 4f;
     }
 
+    Boss1.AttackState previousState;
     // Update is called once per frame
     void Update()
     {
+        if (Boss1.Stunned) { return; }
+        if (Boss1.inPhase2Transition)
+        {
+            DoIdleState();
+            return;
+        }
+
         switch (Boss1.myState)
         {
             case Boss1.AttackState.Idle:
@@ -56,12 +72,80 @@ public class BossOrb : MonoBehaviour
             case Boss1.AttackState.SpinAttack:
                 DoSpinAttackState();
                 break;
+            case Boss1.AttackState.FireMissels:
+                DoFireMisselsState();
+                break;
+        }
+        previousState = Boss1.myState;
+    }
+
+    TimerClass moveOutTimer = new TimerClass(false);
+    TimerClass FireMisselTimer = new TimerClass(false);
+    Vector2 Movedir = Vector2.zero;
+    float previousDistance;
+    void DoFireMisselsState()
+    {
+        locked = false;
+        if (Boss1.ReachedPhase2 && FireMisselSpot != FireMisselSpotPhase2)
+        {
+            FireMisselSpot = FireMisselSpotPhase2;
+        }
+
+        if (previousState != Boss1.AttackState.FireMissels)
+        {
+            Movedir = -(transform.position - FireMisselSpot.transform.position).normalized;
+            previousDistance = (transform.position - FireMisselSpot.transform.position).magnitude;
+        }
+        if ((transform.position - FireMisselSpot.position).magnitude > 10)
+        {
+            previousDistance = (transform.position - FireMisselSpot.transform.position).magnitude;
+            currentVelocity = Movedir * AttackSpeed;
+            Rigidbody2.velocity = currentVelocity;
+        }
+        else
+        {
+            Rigidbody2.velocity = Vector2.zero;
+            currentVelocity = Vector2.zero;
+            if (!FireMisselTimer.TimerStillGoing(Time.time))
+            {
+                if(Time.time + FireMisselSpeed * MisselPositions.Length > Boss1.nextStateTime) { return; }
+                FireMisselTimer = new TimerClass(true, FireMisselSpeed* MisselPositions.Length, Time.time);
+                StartCoroutine("FireMissels");
+            }
+
+        }
+        if (transform.tag == "Untagged")
+        {
+            FindObjectOfType<TargetGroupController>().AddNewMember(transform);
+            transform.tag = "Enemy";
+        }
+    }
+
+    [SerializeField] float FireMisselSpeed = .2f;
+    IEnumerator FireMissels()
+    {
+        foreach (Transform MisselPos in MisselPositions)
+        {
+            if (Boss1.Stunned)
+            {
+                break;
+            }
+            //int RandomIndex = Random.Range(0, MisselPositions.Length);
+            int RandomIndex = 0;
+            Transform NewPos = MisselPositions[RandomIndex];
+            Instantiate(BossMisselPrefab, NewPos.position, NewPos.rotation);
+            yield return new WaitForSeconds(FireMisselSpeed);
         }
     }
 
     void DoSpinAttackState()
     {
-        if (locked || (transform.position - IdleHandSpot.transform.position).magnitude < 10f)
+        if (Boss1.ReachedPhase2 && AttackHandSpot != AttackHandSpotPhase2)
+        {
+            AttackHandSpot = AttackHandSpotPhase2;
+        }
+
+        if (locked || (transform.position - AttackHandSpot.transform.position).magnitude < 5f)
         {
             LockedPosition = AttackHandSpot.transform.position;
             currentVelocity = Vector2.zero;
@@ -69,18 +153,25 @@ public class BossOrb : MonoBehaviour
         }
         else
         {
-            Vector2 dir = transform.right;
-
-            dir = ((Vector2)AttackHandSpot.transform.position - (Vector2)transform.position).normalized;
+            Vector2 dir = ((Vector2)AttackHandSpot.transform.position - (Vector2)transform.position).normalized;
 
             float desired = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             float current = transform.eulerAngles.z;
 
             float next = Mathf.MoveTowardsAngle(current, desired, turnRateDeg * Time.deltaTime);
 
+            float speedMult = 1.4f;
+            if (Boss1.ReachedPhase2)
+            {
+                //speedMult = 2f;
+            }
             transform.rotation = Quaternion.Euler(0, 0, next);
+            currentVelocity = dir * AttackSpeed * speedMult;
 
-            currentVelocity = dir * AttackSpeed * 1.3f;
+            if ((transform.position - IdleHandSpot.transform.position).magnitude < 20f)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, desired);
+            }
         }
 
         //transform.position = HandSpot.position;
@@ -92,11 +183,11 @@ public class BossOrb : MonoBehaviour
     }
 
     Vector2 LockedPosition;
-    bool locked = false;
+    public bool locked = false;
     void DoIdleState()
     {
-
-        if (locked || (transform.position - IdleHandSpot.transform.position).magnitude < 3f) {
+        if(IdleHandSpot == null) { return; }
+        if (locked || (transform.position - IdleHandSpot.transform.position).magnitude < 5f) {
             LockedPosition = IdleHandSpot.transform.position;
             currentVelocity = Vector2.zero;
             locked = true;
@@ -125,6 +216,8 @@ public class BossOrb : MonoBehaviour
         }
     }
 
+    float Phase2Mult = 1.1f;
+
     void DoAttackState()
     {
         locked = false;
@@ -140,12 +233,23 @@ public class BossOrb : MonoBehaviour
             FindObjectOfType<TargetGroupController>().AddNewMember(transform);
             transform.tag = "Enemy";
             maxSpeed = AttackSpeed;
+            if (Boss1.ReachedPhase2)
+            {
+                maxSpeed = AttackSpeed * Phase2Mult;
+            }
+
             transform.rotation = Quaternion.Euler(0, 0, desired);
 
         }
         else
         {
-            maxSpeed = Mathf.MoveTowards(currentVelocity.magnitude, AttackSpeed, acceleration / 3 * Time.deltaTime);
+            float speed = AttackSpeed;
+            if (Boss1.ReachedPhase2)
+            {
+                speed = AttackSpeed * Phase2Mult;
+            }
+
+            maxSpeed = Mathf.MoveTowards(currentVelocity.magnitude, speed, acceleration / 3 * Time.deltaTime);
             float current = transform.eulerAngles.z;
 
             float next = Mathf.MoveTowardsAngle(current, desired, turnRateDeg * Time.deltaTime);
@@ -244,6 +348,21 @@ public class BossOrb : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 0, desired);
             //currentVelocity = reflectAngle.normalized * Rigidbody2.velocity.magnitude *2f;
             //Rigidbody2.velocity = currentVelocity;
+        }
+
+        if(collision.GetComponent<BossBody>() != null && Boss1.myState == Boss1.AttackState.Attack1)
+        {
+            if (Boss1.invulnerableFromSelf) { return; }
+            RecentlyHitObj = collision.gameObject;
+            cooldownTimer = new TimerClass(true, cooldownPerHit, Time.time);
+
+            Vector2 reflectAngle = transform.position - collision.transform.position;
+
+            float desired = Mathf.Atan2(reflectAngle.y, reflectAngle.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, desired);
+
+            Vector2 dir = (transform.position - collision.transform.position).normalized;
+            collision.GetComponent<IDamagable>().TakeDamge(this.gameObject, 10, -dir * Force, DamageType.Red);
         }
     }
 }

@@ -7,6 +7,8 @@ public class DashEffectController : MonoBehaviour
     [SerializeField] float FadeSpeed = 2f;
     [SerializeField] ParticleSystem bright;
     [SerializeField] ParticleSystem particleSystem;
+    [SerializeField] ParticleSystem OrangeParticleSystem;
+    [SerializeField] ParticleSystem purpleParticleSystem;
     PlayerMovement pm;
     // Start is called before the first frame update
     void Start()
@@ -23,7 +25,15 @@ public class DashEffectController : MonoBehaviour
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
         transform.rotation = Quaternion.Euler(0,0, angle + 180);
-        particleSystem.Play();
+        if (pm.Orbiting)
+        {
+            OrangeParticleSystem.Play();
+            particleSystem.Play();
+        }
+        else
+        {
+            particleSystem.Play();
+        }
         //bright.enabled = true;
         //bright.color = Color.white;
         bright.Play();

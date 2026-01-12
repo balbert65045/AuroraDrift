@@ -6,7 +6,8 @@ using UnityEngine;
 public enum ShieldType
 {
     Orange,
-    Blue
+    Blue,
+    None
 }
 public class Shield : MonoBehaviour
 {
@@ -26,7 +27,10 @@ public class Shield : MonoBehaviour
         myCircleCollider = GetComponent<CircleCollider2D>();
         animator = GetComponent<Animator>();
         followObj = GetComponent<FollowObj>();
-        followObj.followObj = transform.parent.GetComponentInChildren<Ship>().transform;
+        if (transform.parent.GetComponentInChildren<Ship>())
+        {
+            followObj.followObj = transform.parent.GetComponentInChildren<Ship>().transform;
+        }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -50,7 +54,16 @@ public class Shield : MonoBehaviour
     public void Shatter()
     {
         //mySpriteRenderer.enabled = false;
-        animator.SetTrigger("Break");
-        myCircleCollider.enabled = false;
+        if(animator != null)
+        {
+            animator.SetTrigger("Break");
+            myCircleCollider.enabled = false;
+        }
+    }
+
+    public void Remake()
+    {
+        animator.SetTrigger("Remake");
+        myCircleCollider.enabled = true;
     }
 }

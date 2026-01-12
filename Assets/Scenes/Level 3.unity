@@ -1293,10 +1293,6 @@ PrefabInstance:
       propertyPath: m_Parameters.numCornerVertices
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 2295864007821297661, guid: 338d1caeab749934b87b6bd19750a691, type: 3}
-      propertyPath: Deceleration
-      value: 65
-      objectReference: {fileID: 0}
     - target: {fileID: 3034187775487837258, guid: 338d1caeab749934b87b6bd19750a691, type: 3}
       propertyPath: maxTime
       value: 0.15
@@ -1849,14 +1845,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1384876531483309179, guid: 2f209e9cdbd3d0b4ba87e76a3d58e682, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1384876531483309179, guid: 2f209e9cdbd3d0b4ba87e76a3d58e682, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 762
-      objectReference: {fileID: 0}
     - target: {fileID: 1739414420790832893, guid: 2f209e9cdbd3d0b4ba87e76a3d58e682, type: 3}
       propertyPath: cam
       value: 
@@ -1932,10 +1920,6 @@ PrefabInstance:
     - target: {fileID: 5558689985659617312, guid: 2f209e9cdbd3d0b4ba87e76a3d58e682, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 252
-      objectReference: {fileID: 0}
-    - target: {fileID: 7168153342338913859, guid: 2f209e9cdbd3d0b4ba87e76a3d58e682, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7452604243939513281, guid: 2f209e9cdbd3d0b4ba87e76a3d58e682, type: 3}
       propertyPath: m_Name

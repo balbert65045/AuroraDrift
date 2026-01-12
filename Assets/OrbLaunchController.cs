@@ -24,11 +24,16 @@ public class OrbLaunchController : MonoBehaviour
     [SerializeField] float MaxChargeTime = 2f;
     public TimerClass chargeTimer = new TimerClass(false);
 
-    bool OrbLaunchEnabled = false;
+    public bool OrbLaunchEnabled = false;
     public Action OnEnableCharge;
     public Action OnDisableCharge;
 
     [SerializeField] Upgrade currentAbility;
+
+    public bool IsAbilityOn()
+    {
+        return currentAbility != null;
+    }
 
     public void SetAbility(Upgrade ability)
     {

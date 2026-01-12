@@ -136,6 +136,17 @@ public class RedOrbController : MovableObject
     }
     protected override void FixedUpdate()
     {
+        if (thrownTimer.IsOn())
+        {
+            if (thrownTimer.TimerStillGoing(Time.time))
+            {
+
+            }
+            else
+            {
+                currentVelocity = currentVelocity.normalized * endMagnitude;
+            }
+        }
         if (stopped) { return; }
         base.FixedUpdate();
         //if(rb.velocity.magnitude < 2f) { RemoveChargeThrown(); }
@@ -225,11 +236,21 @@ public class RedOrbController : MovableObject
         canCatch = true;
     }
 
+    TimerClass thrownTimer = new TimerClass(false);
+    float thrownTime = .1f;
+    float endMagnitude;
     public void GetThrown()
     {
-        redOrbCollision.gameObject.SetActive(true);
         thrownDir = rotationController.transform.right;
-        currentVelocity = thrownDir * pullController.PushPullSpeed * 1.4f;
+
+        thrownTimer = new TimerClass(true, thrownTime, Time.time);
+        currentVelocity = thrownDir * 200;
+        endMagnitude = pullController.PushPullSpeed * 1.4f;
+
+
+        redOrbCollision.gameObject.SetActive(true);
+        //thrownDir = rotationController.transform.right;
+        //currentVelocity = thrownDir * pullController.PushPullSpeed * 1.4f;
         //currentVelocity = thrownDir * 100f;
         rb.velocity = currentVelocity;
         thrown = true;

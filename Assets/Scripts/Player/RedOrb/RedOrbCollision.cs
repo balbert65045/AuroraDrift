@@ -25,7 +25,7 @@ public class RedOrbCollision : MonoBehaviour
 
         if (collision.transform.GetComponent<Enemy>() || collision.transform.GetComponent<IDamagable>() != null || collision.transform.GetComponent<Shield>())
         {
-            Vector2 reflectAngle = Vector2.Reflect(PreviousVel, collision.contacts[0].normal);
+            Vector2 reflectAngle = Vector2.Reflect(PreviousVel/1.5f, collision.contacts[0].normal);
             redOrb.AdjustVel(reflectAngle);
             redOrb.DissableTrack();
 

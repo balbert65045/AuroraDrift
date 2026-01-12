@@ -66,6 +66,8 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
             {
                 FindObjectOfType<TimerUI>().InitTimer(currentTime);
             }
+            Debug.Log("New Scene entered");
+            GetComponentInChildren<AbilityIconManager>().SetupDash();
             abilityController.Reconnect();
             playerHealth.Setup(firstLevel);
             if (canvas != null)

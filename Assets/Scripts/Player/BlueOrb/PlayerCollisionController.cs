@@ -49,24 +49,24 @@ public class PlayerCollisionController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D coll)
     {
-        if (pm.dashing) {
-            if (pm.Orbiting)
-            {
-                Vector2 reflectAngle = Vector2.Reflect(pm.prevVel, coll.contacts[0].normal);
+        //if (pm.dashing) {
+        //    if (pm.Orbiting)
+        //    {
+        //        Vector2 reflectAngle = Vector2.Reflect(pm.prevVel, coll.contacts[0].normal);
 
-                orbitController.EndOrbit();
-                Quaternion rotPlus = Quaternion.Euler(0, 0, 20);
-                Quaternion rotMinus = Quaternion.Euler(0, 0, -20);
-                pm.AdjustVel(rotPlus * reflectAngle);
-                redOrb.DissableTrack();
-                redOrb.StopCatch();
-                Vector2 dir = (rotMinus * reflectAngle).normalized;
-                float magnitude = (rotMinus * reflectAngle).magnitude;
-                magnitude = Mathf.Clamp(magnitude, 0, 100);
-                redOrb.AdjustVel(dir * magnitude);
-                return;
-            }
-        }
+        //        orbitController.EndOrbit();
+        //        Quaternion rotPlus = Quaternion.Euler(0, 0, 20);
+        //        Quaternion rotMinus = Quaternion.Euler(0, 0, -20);
+        //        pm.AdjustVel(rotPlus * reflectAngle);
+        //        redOrb.DissableTrack();
+        //        redOrb.StopCatch();
+        //        Vector2 dir = (rotMinus * reflectAngle).normalized;
+        //        float magnitude = (rotMinus * reflectAngle).magnitude;
+        //        magnitude = Mathf.Clamp(magnitude, 0, 100);
+        //        redOrb.AdjustVel(dir * magnitude);
+        //        return;
+        //    }
+        //}
         if(coll.transform.GetComponent<Enemy>() != null || coll.transform.GetComponent<IDamagable>() != null || coll.transform.GetComponent<Shield>())
         {
             Vector2 reflectAngle = Vector2.Reflect(pm.prevVel, coll.contacts[0].normal);
@@ -107,7 +107,7 @@ public class PlayerCollisionController : MonoBehaviour
             {
                 if ((!pm.dashing && !recentlyDashed) || coll.transform.GetComponent<BossBody>())
                 {
-                    pm.AdjustVel(reflectAngle);
+                    pm.AdjustVel(reflectAngle/2);
                 }
                 pm.DissableInputForBriefMoment();
                 pullController.OutsideStopPulling();

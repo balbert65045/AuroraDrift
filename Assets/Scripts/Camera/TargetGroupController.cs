@@ -19,6 +19,7 @@ public class TargetGroupController : MonoBehaviour
     List<Transform> removingMembers = new List<Transform>();
     private void Update()
     {
+        if (!InControl) { return; }
         //float distance = (redOrbController.transform.position - Player.transform.position).magnitude;
         //if (distance > MaxDistanceAway)
         //{
@@ -58,10 +59,17 @@ public class TargetGroupController : MonoBehaviour
             foreach (Transform t in removingMembers)
             {
                 int index = targetGroup.FindMember(t);
-                targetGroup.m_Targets[index].weight = Mathf.Clamp01(targetGroup.m_Targets[index].weight - Time.deltaTime * adjustSpeed);
-                if (targetGroup.m_Targets[index].weight <= 0)
+                if(index == -1)
                 {
                     finished.Add(t);
+                }
+                else
+                {
+                    targetGroup.m_Targets[index].weight = Mathf.Clamp01(targetGroup.m_Targets[index].weight - Time.deltaTime * adjustSpeed);
+                    if (targetGroup.m_Targets[index].weight <= 0)
+                    {
+                        finished.Add(t);
+                    }
                 }
             }
 
@@ -104,6 +112,64 @@ public class TargetGroupController : MonoBehaviour
         {
             newMembers.Remove(member);
         }
+    }
+
+    CinemachineTargetGroup.Target[] previousTargets;
+    bool InControl = true;
+    public void TakeControl(Transform newTarget)
+    {
+        GetComponent<CircleCollider2D>().enabled = false;
+        InControl = false;
+        previousTargets = targetGroup.m_Targets;
+        foreach(CinemachineTargetGroup.Target target in previousTargets)
+        {
+            targetGroup.RemoveMember(target.target);
+        }
+        targetGroup.AddMember(newTarget, 1, 10);
+    }
+
+    public void ReleaseControl()
+    {
+        GetComponent<CircleCollider2D>().enabled = true;
+        InControl = true;
+        CinemachineTargetGroup.Target[] currentTargets = targetGroup.m_Targets;
+        //foreach (CinemachineTargetGroup.Target target in currentTargets)
+        //{
+        //    targetGroup.RemoveMember(target.target);
+        //}
+
+        foreach (CinemachineTargetGroup.Target target in previousTargets)
+        {
+            targetGroup.AddMember(target.target, 0, target.radius);
+        }
+
+        StartCoroutine("IncreaseDecreaseWeigths");
+    }
+
+    IEnumerator IncreaseDecreaseWeigths()
+    {
+        CinemachineTargetGroup.Target BossTarget = targetGroup.m_Targets[0];
+        CinemachineTargetGroup.Target Player = targetGroup.m_Targets[1];
+        CinemachineTargetGroup.Target Red = targetGroup.m_Targets[2];
+
+        while(targetGroup.m_Targets[0].weight > .65f || targetGroup.m_Targets[1].weight < 1 || targetGroup.m_Targets[2].weight < .7f)
+        {
+            if(targetGroup.m_Targets[0].weight > .65f)
+            {
+                targetGroup.m_Targets[0].weight -= Time.deltaTime;
+            }
+            if(targetGroup.m_Targets[1].weight  < 1)
+            {
+                targetGroup.m_Targets[1].weight += Time.deltaTime;
+            }
+            if(targetGroup.m_Targets[2].weight < .7f)
+            {
+                targetGroup.m_Targets[2].weight += Time.deltaTime;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+
+        //targetGroup.RemoveMember(BossTarget.target);
     }
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
+using Unity.VisualScripting;
 
 public class Healthbar : MonoBehaviour
 {
@@ -21,6 +22,18 @@ public class Healthbar : MonoBehaviour
 
     private CinemachineBasicMultiChannelPerlin noise;
     public CinemachineVirtualCamera virtualCamera;
+
+    [SerializeField] GameObject Canvas;
+    public void TakeControl()
+    {
+        Canvas.SetActive(false);
+    }
+
+    public void ReleaseControl()
+    {
+        Canvas.SetActive(true);
+    }
+
     void SetHealth(HealthStruct healthStruct, bool hurt)
     {
         healthbarMiddle.fillAmount = healthStruct.Health / healthStruct.MaxHealth;

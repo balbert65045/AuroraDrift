@@ -113,25 +113,25 @@ public class TutorialController : MonoBehaviour
         }
         if(currentIndex == 7)
         {
-            Ship3.SetActive(true);
-            PlayerMovement pm = FindObjectOfType<PlayerMovement>();
-            Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
-            Ship3.transform.position = pos;
-        }
-        if (currentIndex == 8)
-        {
             Ship4.SetActive(true);
             PlayerMovement pm = FindObjectOfType<PlayerMovement>();
             Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
             Ship4.transform.position = pos;
         }
-        if(currentIndex == 9)
+        if (currentIndex == 8)
         {
             BlackHole.SetActive(true);
             PlayerMovement pm = FindObjectOfType<PlayerMovement>();
             Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
             BlackHole.transform.position = pos;
         }
+        //if(currentIndex == 9)
+        //{
+        //    BlackHole.SetActive(true);
+        //    PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+        //    Vector2 pos = (Vector2)pm.transform.position + Vector2.right * 70;
+        //    BlackHole.transform.position = pos;
+        //}
     }
 
     public void ShowNextTutorial(Vector2 pos)
