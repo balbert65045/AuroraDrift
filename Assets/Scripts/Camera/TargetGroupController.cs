@@ -17,9 +17,38 @@ public class TargetGroupController : MonoBehaviour
 
     List<Transform> newMembers = new List<Transform>();
     List<Transform> removingMembers = new List<Transform>();
+
+    int RedOrbIndex;
+    RedOrbController redOrb;
+    [SerializeField] float MinMaxRedOrbRange = 100f;
+    [SerializeField] float MaxMaxRedOrbRange = 120f;
+
+    bool showingRedOrb = false;
+    void AdjustRedOrb()
+    {
+        if (redOrb == null || showingRedOrb) { return; }
+        float diff = (redOrb.transform.position - Player.transform.position).magnitude;
+        float weight;
+        if (diff < MinMaxRedOrbRange)
+        {
+            weight =  .7f;
+        }
+        else if(diff > MinMaxRedOrbRange && diff < MaxMaxRedOrbRange)
+        {
+            float percentage = 1 - (diff - MinMaxRedOrbRange) / (MaxMaxRedOrbRange - MinMaxRedOrbRange);
+            weight = percentage * .7f;
+        }
+        else
+        {
+            weight = 0f;
+        }
+        targetGroup.m_Targets[RedOrbIndex].weight = weight;
+
+    }
     private void Update()
     {
         if (!InControl) { return; }
+        AdjustRedOrb();
         //float distance = (redOrbController.transform.position - Player.transform.position).magnitude;
         //if (distance > MaxDistanceAway)
         //{
@@ -75,9 +104,27 @@ public class TargetGroupController : MonoBehaviour
 
             foreach (Transform t in finished)
             {
+
                 targetGroup.RemoveMember(t);
+
                 removingMembers.Remove(t);
+                RecalculateRedOrbIndex();
             }
+        }
+    }
+
+    void RecalculateRedOrbIndex()
+    {
+        if(redOrb == null) { return; }
+        RedOrbIndex = targetGroup.FindMember(redOrb.transform);
+    }
+
+    private void Start()
+    {
+        redOrb = FindAnyObjectByType<RedOrbController>();
+        if(redOrb != null)
+        {
+            RedOrbIndex = targetGroup.FindMember(redOrb.transform);
         }
     }
 
@@ -93,6 +140,29 @@ public class TargetGroupController : MonoBehaviour
             //    removingMembers.Remove(collision.transform);
             //}
         }
+
+        if(redOrb == null)
+        {
+            if (collision.GetComponent<RedOrbController>())
+            {
+                redOrb = collision.GetComponent<RedOrbController>();
+                targetGroup.AddMember(redOrb.transform, 0f, 10);
+
+                RedOrbIndex = targetGroup.FindMember(redOrb.transform);
+                showingRedOrb = true;
+                StartCoroutine("IncreaseRedOrbWeght");
+            }
+        }
+    }
+
+    IEnumerator IncreaseRedOrbWeght()
+    {
+        while(targetGroup.m_Targets[RedOrbIndex].weight < .7f)
+        {
+            yield return new WaitForEndOfFrame();
+            targetGroup.m_Targets[RedOrbIndex].weight += Time.deltaTime;
+        }
+        showingRedOrb = false;
     }
 
     public void AddNewMember(Transform member)

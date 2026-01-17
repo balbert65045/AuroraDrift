@@ -13,7 +13,7 @@ public class FollowObj : MonoBehaviour
     {
         if (followObj != null)
         {
-            transform.position = followObj.position;
+            transform.position = (Vector2)followObj.position;
         }
     }
 }

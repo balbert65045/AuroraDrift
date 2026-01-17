@@ -226,10 +226,23 @@ public class PlayerMovement : MovableObject
         stopped = true;
     }
 
+    public override void AdjustVel(Vector2 vel)
+    {
+        if (swinging) { return; }
+        base.AdjustVel(vel);
+    }
+
     void UnFreeze()
     {
-        rb.velocity = freezeVel;
-        currentVelocity = freezeVel;
+        if (freezeVel.magnitude < 100)
+        {
+            currentVelocity = 100 * freezeVel.normalized;
+        }
+        else
+        {
+            currentVelocity = freezeVel;
+        }
+        rb.velocity = currentVelocity;
         stopped = false;
     }
 
@@ -239,7 +252,62 @@ public class PlayerMovement : MovableObject
         return baseMaxSpeed + (baseMaxSpeed * PassiveAndAbilitiesManager.instance.playerPassiveController.SpeedIncrease);
     }
 
-    
+    bool swinging = false;
+    float swingStartMagnitude;
+    Transform swingPivotPoint;
+    public void BeginSwingBlue(Transform pivotPoint)
+    {
+        StopPulling();
+        swinging = true;
+        SwingBlue = true;
+        distanceJoint.enabled = true;
+        swingStartMagnitude = rb.velocity.magnitude;
+        swingPivotPoint = pivotPoint;
+    }
+
+    public void BeginSwingRed()
+    {
+        StopPulling();
+        swinging = true;
+    }
+
+    public void EndSwing()
+    {
+        distanceJoint.enabled = false;
+        swinging = false;
+        SwingBlue = false;
+    }
+
+    [SerializeField] DistanceJoint2D distanceJoint;
+    bool SwingBlue = false;
+
+    void DoSwing()
+    {
+        float maxSpeed = 150f;
+        float minSpeed = 120f;
+        float distance = (transform.position - redOrb.transform.position).magnitude;
+        float distanceMult = Mathf.Max(1, distance / 20f);
+        float baseMult = 1.4f;
+        float newSpeed = Mathf.Min(distanceMult * swingStartMagnitude * baseMult, maxSpeed);
+        newSpeed = Mathf.Max(newSpeed, minSpeed);
+        
+        Vector2 newDir = CalculateTangentDir(swingPivotPoint.position);
+        currentVelocity = newDir.normalized * newSpeed;
+    }
+
+    Vector2 CalculateTangentDir(Vector2 point)
+    {   
+        Vector2 directionOfAnchor = point -  (Vector2)transform.position;
+        Vector2 directionOfForce = -Vector2.Perpendicular(directionOfAnchor.normalized);
+        Vector2 vel = rb.velocity;
+        bool counterClockiwize = Vector2.Dot(directionOfForce, vel) > 0;
+        if (!counterClockiwize)
+        {
+            directionOfForce = -directionOfForce;
+        }
+        return directionOfForce;
+    }
+
 
     public void CreateNewVelocity(Vector2 velocity)
     {
@@ -269,6 +337,7 @@ public class PlayerMovement : MovableObject
 
     public void PullTowardsRed(RedOrbController redOrb)
     {
+        if (swinging) { return; }
         if(InBlackHoleBlue && InBlackHoleRed) { return; }
         this.redOrb = redOrb;
         Vector2 moveDir = redOrb.transform.position - transform.position;
@@ -281,6 +350,7 @@ public class PlayerMovement : MovableObject
     {
         pulling = false;
     }
+
 
     void Dash(Vector2 direction)
     {
@@ -439,6 +509,11 @@ public class PlayerMovement : MovableObject
 
     void CalculateVelocity()
     {
+        if (SwingBlue)
+        {
+            DoSwing();
+            return;
+        }
         if (dashing)
         {
             if (CheckStillDashing(inputDirection)) { return; }

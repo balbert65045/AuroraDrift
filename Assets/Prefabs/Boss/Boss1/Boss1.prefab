@@ -899,7 +899,7 @@ MonoBehaviour:
   attackCooldownTime: 0.1
   attackIndicationTime: 1
   turnRateDeg: 120
-  FireMisselSpeed: 0.2
+  FireMisselSpeed: 0.27
   locked: 0
 --- !u!50 &7127738247597170528
 Rigidbody2D:
@@ -1309,7 +1309,7 @@ MonoBehaviour:
   attackCooldownTime: 0.02
   attackIndicationTime: 1
   turnRateDeg: 120
-  FireMisselSpeed: 0.2
+  FireMisselSpeed: 0.27
   locked: 0
 --- !u!50 &6059963240961222625
 Rigidbody2D:
@@ -1418,6 +1418,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cca6093c28f7a054bb267be16b54b601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SpinAttackTime: 6
+  Attack1Time: 7
+  FireMisselsTime: 12
   Hands: {fileID: 7109228155831121411}
   myState: 0
   turnRateDeg: 90
@@ -2236,7 +2239,7 @@ MonoBehaviour:
   attackCooldownTime: 0.02
   attackIndicationTime: 1
   turnRateDeg: 120
-  FireMisselSpeed: 0.2
+  FireMisselSpeed: 0.27
   locked: 0
 --- !u!50 &845056864045620136
 Rigidbody2D:
@@ -2376,10 +2379,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3

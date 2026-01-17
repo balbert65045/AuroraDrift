@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class RedOrbCollision : MonoBehaviour
 {
     OrbDamageController orbDamageController;
     RedOrbController redOrb;
+
+    public Action OnDealDamage;
+
     float KnockBack = 20f;
     private void Start()
     {
@@ -25,6 +29,7 @@ public class RedOrbCollision : MonoBehaviour
 
         if (collision.transform.GetComponent<Enemy>() || collision.transform.GetComponent<IDamagable>() != null || collision.transform.GetComponent<Shield>())
         {
+            if(OnDealDamage != null) { OnDealDamage.Invoke(); }
             Vector2 reflectAngle = Vector2.Reflect(PreviousVel/1.5f, collision.contacts[0].normal);
             redOrb.AdjustVel(reflectAngle);
             redOrb.DissableTrack();

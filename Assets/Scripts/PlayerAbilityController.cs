@@ -8,6 +8,7 @@ public class PlayerAbilityController : MonoBehaviour
 
     public OrbLaunchController launchController;
     public SwapController swapController;
+    public SwingController swingController;
 
     PlayerMovement pm;
 
@@ -33,6 +34,7 @@ public class PlayerAbilityController : MonoBehaviour
         Debug.Log("Reconnect");
         launchController.Reconnect();
         swapController.Reconnect();
+        swingController.Reconnect();
 
         UpgradeSystem upgradeSystem = FindObjectOfType<UpgradeSystem>();
         if (upgradeSystem != null)

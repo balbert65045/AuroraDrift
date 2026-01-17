@@ -10,7 +10,7 @@ public class SpeedCamera : MonoBehaviour
     [SerializeField] PlayerMovement pm;
     [SerializeField] float zoomSpeed = 20;
     CinemachineVirtualCamera cam;
-    float minSize;
+    float minSize = 21.6f;
 
 
     CinemachineFramingTransposer transposer;
@@ -20,7 +20,6 @@ public class SpeedCamera : MonoBehaviour
         orbitController = pm.GetComponent<PlayerOrbitController>();
         cam = GetComponent<CinemachineVirtualCamera>();
         transposer = cam.GetCinemachineComponent<CinemachineFramingTransposer>();
-        minSize = transposer.m_MinimumOrthoSize;
     }
 
 
@@ -48,7 +47,6 @@ public class SpeedCamera : MonoBehaviour
     {
         cam = GetComponent<CinemachineVirtualCamera>();
         transposer = cam.GetCinemachineComponent<CinemachineFramingTransposer>();
-        minSize = transposer.m_MinimumOrthoSize;
         InControl = false;
         ZoomOutTimer = new TimerClass(true, ZoomOutTime, Time.time);
         transposer.m_MinimumOrthoSize = minZoomOut;
@@ -93,7 +91,6 @@ public class SpeedCamera : MonoBehaviour
             float increase = Mathf.Clamp(pm.GetComponent<Rigidbody2D>().velocity.magnitude / pm.GetMaxSpeed(), 1, 100);
             float newSize = Mathf.Max(increase/2, 1) * minSize;
             transposer.m_MinimumOrthoSize = Mathf.Lerp(transposer.m_MinimumOrthoSize, newSize, Time.deltaTime * zoomSpeed);
-
         }
 
     }

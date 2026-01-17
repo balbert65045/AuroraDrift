@@ -75,6 +75,10 @@ public class Missel : MovableObject
 
         currentVelocity = dir * maxSpeed;
 
+        if(pm == null)
+        {
+            return;
+        }
         dir = ((Vector2)pm.transform.position - (Vector2)transform.position).normalized;
 
         float desired = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

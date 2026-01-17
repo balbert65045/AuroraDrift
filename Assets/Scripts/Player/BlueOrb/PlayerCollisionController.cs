@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -13,6 +14,8 @@ public class PlayerCollisionController : MonoBehaviour
     PlayerOrbitController orbitController;
     OrbDamageController orbDamageController;
     [SerializeField] RedOrbController redOrb;
+
+    public Action OnDealDamage;
     private void Start()
     {
         if(redOrb == null) {
@@ -69,6 +72,9 @@ public class PlayerCollisionController : MonoBehaviour
         //}
         if(coll.transform.GetComponent<Enemy>() != null || coll.transform.GetComponent<IDamagable>() != null || coll.transform.GetComponent<Shield>())
         {
+            if (OnDealDamage != null) { OnDealDamage.Invoke(); }
+  
+           
             Vector2 reflectAngle = Vector2.Reflect(pm.prevVel, coll.contacts[0].normal);
 
             if (coll.transform.GetComponent<IDamagable>() != null)

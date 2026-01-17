@@ -115,9 +115,79 @@ public class RedOrbController : MovableObject
     void UnFreeze()
     {
         rb.velocity = freezeVel;
-        currentVelocity = freezeVel;
+        Debug.Log(freezeVel.magnitude);
+        if(freezeVel.magnitude < 100)
+        {
+            currentVelocity = 100 * freezeVel.normalized;
+        }
+        else
+        {
+            currentVelocity = freezeVel;
+        }
         stopped = false;
     }
+
+    bool swinging = false;
+    bool SwingingRed = false;
+    public void BeginSwingBlue()
+    {
+        SetRetracting(false);
+        swinging = true;
+        //rb.velocity = Vector2.zero;
+        //currentVelocity = Vector2.zero;
+        //stopped = true;
+    }
+
+    public void BeginSwingRed(Transform pivotPoint)
+    {
+        SwingingRed = true;
+        swinging = true;
+
+        distanceJoint.enabled = true;
+        swingStartMagnitude = rb.velocity.magnitude;
+        swingPivotPoint = pivotPoint;
+    }
+
+    public void StopSwing()
+    {
+        distanceJoint.enabled = false;
+        swinging = false;
+        SwingingRed = false;
+    }
+
+    [SerializeField] DistanceJoint2D distanceJoint;
+    float swingStartMagnitude;
+    Transform swingPivotPoint;
+
+    void DoSwing()
+    {
+        float maxSpeed = 150f;
+        float minSpeed = 120f;
+        float distance = (transform.position - pm.transform.position).magnitude;
+        float distanceMult = Mathf.Max(1, distance / 20f);
+        float baseMult = 1.4f;
+        float newSpeed = Mathf.Min(distanceMult * swingStartMagnitude * baseMult, maxSpeed);
+        newSpeed = Mathf.Max(newSpeed, minSpeed);
+
+        Vector2 newDir = CalculateTangentDir(swingPivotPoint.position);
+        rb.velocity = newDir.normalized * newSpeed;
+        currentVelocity = rb.velocity;
+    }
+
+    Vector2 CalculateTangentDir(Vector2 point)
+    {
+        Vector2 directionOfAnchor = point - (Vector2)transform.position;
+        Vector2 directionOfForce = -Vector2.Perpendicular(directionOfAnchor.normalized);
+        Vector2 vel = rb.velocity;
+        bool counterClockiwize = Vector2.Dot(directionOfForce, vel) > 0;
+        if (!counterClockiwize)
+        {
+            directionOfForce = -directionOfForce;
+        }
+        return directionOfForce;
+    }
+
+
 
     void Update()
     {
@@ -136,6 +206,11 @@ public class RedOrbController : MovableObject
     }
     protected override void FixedUpdate()
     {
+        if (SwingingRed)
+        {
+            DoSwing();
+            return;
+        }
         if (thrownTimer.IsOn())
         {
             if (thrownTimer.TimerStillGoing(Time.time))
@@ -149,6 +224,7 @@ public class RedOrbController : MovableObject
         }
         if (stopped) { return; }
         base.FixedUpdate();
+
         //if(rb.velocity.magnitude < 2f) { RemoveChargeThrown(); }
         if (retracting)
         {
@@ -223,6 +299,7 @@ public class RedOrbController : MovableObject
 
     public void SetRetracting(bool value)
     {
+        if (swinging) { return; }
         if(blueInBlackHole && redInBlackHole) { return; }
         //if (value)
         //{
@@ -273,9 +350,9 @@ public class RedOrbController : MovableObject
     public void GetChargeThrown(float percentage, bool perfect)
     {
         ChargeThrown = true;
-        float perfectAmount = 170f;
-        float maxAmount = 155f;
-        float minAmount = 100f;
+        float perfectAmount = 190f;
+        float maxAmount = 170f;
+        float minAmount = 120f;
         float diff = maxAmount - minAmount;
         float amount = minAmount + percentage * diff;
         if (perfect)

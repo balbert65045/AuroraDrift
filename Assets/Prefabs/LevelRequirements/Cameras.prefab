@@ -73,6 +73,8 @@ MonoBehaviour:
   targetGroup: {fileID: 1577962608879163458}
   adjustSpeed: 1
   Player: {fileID: 0}
+  MinMaxRedOrbRange: 120
+  MaxMaxRedOrbRange: 150
 --- !u!58 &7841352553758360586
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -196,7 +198,7 @@ MonoBehaviour:
   m_MinimumFOV: 3
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 21.6
-  m_MaximumOrthoSize: 5000
+  m_MaximumOrthoSize: 70
 --- !u!114 &6140723269271737923
 MonoBehaviour:
   m_ObjectHideFlags: 0

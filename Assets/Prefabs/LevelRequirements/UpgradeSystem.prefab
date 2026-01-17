@@ -1526,6 +1526,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   launchController: {fileID: 1988058640980360496}
   swapController: {fileID: 4155921232455381444}
+  swingController: {fileID: 8224291686524649375}
 --- !u!114 &6855275839501917920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1684,7 +1685,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7699936640379290926}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -1868,6 +1869,7 @@ GameObject:
   - component: {fileID: 6903107611246006735}
   - component: {fileID: 1988058640980360496}
   - component: {fileID: 4155921232455381444}
+  - component: {fileID: 8224291686524649375}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -1973,6 +1975,19 @@ MonoBehaviour:
     m_Bits: 1280
   SwapTime: 0.15
   SwapDamageForce: 100
+--- !u!114 &8224291686524649375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8099640425442227562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eea5affbdc25c4241b9d3da7b1e20926, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blue: 1
 --- !u!1 &8187096112688297666
 GameObject:
   m_ObjectHideFlags: 0

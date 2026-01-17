@@ -20,6 +20,10 @@ public class PlayerInputController : MonoBehaviour
     public Action OnReleaseBlueInput;
 
     public Action OnSkill2Input;
+    public Action OnSkill2Release;
+
+    public Action OnSkill3Input;
+    public Action OnSkill3Release;
 
     public Action<Vector2> OnMouseDirChanged;
 
@@ -110,6 +114,33 @@ public class PlayerInputController : MonoBehaviour
             DoSkill2();
         }
 
+        if (Input.GetButtonUp("DoSkill2"))
+        {
+            if (exitAvailable != null)
+            {
+                return;
+            }
+            ReleaseSkill2();
+        }
+
+        if (Input.GetButtonDown("DoSkill3"))
+        {
+            if (exitAvailable != null)
+            {
+                return;
+            }
+            DoSkill3();
+        }
+
+        if (Input.GetButtonUp("DoSkill3"))
+        {
+            if (exitAvailable != null)
+            {
+                return;
+            }
+            ReleaseSkill3();
+        }
+
 
         //PushPull//
         if (ControllerChecker.instance.usingController)
@@ -191,6 +222,21 @@ public class PlayerInputController : MonoBehaviour
     void DoSkill2()
     {
         if (OnSkill2Input != null) { OnSkill2Input.Invoke(); }
+    }
+
+    void ReleaseSkill2()
+    {
+        if (OnSkill2Release != null) { OnSkill2Release.Invoke(); }
+    }
+
+    void DoSkill3()
+    {
+        if (OnSkill3Input != null) { OnSkill3Input.Invoke(); }
+    }
+
+    void ReleaseSkill3()
+    {
+        if (OnSkill3Release != null) { OnSkill3Release.Invoke(); }
     }
 
     void DoDash()

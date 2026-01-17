@@ -168,7 +168,7 @@ public class BossOrb : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 0, next);
             currentVelocity = dir * AttackSpeed * speedMult;
 
-            if ((transform.position - IdleHandSpot.transform.position).magnitude < 20f)
+            if ((transform.position - AttackHandSpot.transform.position).magnitude < 20f)
             {
                 transform.rotation = Quaternion.Euler(0, 0, desired);
             }

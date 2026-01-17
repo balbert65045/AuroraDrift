@@ -43,6 +43,11 @@ public class PlayerPullController : MonoBehaviour
         inputController.OnReleaseRedInput += ReceiveThrow_StopPullRed;
     }
 
+    bool disablePushPull = false;
+    void SetDisablePushPull(bool value)
+    {
+        disablePushPull = value;
+    }
 
     public float GetPushPullSpeed()
     {

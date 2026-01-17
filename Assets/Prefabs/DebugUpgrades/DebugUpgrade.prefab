@@ -49,5 +49,5 @@ MonoBehaviour:
   abilityType: 1
   orbType: 0
   tier: 1
-  amount: 10
-  cooldown: 2
+  amount: 20
+  cooldown: 0.6
