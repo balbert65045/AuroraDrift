@@ -35,6 +35,7 @@ public class RedOrbTracker : MonoBehaviour
         GameObject closestObject = null;
         foreach (GameObject _object in ObjectsInRange)
         {
+            if(_object == null) { continue; }
             float dist = (transform.position - _object.transform.position).magnitude;
             if(dist < ClosesDist)
             {

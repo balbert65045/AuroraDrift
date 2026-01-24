@@ -338,7 +338,7 @@ public class BossBody : MonoBehaviour, IDamagable
     void MoveAwayFromPlayer()
     {
         Vector2 dir = (transform.position - pm.transform.position).normalized;
-        currentVelocity = Vector2.MoveTowards(currentVelocity, dir * boss1.speed, boss1.acceleration * Time.deltaTime);
+        currentVelocity = Vector2.MoveTowards(currentVelocity, dir * boss1.speed/2, boss1.acceleration * Time.deltaTime);
     }
     
     void MoveTowardsPlayer()
@@ -429,6 +429,8 @@ public class BossBody : MonoBehaviour, IDamagable
         {
             damage = damage * 2;
         }
+        FindObjectOfType<ComboSystem>().IncreaseCombo();
+
         Blink();
         invulernableTimer = new TimerClass(true, InvulnerableFromSameSourceTime, Time.time);
         lastAttackedSource = fromWhat;

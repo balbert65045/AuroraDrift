@@ -13,9 +13,31 @@ public class SwapController : MonoBehaviour
     [SerializeField] Upgrade currentAbility;
     [SerializeField] float SwapDamageForce;
 
+    ButtonRegion region;
+
     public void SetAbility(Upgrade ability)
     {
+        bool firstSetup = currentAbility == null;
         currentAbility = ability;
+        if (firstSetup)
+        {
+            region = currentAbility.region;
+            SetupInput();
+        }
+    }
+
+    void SetupInput()
+    {
+        PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
+
+        if (region == ButtonRegion.Ability2)
+        {
+            inputController.OnSkill2Input += Swap;
+        }
+        else if (region == ButtonRegion.Ability3)
+        {
+            inputController.OnSkill3Input += Swap;
+        }
     }
 
     public void ResetValues()
@@ -25,9 +47,7 @@ public class SwapController : MonoBehaviour
 
     public void Reconnect()
     {
-        PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
-
-        inputController.OnSkill2Input += Swap;
+        SetupInput();
     }
 
     void Swap()

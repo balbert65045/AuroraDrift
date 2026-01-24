@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public enum AbilityType
 {
     OrbLaunch,
-    Swap
+    Swap,
+    RedSwing,
+    BlueSwing
 }
 public class CardAbility : CardUpgrade
 {
@@ -23,6 +25,14 @@ public class CardAbility : CardUpgrade
     public override void SetupUpgrade(Upgrade upgrade)
     {
         base.SetupUpgrade(upgrade);
+
+        ButtonIcon icon = GetComponentInChildren<ButtonIcon>();
+        if(icon != null )
+        {
+            icon.region = upgrade.region;
+            icon.SetupAbility();
+        }
+
         if(upgrade.tier == 1) {
             switch (CardAbilityType)
             {
@@ -32,6 +42,12 @@ public class CardAbility : CardUpgrade
                 case AbilityType.Swap:
                     DamageText.text = upgrade.GetBaseAmount().ToString()+" DMG";
                     CooldownText.text = upgrade.cooldown.ToString() + "s";
+                    break;
+                case AbilityType.RedSwing:
+                    DamageText.text = upgrade.GetBaseAmount().ToString() + " DMG";
+                    break;
+                case AbilityType.BlueSwing:
+                    DamageText.text = upgrade.GetBaseAmount().ToString() + " DMG";
                     break;
             }
             return;

@@ -23,3 +23,13 @@ MonoBehaviour:
     ValueIncrease: 10
     Cooldown: 2
     CooldownDecrease: 0
+  - type: 2
+    BaseValue: 10
+    ValueIncrease: 10
+    Cooldown: 0
+    CooldownDecrease: 0
+  - type: 3
+    BaseValue: 10
+    ValueIncrease: 10
+    Cooldown: 0
+    CooldownDecrease: 0

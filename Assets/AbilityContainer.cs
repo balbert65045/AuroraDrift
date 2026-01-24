@@ -5,8 +5,7 @@ using UnityEngine.UI;
 public enum AbilityRegion
 {
     Dash,
-    Ability2,
-    Ability3
+    Ability
 }
 
 public class AbilityContainer : MonoBehaviour
@@ -14,7 +13,7 @@ public class AbilityContainer : MonoBehaviour
     [SerializeField] AbilityRegion abilityRegion;
     [SerializeField] Image CooldownImage;
 
-    [SerializeField] AbilityIcon CurrentAbility;
+    public AbilityIcon CurrentAbility;
     [SerializeField] Image currentIcon;
     [SerializeField] Image altIcon;
 
@@ -104,13 +103,50 @@ public class AbilityContainer : MonoBehaviour
         switch (icon.GetAbilityType())
         {
             case AbilityType.OrbLaunch:
+                if (FindObjectOfType<PlayerOrbitController>().Orbiting)
+                {
+                    altIcon.gameObject.SetActive(false);
+                    currentIcon.gameObject.SetActive(true);
+                    EnableIcon();
+                }
                 FindObjectOfType<OrbLaunchController>().OnEnableCharge += EnableIcon;
                 FindObjectOfType<OrbLaunchController>().OnDisableCharge += DisableIcon;
                 break;
             case AbilityType.Swap:
                 FindObjectOfType<SwapController>().OnStartCooldown += SetAbilityOnCooldown;
                 break;
+            case AbilityType.RedSwing:
+                FindObjectOfType<SwingController>().OnSwingBegin += ShowInUse;
+                FindObjectOfType<SwingController>().OnSwingEndRed += ShowNotInUse;
+                break;
+            case AbilityType.BlueSwing:
+                FindObjectOfType<SwingController>().OnSwingBegin += ShowInUse;
+                FindObjectOfType<SwingController>().OnSwingEndBlue += ShowNotInUse;
+                break;
         }
+    }
+
+    void ShowInUse(bool blue)
+    {
+        if(blue)
+        {
+            if (CurrentAbility.GetAbilityType() == AbilityType.BlueSwing)
+            {
+                CooldownImage.fillAmount = 1;
+            }
+        }
+        else
+        {
+            if(CurrentAbility.GetAbilityType() == AbilityType.RedSwing)
+            {
+                CooldownImage.fillAmount = 1;
+            }
+        }
+    }
+
+    void ShowNotInUse()
+    {
+        CooldownImage.fillAmount = 0;
     }
 
     public void Setup()

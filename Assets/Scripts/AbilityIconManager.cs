@@ -38,6 +38,21 @@ public class AbilityIconManager : MonoBehaviour
         Ability3Region.ClearAbility();
     }
 
+    AbilityContainer AbilityNextAbilityContainer(Upgrade abilityUpgrade)
+    {
+        if(Ability2Region.gameObject.activeSelf) { 
+            if(Ability2Region.CurrentAbility.GetAbilityType() == abilityUpgrade.abilityType)
+            {
+                return Ability2Region;
+            }
+            return Ability3Region;
+        }
+        else
+        {
+            return Ability2Region;
+        }
+    }
+
     void AbilitySelected(Upgrade abilityUpgrade)
     {
         foreach (AbilityIcon abilityIcon in abilityIconPrefabs)
@@ -49,13 +64,10 @@ public class AbilityIconManager : MonoBehaviour
                     case AbilityRegion.Dash:
                         dashAbilityRegion.SetAbility(abilityIcon.gameObject);
                         break;
-                    case AbilityRegion.Ability2:
-                        Ability2Region.gameObject.SetActive(true);
-                        Ability2Region.SetAbility(abilityIcon.gameObject);
-                        break;
-                    case AbilityRegion.Ability3:
-                        Ability3Region.gameObject.SetActive(true);
-                        Ability3Region.SetAbility(abilityIcon.gameObject);
+                    case AbilityRegion.Ability:
+                        AbilityContainer container = AbilityNextAbilityContainer(abilityUpgrade);
+                        container.gameObject.SetActive(true);
+                        container.SetAbility(abilityIcon.gameObject);
                         break;
                 }
                 return;

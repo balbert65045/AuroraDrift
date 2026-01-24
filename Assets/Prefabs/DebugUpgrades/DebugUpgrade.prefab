@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   passiveType: 0
-  abilityType: 1
+  abilityType: 3
   orbType: 0
   tier: 1
   amount: 20

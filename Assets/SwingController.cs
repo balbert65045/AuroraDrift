@@ -2,11 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class SwingController : MonoBehaviour
 {
     public Action<bool> OnSwingBegin;
-    public Action OnSwingEnd;
+    public Action OnSwingEndRed;
+    public Action OnSwingEndBlue;
 
 
     SwingArea BlueSwingArea;
@@ -21,10 +23,13 @@ public class SwingController : MonoBehaviour
     RedOrbCollision redOrbCollision;
 
     PlayerCollisionController playerCollision;
-    RedOrbCollision redCollision;
 
     bool Swinging = false;
 
+    TargetGroupController targetGroupController;
+
+    ButtonRegion RedRegion;
+    ButtonRegion BlueRegion;
 
     public void Reconnect()
     {
@@ -32,13 +37,25 @@ public class SwingController : MonoBehaviour
         redOrbController = FindObjectOfType<RedOrbController>();
         redOrbCollision = FindObjectOfType<RedOrbCollision>();
         PlayerInputController input = FindObjectOfType<PlayerInputController>();
-        PlayerCollisionController playerCollision = FindObjectOfType<PlayerCollisionController>();
-        playerOrbitController = FindObjectOfType<PlayerOrbitController>();
-        input.OnSkill2Input += DoSwingRed;
-        input.OnSkill2Release += EndSwing;
+        playerCollision = FindObjectOfType<PlayerCollisionController>();
+        targetGroupController = FindObjectOfType<TargetGroupController>();
 
-        input.OnSkill3Input += DoSwingBlue;
-        input.OnSkill3Release += EndSwing;
+        SetupInput();
+        playerOrbitController = FindObjectOfType<PlayerOrbitController>();
+
+        BlueOrbStateController stateController = FindObjectOfType<BlueOrbStateController>();
+        RedOrbStateController redStateController = FindObjectOfType<RedOrbStateController>();
+        stateController.OnEnterBlackHole += EndSwingViaBlackHole;
+        if(redStateController != null)
+        {
+            redStateController.OnEnterBlackHole += EndSwingViaBlackHole;
+        }
+
+        //input.OnSkill2Input += DoSwingRed;
+        //input.OnSkill2Release += EndSwing;
+
+        //input.OnSkill3Input += DoSwingBlue;
+        //input.OnSkill3Release += EndSwing;
 
         //playerCollision.OnDealDamage += EndSwing;
         //redOrbCollision.OnDealDamage += EndSwing;
@@ -69,9 +86,88 @@ public class SwingController : MonoBehaviour
         }
     }
 
+    void EndSwingViaBlackHole(Transform _t1, Transform _t2)
+    {
+        EndSwing();
+    }
+
+    bool SwingEnabled = false;
+
+    [SerializeField] Upgrade currentRedAbility;
+    [SerializeField] Upgrade currentBlueAbility;
+
+
+    public float RedLineDamage = 10;
+    public float BlueLineDamage = 10;
+
+    public void SetAbility(Upgrade ability)
+    {
+        bool firstSetup = false;
+        if(ability.abilityType == AbilityType.RedSwing)
+        {
+            firstSetup = currentRedAbility == null;
+            currentRedAbility = ability;
+            RedLineDamage = ability.GetTotalAmountCalculated();
+            if (firstSetup)
+            {
+                Debug.Log("SettingUpInput");
+                RedRegion = currentRedAbility.region;
+                SetupInput();
+            }
+        }
+        else if(ability.abilityType == AbilityType.BlueSwing)
+        {
+            firstSetup = currentBlueAbility == null;
+            currentBlueAbility = ability;
+            BlueLineDamage = ability.GetTotalAmountCalculated();
+            if (firstSetup)
+            {
+                Debug.Log("SettingUpInput");
+                BlueRegion = currentBlueAbility.region;
+                SetupInput();
+            }
+        }
+    }
+
+    void SetupInput()
+    {
+        PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
+        
+        if (RedRegion == ButtonRegion.Ability2)
+        {
+            inputController.OnSkill2Input += DoSwingRed;
+            inputController.OnSkill2Release += EndSwing;
+        }
+        else if (RedRegion == ButtonRegion.Ability3)
+        {
+            inputController.OnSkill3Input += DoSwingRed;
+            inputController.OnSkill3Release += EndSwing;
+        }
+
+        if (BlueRegion == ButtonRegion.Ability2)
+        {
+            inputController.OnSkill2Input += DoSwingBlue;
+            inputController.OnSkill2Release += EndSwing;
+        }
+        else if (BlueRegion == ButtonRegion.Ability3)
+        {
+            inputController.OnSkill3Input += DoSwingBlue;
+            inputController.OnSkill3Release += EndSwing;
+        }
+    }
+
+    public void ResetValues()
+    {
+        currentRedAbility = null;
+        currentBlueAbility = null;
+    }
+
     bool attemptingToSwingRed = false;
+
+
     void DoSwingRed()
     {
+        if (currentRedAbility == null) { return; }
         if (playerOrbitController.Orbiting)
         {
             return;
@@ -89,6 +185,7 @@ public class SwingController : MonoBehaviour
     bool showingRange = false;
     void DoSwingBlue()
     {
+        if (currentBlueAbility == null) { return; }
         if (playerOrbitController.Orbiting)
         {
             return;
@@ -102,6 +199,17 @@ public class SwingController : MonoBehaviour
 
     void EndSwing()
     {
+        bool blue = attemptingToSwingBlue;
+
+        targetGroupController.AddBlueOrbWeight();
+        targetGroupController.AddRedOrbWeight();
+
+        if(redOrbCollision != null)
+        {
+            redOrbCollision.EnableCollision();
+        }
+        playerCollision.EnableCollision();
+
         attemptingToSwingBlue = false;
         attemptingToSwingRed = false;
 
@@ -112,8 +220,18 @@ public class SwingController : MonoBehaviour
         pm.EndSwing();
         BlueCollider.enabled = false;
         RedCollider.enabled = false;
-        redOrbController.StopSwing();
-        if(OnSwingEnd != null) { OnSwingEnd.Invoke(); }
+        if(redOrbController != null)
+        {
+            redOrbController.StopSwing();
+        }
+        if (blue)
+        {
+            if (OnSwingEndBlue != null) { OnSwingEndBlue.Invoke(); }
+        }
+        else
+        {
+            if(OnSwingEndRed != null) { OnSwingEndRed.Invoke(); }
+        }
     }
 
     void Update() {
@@ -152,6 +270,9 @@ public class SwingController : MonoBehaviour
 
     void StartSwingRed()
     {
+        targetGroupController.RemoveRedOrbWeight();
+
+        redOrbCollision.DisableCollision();
         blueSwing = false;
 
         RedSwingArea.HideRange();
@@ -165,6 +286,9 @@ public class SwingController : MonoBehaviour
 
     void StartSwingBlue()
     {
+        targetGroupController.RemoveBlueOrbWeight();
+        playerCollision.DisableCollision();
+
         blueSwing = true;
         BlueSwingArea.HideRange();
         Swinging = true;
@@ -204,6 +328,7 @@ public class SwingController : MonoBehaviour
                 RedCollider.points = points;
             }
         }
+        if(redOrbController == null) { return; }
         PlayerPrevPos = pm.transform.position;
         RedOrbPrevPos = redOrbController.transform.position;
     }

@@ -2753,7 +2753,7 @@ GameObject:
   - component: {fileID: 6889903042367057511}
   m_Layer: 8
   m_Name: MainBody
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3156,7 +3156,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2849743115924159571}
   - component: {fileID: 6295338631948174778}
-  - component: {fileID: 8596184152400943599}
+  - component: {fileID: 7188545863552663200}
   m_Layer: 8
   m_Name: Circle
   m_TagString: Untagged
@@ -3235,7 +3235,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8596184152400943599
+--- !u!114 &7188545863552663200
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3244,7 +3244,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7398166530227068638}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecca5649742542147a414dc362e52d8e, type: 3}
+  m_Script: {fileID: 11500000, guid: ff9896c6cdc85794ea4f4fec010474a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 2310258919874493563}

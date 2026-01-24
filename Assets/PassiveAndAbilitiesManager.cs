@@ -13,6 +13,8 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
     public PlayerHealth playerHealth;
     public UpgradeSystem upgradeSystem;
 
+    ComboSystem comboSystem;
+
     float currentTime = 0;
 
     public void SaveTime()
@@ -38,12 +40,15 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
         playerPassiveController = GetComponent<PlayerPassiveController>();
         playerHealth = GetComponent<PlayerHealth>();
         upgradeSystem = GetComponent<UpgradeSystem>();
+        comboSystem = FindObjectOfType<ComboSystem>();
+
     }
 
     void ResetValues()
     {
         playerHealth.ResetValues();
         upgradeSystem.ClearUpgrades();
+        comboSystem.ClearValues();
     }
 
     void NewSceneEntered(Scene scene1, Scene scene2)

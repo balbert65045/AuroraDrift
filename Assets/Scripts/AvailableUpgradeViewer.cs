@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class AvailableUpgradeViewer : MonoBehaviour
 {
+    [SerializeField] PassiveAbilityCard[] PassiveAbilityCardPrefabs; 
     [SerializeField] CardPassive[] CardPassivesPrefabs;
     [SerializeField] CardAbility[] CardAbilityPrefabs;
     [SerializeField] CardAbility[] CardAbilityUpgradePrefabs;
@@ -57,8 +58,21 @@ public class AvailableUpgradeViewer : MonoBehaviour
 
     GameObject FindCardUpgrade(Upgrade upgrade)
     {
+        //Passives Abilities
+        if (upgrade.Type == UpgradeType.PassiveAbility)
+        {
+            foreach (PassiveAbilityCard card in PassiveAbilityCardPrefabs)
+            {
+                if (card.GetPassiveAbilityType() == upgrade.passiveAbility && (card.GetORBType() == OrbType.None || (card.GetORBType() == upgrade.orbType)))
+                {
+                    return card.gameObject;
+                }
+            }
+            //NEED SOMETHING HERE
+            return null;
+        }
         //Passives
-        if(upgrade.Type == UpgradeType.Passive)
+        else if(upgrade.Type == UpgradeType.Passive)
         {
             foreach(CardPassive card in CardPassivesPrefabs)
             {

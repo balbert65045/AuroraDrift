@@ -11,6 +11,22 @@ public class RedOrbCollision : MonoBehaviour
     public Action OnDealDamage;
 
     float KnockBack = 20f;
+
+    bool disabled = false;
+    public void DisableCollision()
+    {
+        disabled = true;
+        GetComponent<BoxCollider2D>().isTrigger = true;
+
+    }
+
+    public void EnableCollision()
+    {
+        disabled = false;
+        GetComponent<BoxCollider2D>().isTrigger = false;
+
+    }
+
     private void Start()
     {
         redOrb = GetComponentInParent<RedOrbController>();
@@ -26,7 +42,7 @@ public class RedOrbCollision : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
+        if(disabled) { return; }
         if (collision.transform.GetComponent<Enemy>() || collision.transform.GetComponent<IDamagable>() != null || collision.transform.GetComponent<Shield>())
         {
             if(OnDealDamage != null) { OnDealDamage.Invoke(); }
@@ -43,7 +59,10 @@ public class RedOrbCollision : MonoBehaviour
                 }
                 Vector2 dir = (transform.position - collision.transform.position).normalized;
 
-
+                if (redOrb.SwingingRed)
+                {
+                    force = force * 2;
+                }
                 collision.transform.GetComponent<IDamagable>().TakeDamge(redOrb.gameObject, orbDamageController.CalculateDamage(), -dir * force, DetermineDamageType());
             }
             redOrb.RemoveChargeThrown();

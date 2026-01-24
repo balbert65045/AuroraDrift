@@ -219,6 +219,8 @@ public class Ship : MonoBehaviour, IDamagable
         {
             return;
         }
+        FindObjectOfType<ComboSystem>().IncreaseCombo();
+
         recentDamageObj = fromWhat;
         lastDamagedTime = Time.timeSinceLevelLoad;
 

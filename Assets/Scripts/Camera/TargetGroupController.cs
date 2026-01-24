@@ -18,7 +18,7 @@ public class TargetGroupController : MonoBehaviour
     List<Transform> newMembers = new List<Transform>();
     List<Transform> removingMembers = new List<Transform>();
 
-    int RedOrbIndex;
+    int RedOrbIndex = -1;
     RedOrbController redOrb;
     [SerializeField] float MinMaxRedOrbRange = 100f;
     [SerializeField] float MaxMaxRedOrbRange = 120f;
@@ -48,7 +48,7 @@ public class TargetGroupController : MonoBehaviour
     private void Update()
     {
         if (!InControl) { return; }
-        AdjustRedOrb();
+        if (RedOrbIndex != -1) { AdjustRedOrb(); }
         //float distance = (redOrbController.transform.position - Player.transform.position).magnitude;
         //if (distance > MaxDistanceAway)
         //{
@@ -254,6 +254,92 @@ public class TargetGroupController : MonoBehaviour
             //{
             //    newMembers.Remove(collision.transform);
             //}
+        }
+    }
+
+
+    bool removingBlueWeight = false;
+    bool addingBlueWeight = false;
+    bool removingRedWeight = false;
+    bool addingRedWeight = false;
+    public void RemoveBlueOrbWeight()
+    {
+        removingBlueWeight = true;
+        addingBlueWeight = false;
+        StartCoroutine("RemovingBlueWeight");
+    }
+
+    public void RemoveRedOrbWeight()
+    {
+        removingRedWeight = true;
+        addingRedWeight = false;
+        StartCoroutine("RemovingRedWeight");
+    }
+
+    public void AddBlueOrbWeight()
+    {
+        removingBlueWeight = false;
+        addingBlueWeight = true;
+        StartCoroutine("AddingBlueWeight");
+
+    }
+
+    public void AddRedOrbWeight()
+    {
+        removingRedWeight = false;
+        addingRedWeight = true;
+        StartCoroutine("AddingRedWeight");
+    }
+
+    IEnumerator RemovingBlueWeight()
+    {
+        while (removingBlueWeight)
+        {
+            yield return new WaitForEndOfFrame();
+            targetGroup.m_Targets[0].weight -= Time.deltaTime;
+            if (targetGroup.m_Targets[0].weight <= 0)
+            {
+                removingBlueWeight = false;
+            }
+        }
+    }
+
+    IEnumerator AddingBlueWeight()
+    {
+        while (addingBlueWeight)
+        {
+            yield return new WaitForEndOfFrame();
+            targetGroup.m_Targets[0].weight += Time.deltaTime;
+            if (targetGroup.m_Targets[0].weight >= 1)
+            {
+                addingBlueWeight = false;
+            }
+        }
+    }
+
+    IEnumerator RemovingRedWeight()
+    {
+        while (removingRedWeight)
+        {
+            yield return new WaitForEndOfFrame();
+            targetGroup.m_Targets[RedOrbIndex].weight -= Time.deltaTime;
+            if (targetGroup.m_Targets[RedOrbIndex].weight <= 0)
+            {
+                removingRedWeight = false;
+            }
+        }
+    }
+
+    IEnumerator AddingRedWeight()
+    {
+        while (addingRedWeight)
+        {
+            yield return new WaitForEndOfFrame();
+            targetGroup.m_Targets[RedOrbIndex].weight += Time.deltaTime;
+            if (targetGroup.m_Targets[RedOrbIndex].weight >= .7f)
+            {
+                addingRedWeight = false;
+            }
         }
     }
 }

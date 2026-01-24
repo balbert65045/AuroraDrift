@@ -112,6 +112,7 @@ public class RedOrbController : MovableObject
         stopped = true;
     }
 
+    public Vector2 GetCurrentVel() { return currentVelocity; }
     void UnFreeze()
     {
         rb.velocity = freezeVel;
@@ -128,7 +129,7 @@ public class RedOrbController : MovableObject
     }
 
     bool swinging = false;
-    bool SwingingRed = false;
+    public bool SwingingRed = false;
     public void BeginSwingBlue()
     {
         SetRetracting(false);
@@ -161,13 +162,15 @@ public class RedOrbController : MovableObject
 
     void DoSwing()
     {
-        float maxSpeed = 150f;
-        float minSpeed = 120f;
+        float maxSpeed = 170f;
+        float minSpeed = 80f;
         float distance = (transform.position - pm.transform.position).magnitude;
-        float distanceMult = Mathf.Max(1, distance / 20f);
+        float distanceMult = Mathf.Max(distance / 10f, 1f);
         float baseMult = 1.4f;
-        float newSpeed = Mathf.Min(distanceMult * swingStartMagnitude * baseMult, maxSpeed);
+        float newSpeed = Mathf.Min(distanceMult * baseMult * minSpeed, maxSpeed);
+        Debug.Log(newSpeed);
         newSpeed = Mathf.Max(newSpeed, minSpeed);
+        newSpeed = Mathf.Max(swingStartMagnitude, newSpeed);
 
         Vector2 newDir = CalculateTangentDir(swingPivotPoint.position);
         rb.velocity = newDir.normalized * newSpeed;
@@ -211,6 +214,7 @@ public class RedOrbController : MovableObject
             DoSwing();
             return;
         }
+
         if (thrownTimer.IsOn())
         {
             if (thrownTimer.TimerStillGoing(Time.time))

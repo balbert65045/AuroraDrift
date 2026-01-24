@@ -22,13 +22,15 @@ public class SwingLine : MonoBehaviour
 
         swingController = PassiveAndAbilitiesManager.instance.abilityController.swingController;
         swingController.OnSwingBegin += BeginSwing;
-        swingController.OnSwingEnd += EndSwing;
+        swingController.OnSwingEndRed += EndSwing;
+        swingController.OnSwingEndBlue += EndSwing;
     }
 
     private void OnDestroy()
     {
         swingController.OnSwingBegin -= BeginSwing;
-        swingController.OnSwingEnd -= EndSwing;
+        swingController.OnSwingEndRed -= EndSwing;
+        swingController.OnSwingEndBlue -= EndSwing;
     }
 
     bool showLine = false;
@@ -53,6 +55,7 @@ public class SwingLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(redOrb == null) return;
         lineRenderer.SetPosition(0, LastPlayerPos);
         lineRenderer.SetPosition(1, redOrb.transform.position);
     }

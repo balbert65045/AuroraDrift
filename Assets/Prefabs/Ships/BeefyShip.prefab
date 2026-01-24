@@ -644,7 +644,7 @@ GameObject:
   - component: {fileID: 8555974961663110547}
   m_Layer: 8
   m_Name: Ship (3)
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -781,6 +781,7 @@ MonoBehaviour:
   attackRate: 4
   initialattackDelay: 1
   turnRateDeg: 180
+  StopTurnBeforeAttackPercentage: 1
   allEnemies: []
   KnockBackTime: 0.4
   MisselPrefab: {fileID: 9119734038755182768, guid: a4b6de63cd85abf4e9d72ad0c03f750d, type: 3}

@@ -16,6 +16,7 @@ public class PlayerAbilityController : MonoBehaviour
     {
         launchController.ResetValues();
         swapController.ResetValues();
+        swingController.ResetValues();
     }
 
     public Action<float> OnDashAbility;
@@ -60,6 +61,12 @@ public class PlayerAbilityController : MonoBehaviour
                 break;
             case AbilityType.Swap:
                 swapController.SetAbility(abilityUpgrade);
+                break;
+            case AbilityType.RedSwing:
+                swingController.SetAbility(abilityUpgrade);
+                break;
+            case AbilityType.BlueSwing:
+                swingController.SetAbility(abilityUpgrade);
                 break;
         }
     }

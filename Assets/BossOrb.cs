@@ -98,6 +98,7 @@ public class BossOrb : MonoBehaviour
         }
         if ((transform.position - FireMisselSpot.position).magnitude > 10)
         {
+            Movedir = -(transform.position - FireMisselSpot.transform.position).normalized;
             previousDistance = (transform.position - FireMisselSpot.transform.position).magnitude;
             currentVelocity = Movedir * AttackSpeed;
             Rigidbody2.velocity = currentVelocity;

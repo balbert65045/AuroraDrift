@@ -269,28 +269,35 @@ public class PlayerMovement : MovableObject
     {
         StopPulling();
         swinging = true;
+        //rb.velocity = Vector2.zero;
+        //currentVelocity = Vector2.zero;
     }
 
+
+    float maxSpeedOutOfSwing = 170f;
     public void EndSwing()
     {
         distanceJoint.enabled = false;
         swinging = false;
         SwingBlue = false;
+        float speed = Mathf.Min(currentVelocity.magnitude, maxSpeedOutOfSwing);
+        currentVelocity = currentVelocity.normalized * speed;
     }
 
     [SerializeField] DistanceJoint2D distanceJoint;
-    bool SwingBlue = false;
+    public bool SwingBlue = false;
 
     void DoSwing()
     {
-        float maxSpeed = 150f;
-        float minSpeed = 120f;
+        float maxSpeed = maxSpeedOutOfSwing;
+        float minSpeed = 80f;
         float distance = (transform.position - redOrb.transform.position).magnitude;
-        float distanceMult = Mathf.Max(1, distance / 20f);
+        float distanceMult = Mathf.Max(distance / 10f, 1f);
         float baseMult = 1.4f;
-        float newSpeed = Mathf.Min(distanceMult * swingStartMagnitude * baseMult, maxSpeed);
+        float newSpeed = Mathf.Min(distanceMult  * baseMult * minSpeed, maxSpeed);
         newSpeed = Mathf.Max(newSpeed, minSpeed);
-        
+        newSpeed = Mathf.Max(swingStartMagnitude, newSpeed);
+
         Vector2 newDir = CalculateTangentDir(swingPivotPoint.position);
         currentVelocity = newDir.normalized * newSpeed;
     }
@@ -426,6 +433,24 @@ public class PlayerMovement : MovableObject
 
     void DoNormalMovement(Vector2 dir)
     {
+        if(currentVelocity.magnitude > 100)
+        {
+            currentVelocity = Vector2.MoveTowards(currentVelocity, dir * GetSpeed(), GetDecelleration() * Time.deltaTime);
+
+            float magnitude = currentVelocity.magnitude;
+            Vector2 refference = currentVelocity.normalized;
+            Vector2 projection = (Vector2.Dot(dir, refference) / Vector2.Dot(refference, refference)) * refference;
+            Vector2 perp = dir - projection;
+
+
+            if (currentVelocity.magnitude > 4)
+            {
+                currentVelocity += (perp * 8) * currentVelocity.magnitude / 40;
+                float maxval = Mathf.Clamp(currentVelocity.magnitude, 0, MaxOrbitingSpeed);
+                currentVelocity = currentVelocity.normalized * magnitude;
+            }
+        }
+
         if (currentVelocity.magnitude > GetMaxSpeed())
         {
             currentVelocity = Vector2.MoveTowards(currentVelocity, dir * GetSpeed(), GetDecelleration() / 3 * Time.deltaTime);
@@ -507,11 +532,21 @@ public class PlayerMovement : MovableObject
         }
     }
 
+    void DoMoreSlowDown()
+    {
+        currentVelocity = Vector2.MoveTowards(currentVelocity, Vector2.zero, GetDecelleration() * Time.deltaTime);
+    }
+
     void CalculateVelocity()
     {
         if (SwingBlue)
         {
             DoSwing();
+            return;
+        }
+        if (swinging)
+        {
+            DoMoreSlowDown();
             return;
         }
         if (dashing)

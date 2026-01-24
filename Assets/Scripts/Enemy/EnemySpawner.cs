@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [SerializeField] GameObject HealthBlock;
     [SerializeField] GameObject LevelupBlock;
     [SerializeField] GameObject BlackHole;
     [SerializeField] EnemySpawnProfile profile;
@@ -84,6 +85,13 @@ public class EnemySpawner : MonoBehaviour
                 Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
                 float spawnRadius = Radius / 3;
                 Instantiate(LevelupBlock, (Vector2)pm.transform.position + (randomDir * spawnRadius), Quaternion.identity);
+                if(HealthBlock != null)
+                {
+                    Vector2 randomDirHealth = UnityEngine.Random.insideUnitCircle.normalized;
+                    float spawnRadiusHealth = Radius / 3;
+                    Instantiate(HealthBlock, (Vector2)pm.transform.position + (randomDir * spawnRadius) + (randomDirHealth * spawnRadiusHealth), Quaternion.identity);
+                }
+
                 FindObjectOfType<TimerUI>().StopTimer();
 
 

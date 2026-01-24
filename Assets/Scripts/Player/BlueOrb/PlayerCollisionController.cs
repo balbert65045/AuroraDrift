@@ -16,6 +16,20 @@ public class PlayerCollisionController : MonoBehaviour
     [SerializeField] RedOrbController redOrb;
 
     public Action OnDealDamage;
+
+    bool disabled = false;
+    public void DisableCollision()
+    {
+        disabled = true;
+        GetComponent<CircleCollider2D>().isTrigger = true;
+    }
+
+    public void EnableCollision()
+    {
+        disabled = false;
+        GetComponent<CircleCollider2D>().isTrigger = false;
+    }
+
     private void Start()
     {
         if(redOrb == null) {
@@ -52,6 +66,7 @@ public class PlayerCollisionController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D coll)
     {
+        if (disabled) { return; }
         //if (pm.dashing) {
         //    if (pm.Orbiting)
         //    {
@@ -83,6 +98,11 @@ public class PlayerCollisionController : MonoBehaviour
                 if (pm.dashing)
                 {
                     force = 70 + (pm.GetComponent<MovableObject>().prevVel.magnitude / 7f);
+                }
+
+                if (pm.SwingBlue)
+                {
+                    force = force * 2;
                 }
 
                 Vector2 dir = (transform.position - coll.transform.position).normalized;

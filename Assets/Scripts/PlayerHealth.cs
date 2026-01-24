@@ -78,6 +78,14 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    public void AddHealth(float amount)
+    {
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, MaxHealth);
+        if (OnHealthChanged != null) { OnHealthChanged.Invoke(new HealthStruct(currentHealth, MaxHealth), false); }
+
+    }
+
     void SetNewMaxHealth(float healthIncrease)
     {
         float diffIncrease = (baseMaxHealth - MaxHealth) + healthIncrease;
@@ -94,6 +102,8 @@ public class PlayerHealth : MonoBehaviour
             playerChargeController = FindObjectOfType<PlayerChargeController>();
         }
         playerChargeController.LoseCharge(100);
+
+        FindObjectOfType<ComboSystem>().ClearCombo();
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, MaxHealth);
         if (OnHealthChanged != null) { OnHealthChanged.Invoke(new HealthStruct(currentHealth, MaxHealth), true); }

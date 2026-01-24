@@ -44,9 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5afd77182c346524c8b9a415eca116e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HealthBlock: {fileID: 1403563236631206248, guid: 62d796b5d2ce1714eaff0e16917bf190, type: 3}
   LevelupBlock: {fileID: 3525320673522382470, guid: a790b2e093aa6d0409ff088674d8bb91, type: 3}
   BlackHole: {fileID: 9079712581199608308, guid: f4d24118f6701e4428b9a0f6b3fbe6b8, type: 3}
-  profile: {fileID: 11400000, guid: 0c513f0ccd3c1f24db70ff72c22d377a, type: 2}
+  profile: {fileID: 11400000, guid: 9c994f4447f286f4080b976035a1a43b, type: 2}
   Radius: 100
   SpawnRate: 5
   enemiesOut: []

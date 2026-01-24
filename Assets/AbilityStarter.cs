@@ -14,11 +14,24 @@ public class AbilityStarter : MonoBehaviour
     IEnumerator WaitThenSelect()
     {
         yield return new WaitForEndOfFrame();
+
         if (upgradeToStartWith != null)
         {
-            Upgrade upgrade = new Upgrade(upgradeToStartWith.Type, upgradeToStartWith.passiveType, upgradeToStartWith.abilityType, upgradeToStartWith.orbType, upgradeToStartWith.tier);
+            Upgrade upgrade = new Upgrade(upgradeToStartWith.Type, upgradeToStartWith.passiveType, upgradeToStartWith.abilityType, upgradeToStartWith.passiveAbilityType, upgradeToStartWith.orbType, upgradeToStartWith.tier);
             upgrade.SetBaseAmount(upgradeToStartWith.amount);
             upgrade.SetCooldown(upgradeToStartWith.cooldown);
+            if (upgradeToStartWith.abilityType == AbilityType.OrbLaunch)
+            {
+                upgrade.SetButtonRegion(ButtonRegion.Dash);
+            }
+            //else if (ButtonOn == 0)
+            //{
+            //    upgrade.SetButtonRegion(ButtonRegion.Ability2);
+            //}
+            else
+            {
+                upgrade.SetButtonRegion(ButtonRegion.Ability2);
+            }
             GetComponent<UpgradeSystem>().SelectUpgrade(upgrade);
         }
     }
