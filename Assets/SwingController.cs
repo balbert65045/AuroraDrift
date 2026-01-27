@@ -103,7 +103,7 @@ public class SwingController : MonoBehaviour
     public void SetAbility(Upgrade ability)
     {
         bool firstSetup = false;
-        if(ability.abilityType == AbilityType.RedSwing)
+        if(ability.skillType == SkillType.RedSwing)
         {
             firstSetup = currentRedAbility == null;
             currentRedAbility = ability;
@@ -115,7 +115,7 @@ public class SwingController : MonoBehaviour
                 SetupInput();
             }
         }
-        else if(ability.abilityType == AbilityType.BlueSwing)
+        else if(ability.skillType == SkillType.BlueSwing)
         {
             firstSetup = currentBlueAbility == null;
             currentBlueAbility = ability;

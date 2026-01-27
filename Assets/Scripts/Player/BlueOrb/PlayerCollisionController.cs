@@ -67,6 +67,39 @@ public class PlayerCollisionController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D coll)
     {
         if (disabled) { return; }
+
+        if(coll.transform.GetComponent<Mine>() != null)
+        {
+            Mine mine = coll.transform.GetComponent<Mine>();
+            Vector2 reflectAngle = Vector2.Reflect(pm.prevVel, coll.contacts[0].normal);
+            if (pm.Orbiting)
+            {
+                if (!pm.dashing)
+                {
+                    mine.AdjustVel(pm.prevVel*4);
+                }
+                else
+                {
+                    mine.AdjustVel(pm.prevVel);
+                }
+                orbitController.EndOrbit();
+                Quaternion rotPlus = Quaternion.Euler(0, 0, 20);
+                Quaternion rotMinus = Quaternion.Euler(0, 0, -20);
+                pm.AdjustVel(rotPlus * reflectAngle);
+                redOrb.DissableTrack();
+                redOrb.StopCatch();
+                Vector2 dir = (rotMinus * reflectAngle).normalized;
+                float magnitude = (rotMinus * reflectAngle).magnitude;
+                magnitude = Mathf.Clamp(magnitude, 0, 100);
+                redOrb.AdjustVel(dir * magnitude);
+            }
+            else
+            {
+                mine.AdjustVel(pm.prevVel);
+                pm.AdjustVel(reflectAngle);
+            }
+
+        }
         //if (pm.dashing) {
         //    if (pm.Orbiting)
         //    {
@@ -85,7 +118,7 @@ public class PlayerCollisionController : MonoBehaviour
         //        return;
         //    }
         //}
-        if(coll.transform.GetComponent<Enemy>() != null || coll.transform.GetComponent<IDamagable>() != null || coll.transform.GetComponent<Shield>())
+        if (coll.transform.GetComponent<Enemy>() != null || coll.transform.GetComponent<IDamagable>() != null || coll.transform.GetComponent<Shield>())
         {
             if (OnDealDamage != null) { OnDealDamage.Invoke(); }
   

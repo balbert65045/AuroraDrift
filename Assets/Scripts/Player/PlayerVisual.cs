@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerVisual : MonoBehaviour
 {
-    PlayerAbilityController playerAbilityController;
+    PlayerSkillController playerSkillController;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] TrailRenderer trailRenderer;
     public GameObject TrackObject;
@@ -34,7 +34,7 @@ public class PlayerVisual : MonoBehaviour
         pm.OnDash += OnDash;
         pm.OnRechargeDash += OnDashRecharge;
 
-        PlayerAbilityController playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
+        PlayerSkillController playerAbilityController = PassiveAndAbilitiesManager.instance.skillController;
         playerAbilityController.swapController.OnSwapBegin += Shrink;
         playerAbilityController.swapController.OnSwapEnd += Grow;
     }
@@ -48,10 +48,10 @@ public class PlayerVisual : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (PassiveAndAbilitiesManager.instance.abilityController != null)
+        if (PassiveAndAbilitiesManager.instance.skillController != null)
         {
-            PassiveAndAbilitiesManager.instance.abilityController.swapController.OnSwapBegin -= Shrink;
-            PassiveAndAbilitiesManager.instance.abilityController.swapController.OnSwapEnd -= Grow;
+            PassiveAndAbilitiesManager.instance.skillController.swapController.OnSwapBegin -= Shrink;
+            PassiveAndAbilitiesManager.instance.skillController.swapController.OnSwapEnd -= Grow;
         }
     }
     void Shrink(float swapTime)

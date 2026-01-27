@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,11 +9,13 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
     public static PassiveAndAbilitiesManager instance;
 
     [SerializeField] Canvas canvas;
-    public PlayerAbilityController abilityController;
+    public PlayerSkillController skillController;
     public PlayerPassiveController playerPassiveController;
+    public AbilityController abilityController;
     public PlayerHealth playerHealth;
     public UpgradeSystem upgradeSystem;
 
+    public Action OnRecconectPointer;
     ComboSystem comboSystem;
 
     float currentTime = 0;
@@ -36,7 +39,8 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
         }
 
         SceneManager.activeSceneChanged += NewSceneEntered;
-        abilityController = GetComponent<PlayerAbilityController>();
+        abilityController = gameObject.GetComponent<AbilityController>();
+        skillController = GetComponent<PlayerSkillController>();
         playerPassiveController = GetComponent<PlayerPassiveController>();
         playerHealth = GetComponent<PlayerHealth>();
         upgradeSystem = GetComponent<UpgradeSystem>();
@@ -72,8 +76,9 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
                 FindObjectOfType<TimerUI>().InitTimer(currentTime);
             }
             Debug.Log("New Scene entered");
-            GetComponentInChildren<AbilityIconManager>().SetupDash();
-            abilityController.Reconnect();
+            GetComponentInChildren<SkillIconManager>().SetupDash();
+            ReconnectValues();
+
             playerHealth.Setup(firstLevel);
             if (canvas != null)
             {
@@ -81,15 +86,12 @@ public class PassiveAndAbilitiesManager : MonoBehaviour
             }
         }
     }
-    // Start is called before the first frame update
-    void Start()
+
+    void ReconnectValues()
     {
-        
+        skillController.Reconnect();
+        abilityController.Reconnect();
+        if(OnRecconectPointer != null) { OnRecconectPointer.Invoke(); }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

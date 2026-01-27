@@ -83,7 +83,8 @@ public class EnemySpawner : MonoBehaviour
                 //FindObjectOfType<GameManager>().CompleteLevel();
 
                 Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
-                float spawnRadius = Radius / 3;
+                float spawnRadius = Radius;
+                Debug.Log(spawnRadius);
                 Instantiate(LevelupBlock, (Vector2)pm.transform.position + (randomDir * spawnRadius), Quaternion.identity);
                 if(HealthBlock != null)
                 {
@@ -108,7 +109,7 @@ public class EnemySpawner : MonoBehaviour
         yield return new WaitForSeconds(.4f);
         if (FindObjectOfType<UpgradeSystem>())
         {
-            FindObjectOfType<UpgradeSystem>().ShowPossibleUpgrades();
+            FindObjectOfType<UpgradeSystem>().ShowPossibleSkillUpgrades();
         }
         yield return new WaitForSeconds(.2f);
         Spawn(profile.waves[currentWaveIndex]);

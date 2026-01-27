@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,7 +19,7 @@ public class PlayerPullController : MonoBehaviour
     PlayerOrbitController orbitController;
     PlayerVisual pv;
 
-    PlayerAbilityController abilityController;
+    PlayerSkillController skillController;
     OrbLaunchController launchController;
     // Start is called before the first frame update
     void Start()
@@ -33,8 +34,8 @@ public class PlayerPullController : MonoBehaviour
         }
         pm = GetComponent<PlayerMovement>();
         orbitController = GetComponent<PlayerOrbitController>();
-        abilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        launchController = abilityController.launchController;
+        skillController = PassiveAndAbilitiesManager.instance.skillController;
+        launchController = skillController.launchController;
 
         PlayerInputController inputController = FindObjectOfType<PlayerInputController>();
         inputController.OnPullBlueInput += RecivePullBlue;
@@ -136,15 +137,20 @@ public class PlayerPullController : MonoBehaviour
         pm.StopPulling();
     }
 
+    public Action OnPullBlue;
+    public Action OnPullRed;
     void PullBlue()
     {
         pv.SetTrail(true);
         pm.PullTowardsRed(redOrb);
+        if (OnPullBlue != null) { OnPullBlue.Invoke(); }
     }
 
     void PullRed()
     {
         redOrb.SetRetracting(true);
+        if (OnPullRed != null) { OnPullRed.Invoke(); }
+
     }
 
     void StopPullingRed()

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a058ff78a0ce54d9af2b14e228f280, type: 3}
+  m_Name: Upgrades
+  m_EditorClassIdentifier: 
+  CardPrefabs:
+  - {fileID: 4849889371105911644, guid: 1bf5625843b9f344eaf18f377dcaf534, type: 3}
+  - {fileID: 6875257994055113684, guid: 0a8a1c8f6fc64784d97362c860523665, type: 3}
+  - {fileID: 151683646651804123, guid: 197229b92960b4a498b86aebd674ef6b, type: 3}
+  - {fileID: 4849889371105911644, guid: a38386f9fb61862448640d7e242de70c, type: 3}
+  - {fileID: 4849889371105911644, guid: 703d17cf580017c4d9141d86f064b0a0, type: 3}

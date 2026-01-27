@@ -37,7 +37,7 @@ public class RedOrbController : MovableObject
     PlayerRotationController rotationController;
     RedOrbTracker redOrbTracker;
     PlayerOrbitController orbitController;
-    PlayerAbilityController playerAbilityController;
+    PlayerSkillController skillController;
 
     void Start()
     {
@@ -60,15 +60,36 @@ public class RedOrbController : MovableObject
         redOrbTracker = FindObjectOfType<RedOrbTracker>();
 
 
-        playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        playerAbilityController.swapController.OnSwapBegin += Freeze;
-        playerAbilityController.swapController.OnSwapEnd += UnFreeze;
+        skillController = PassiveAndAbilitiesManager.instance.skillController;
+        skillController.swapController.OnSwapBegin += Freeze;
+        skillController.swapController.OnSwapEnd += UnFreeze;
     }
+
+    public Action OnBecomeMissel;
+    public Action OnStopBeingMissel;
+    public bool isMissel = false;
+    public void BecomeMissel()
+    {
+        isMissel = true;
+        if(OnBecomeMissel != null) {  OnBecomeMissel.Invoke(); }
+    }
+
+
+    void StopBeingMissel()
+    {
+        isMissel = false;
+        if(OnStopBeingMissel != null ) { OnStopBeingMissel.Invoke(); };
+    }
+
+
+
+
+
 
     private void OnDestroy()
     {
-        playerAbilityController.swapController.OnSwapBegin -= Freeze;
-        playerAbilityController.swapController.OnSwapEnd -= UnFreeze;
+        skillController.swapController.OnSwapBegin -= Freeze;
+        skillController.swapController.OnSwapEnd -= UnFreeze;
     }
 
     bool blueInBlackHole;
@@ -194,6 +215,7 @@ public class RedOrbController : MovableObject
 
     void Update()
     {
+        if (isMissel) { return; }
         if (thrown)
         {
             currentVelocity = Vector2.MoveTowards(currentVelocity, Vector2.zero, Deceleration * Time.deltaTime);

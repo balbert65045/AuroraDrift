@@ -8,15 +8,15 @@ public class AnimationSpeedController : MonoBehaviour
     [SerializeField] Animator controller;
     PlayerPullController pullController;
 
-    PlayerAbilityController abilityController;
+    PlayerSkillController skillController;
     OrbLaunchController launchController;
     TimerClass currentTimer;
     // Start is called before the first frame update
     void Start()
     {
         pullController = FindObjectOfType<PlayerPullController>();
-        abilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        launchController = abilityController.launchController;
+        skillController = PassiveAndAbilitiesManager.instance.skillController;
+        launchController = skillController.launchController;
         launchController.OnBeginCharge += BeginCharge;
         launchController.OnReleaseCharge += ReleaseCharge;
     }

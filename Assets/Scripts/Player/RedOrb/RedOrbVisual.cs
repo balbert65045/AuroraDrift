@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RedOrbVisual : MonoBehaviour
 {
+    [SerializeField] GameObject MisselVisual;
     public GameObject TrackObject;
     [SerializeField] float speed = 10f;
 
@@ -30,7 +31,7 @@ public class RedOrbVisual : MonoBehaviour
     //    return texture;
     //}
     OrbLaunchController launchController;
-    PlayerAbilityController pbc;
+    PlayerSkillController skillController;
     Color OGColor;
     SpriteRenderer spriteRenderer;
     TrailRenderer trailRenderer;
@@ -50,21 +51,39 @@ public class RedOrbVisual : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         trailRenderer = GetComponent<TrailRenderer>();
         OGColor = spriteRenderer.color;
-        pbc = PassiveAndAbilitiesManager.instance.abilityController;
-        launchController = pbc.launchController;
+        skillController = PassiveAndAbilitiesManager.instance.skillController;
+        launchController = skillController.launchController;
         launchController.OnBeginCharge += ChargeHappening;
-        pbc.swapController.OnSwapBegin += Shrink;
-        pbc.swapController.OnSwapEnd += Grow;
+        skillController.swapController.OnSwapBegin += Shrink;
+        skillController.swapController.OnSwapEnd += Grow;
 
         RedOrbController redOrb = FindObjectOfType<RedOrbController>();
         redOrb.OnRemoveChargeThrown += ChargeRemoved;
+        redOrb.OnBecomeMissel += ShowMissel;
+        redOrb.OnStopBeingMissel += HideMissel;
+
+
+    }
+
+    void ShowMissel()
+    {
+        spriteRenderer.enabled = false;
+        MisselVisual.SetActive(true);
+        GetComponent<PlayerSquishController>().SetSquishAllowed(false);
+    }
+
+    void HideMissel()
+    {
+        spriteRenderer.enabled = true;
+        MisselVisual.SetActive(false);
+        GetComponent<PlayerSquishController>().SetSquishAllowed(true);
     }
 
     private void OnDestroy()
     {
         launchController.OnBeginCharge -= ChargeHappening;
-        pbc.swapController.OnSwapBegin -= Shrink;
-        pbc.swapController.OnSwapEnd -= Grow;
+        skillController.swapController.OnSwapBegin -= Shrink;
+        skillController.swapController.OnSwapEnd -= Grow;
     }
 
     TimerClass shrinkTimer;

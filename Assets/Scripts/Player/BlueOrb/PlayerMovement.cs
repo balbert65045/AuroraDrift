@@ -158,7 +158,7 @@ public class PlayerMovement : MovableObject
         return deceleration * decelerationMultiplieer;
     }
 
-    PlayerAbilityController playerAbilityController;
+    PlayerSkillController playerSkillController;
 
     void Start()
     {
@@ -170,9 +170,9 @@ public class PlayerMovement : MovableObject
         playerInputController.OnDashInput += ReceiveDash;
         pullController = GetComponent<PlayerPullController>();
 
-        playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        playerAbilityController.swapController.OnSwapBegin += Freeze;
-        playerAbilityController.swapController.OnSwapEnd += UnFreeze;
+        playerSkillController = PassiveAndAbilitiesManager.instance.skillController;
+        playerSkillController.swapController.OnSwapBegin += Freeze;
+        playerSkillController.swapController.OnSwapEnd += UnFreeze;
 
         BlueOrbStateController stateController = FindObjectOfType<BlueOrbStateController>();
         stateController.OnEnterBlackHole += EnterBlackHoleBlue;
@@ -186,8 +186,8 @@ public class PlayerMovement : MovableObject
 
     private void OnDestroy()
     {
-        playerAbilityController.swapController.OnSwapBegin -= Freeze;
-        playerAbilityController.swapController.OnSwapEnd -= UnFreeze;
+        playerSkillController.swapController.OnSwapBegin -= Freeze;
+        playerSkillController.swapController.OnSwapEnd -= UnFreeze;
     }
 
     bool InBlackHoleBlue = false;

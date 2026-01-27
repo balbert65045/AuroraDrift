@@ -10,7 +10,7 @@ public class RedOrbTracker : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.GetComponent<Enemy>() != null || collision.GetComponent<Ship>() != null || collision.GetComponent<LevelUpBlock>() != null || collision.GetComponent<TutorialBlock>() != null 
-            || collision.GetComponent<Boss1Pilon>() != null)
+            || collision.GetComponent<Boss1Pilon>() != null || collision.GetComponent<Mine>() != null)
         {
             ObjectsInRange.Add(collision.transform.gameObject);
         }
@@ -19,7 +19,7 @@ public class RedOrbTracker : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.GetComponent<Enemy>() != null || collision.GetComponent<Ship>() != null || collision.GetComponent<LevelUpBlock>() != null || collision.GetComponent<TutorialBlock>() != null 
-            || collision.GetComponent<Boss1Pilon>() != null)
+            || collision.GetComponent<Boss1Pilon>() != null || collision.GetComponent<Mine>() != null)
         {
             if(ObjectsInRange.Contains(collision.transform.gameObject))
             {

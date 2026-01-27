@@ -5,10 +5,13 @@ using UnityEngine.EventSystems;
 
 public class AvailableUpgradeViewer : MonoBehaviour
 {
-    [SerializeField] PassiveAbilityCard[] PassiveAbilityCardPrefabs; 
+    [SerializeField] AbilityCardList abilityCardList;
+    [SerializeField]
+    AbilityCardList abilityCardUpgradeList;
+
     [SerializeField] CardPassive[] CardPassivesPrefabs;
-    [SerializeField] CardAbility[] CardAbilityPrefabs;
-    [SerializeField] CardAbility[] CardAbilityUpgradePrefabs;
+    [SerializeField] CardSkill[] CardSkillPrefabs;
+    [SerializeField] CardSkill[] CardSkillUpgradePrefabs;
     UpgradeSystem upgradeSystem;
 
     // Start is called before the first frame update
@@ -38,7 +41,6 @@ public class AvailableUpgradeViewer : MonoBehaviour
             Debug.Log(prefab.name);
             GameObject upgradeCard = Instantiate(prefab, this.transform);
             upgradeCard.GetComponent<CardUpgrade>().SetupUpgrade(upgrade);
-            //upgradeCard.
             if (index == 0)
             {
                 firstCard = upgradeCard;
@@ -59,16 +61,30 @@ public class AvailableUpgradeViewer : MonoBehaviour
     GameObject FindCardUpgrade(Upgrade upgrade)
     {
         //Passives Abilities
-        if (upgrade.Type == UpgradeType.PassiveAbility)
+        if (upgrade.Type == UpgradeType.Ability)
         {
-            foreach (PassiveAbilityCard card in PassiveAbilityCardPrefabs)
+            if (upgrade.tier == 1)
             {
-                if (card.GetPassiveAbilityType() == upgrade.passiveAbility && (card.GetORBType() == OrbType.None || (card.GetORBType() == upgrade.orbType)))
+                foreach (GameObject gameObject in abilityCardList.CardPrefabs)
                 {
-                    return card.gameObject;
+                    AbilityCard card = gameObject.GetComponent<AbilityCard>();
+                    if (card.GetAbilityType() == upgrade.abilityType &&  (card.GetORBType() == upgrade.orbType))
+                    {
+                        return card.gameObject;
+                    }
                 }
             }
-            //NEED SOMETHING HERE
+            else
+            {
+                foreach (GameObject gameObject in abilityCardUpgradeList.CardPrefabs)
+                {
+                    AbilityCard card = gameObject.GetComponent<AbilityCard>();
+                    if (card.GetAbilityType() == upgrade.abilityType && (card.GetORBType() == upgrade.orbType))
+                    {
+                        return card.gameObject;
+                    }
+                }
+            }
             return null;
         }
         //Passives
@@ -83,14 +99,14 @@ public class AvailableUpgradeViewer : MonoBehaviour
             }
             return null;
         }
-        //Abilities
+        //Skills
         else
         {
             if(upgrade.tier == 1)
             {
-                foreach (CardAbility card in CardAbilityPrefabs)
+                foreach (CardSkill card in CardSkillPrefabs)
                 {
-                    if (card.GetAbilityType() == upgrade.abilityType)
+                    if (card.GetAbilityType() == upgrade.skillType)
                     {
                         return card.gameObject;
                     }
@@ -98,9 +114,9 @@ public class AvailableUpgradeViewer : MonoBehaviour
             }
             else
             {
-                foreach(CardAbility card in CardAbilityUpgradePrefabs)
+                foreach(CardSkill card in CardSkillUpgradePrefabs)
                 {
-                    if(card.GetAbilityType() == upgrade.abilityType)
+                    if(card.GetAbilityType() == upgrade.skillType)
                     {
                         return card.gameObject;
                     }

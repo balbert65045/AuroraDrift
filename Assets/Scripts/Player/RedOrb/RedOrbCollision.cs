@@ -43,6 +43,16 @@ public class RedOrbCollision : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(disabled) { return; }
+        if (collision.transform.GetComponent<Mine>() != null)
+        {
+            Mine mine = collision.transform.GetComponent<Mine>();
+            Vector2 reflectAngle = Vector2.Reflect(redOrb.prevVel, collision.contacts[0].normal);
+            mine.AdjustVel(redOrb.prevVel);
+            redOrb.AdjustVel(reflectAngle);
+            redOrb.DissableTrack();
+
+        }
+
         if (collision.transform.GetComponent<Enemy>() || collision.transform.GetComponent<IDamagable>() != null || collision.transform.GetComponent<Shield>())
         {
             if(OnDealDamage != null) { OnDealDamage.Invoke(); }

@@ -11,7 +11,7 @@ public class SwingCollider : MonoBehaviour
     private void Start()
     {
         polyCol = GetComponent<PolygonCollider2D>();
-        swingController = PassiveAndAbilitiesManager.instance.abilityController.swingController;
+        swingController = PassiveAndAbilitiesManager.instance.skillController.swingController;
     }
 
 

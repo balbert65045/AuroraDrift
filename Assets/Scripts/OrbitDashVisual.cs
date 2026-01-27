@@ -16,7 +16,7 @@ public class OrbitDashVisual : MonoBehaviour
     SpriteRenderer spriteRenderer;
     SpriteRenderer t2SpriteRenderer;
 
-    PlayerAbilityController playerAbilityController;
+    PlayerSkillController playerSkillController;
     PlayerInputController playerInputController;
     OrbLaunchController launchController;
     // Start is called before the first frame update
@@ -25,8 +25,8 @@ public class OrbitDashVisual : MonoBehaviour
         playerInputController = FindObjectOfType<PlayerInputController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         t2SpriteRenderer = t2.GetComponent<SpriteRenderer>();
-        playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        launchController = playerAbilityController.launchController;
+        playerSkillController = PassiveAndAbilitiesManager.instance.skillController;
+        launchController = playerSkillController.launchController;
         launchController.OnBeginCharge += BeginCharge;
         launchController.OnReleaseCharge += ReleaseCharge;
         diff = maxSize - minSize;

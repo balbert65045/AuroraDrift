@@ -14,14 +14,18 @@ public class PlayerSquishController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayerAbilityController abilityController = PassiveAndAbilitiesManager.instance.abilityController;
+        PlayerSkillController abilityController = PassiveAndAbilitiesManager.instance.skillController;
         launchController = abilityController.launchController;
         if (abilityController != null)
         {
             launchController.OnBeginCharge += BeginCharge;
             launchController.OnReleaseCharge += ReleaseCharge;
         }
+    }
 
+    public void SetSquishAllowed(bool value)
+    {
+        allowSquish = value;
     }
 
     private void OnDestroy()
@@ -42,6 +46,8 @@ public class PlayerSquishController : MonoBehaviour
         charging = true;
     }
 
+    bool allowSquish = true;
+
     bool pause = false;
     public void PauseSquish()
     {
@@ -57,6 +63,21 @@ public class PlayerSquishController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!allowSquish) {
+            float Magnifier = rb.velocity.magnitude / squishThreshold;
+            float x = 1 / Magnifier;
+            float y = Magnifier;
+
+            float zDegrees = Mathf.Rad2Deg * Mathf.Atan2(rb.velocity.x, rb.velocity.y);
+
+            if (inverse)
+            {
+                zDegrees = Mathf.Rad2Deg * Mathf.Atan2(rb.velocity.y, rb.velocity.x) + 90f;
+            }
+
+            transform.rotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, zDegrees);
+            transform.localScale = Vector3.one;
+            return; }
         if (pause) { return; }
         if (charging) { return; }
         if(rb.velocity.magnitude > squishThreshold)

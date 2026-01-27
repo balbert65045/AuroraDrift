@@ -15,19 +15,19 @@ public class PlayerEffects : MonoBehaviour
     [SerializeField] TrailRenderer trail;
     [SerializeField] TrailRenderer trail2;
 
-    PlayerAbilityController playerAbilityController;
+    PlayerSkillController playerSkillController;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        playerAbilityController.swapController.OnSwapBegin += Teleport;
+        playerSkillController = PassiveAndAbilitiesManager.instance.skillController;
+        playerSkillController.swapController.OnSwapBegin += Teleport;
     }
 
     private void OnDestroy()
     {
-        playerAbilityController.swapController.OnSwapBegin -= Teleport;
+        playerSkillController.swapController.OnSwapBegin -= Teleport;
     }
 
 

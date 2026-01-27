@@ -9,14 +9,14 @@ public class OrbDamageController : MonoBehaviour
     [SerializeField] float DashDamage = 3;
     float originalBaseDamage;
 
-    PlayerAbilityController playerAbilityController;
+    PlayerSkillController playerSkillController;
     PlayerChargeController playerChargeController;
     OrbLaunchController launchController;
     private void Start()
     {
         originalBaseDamage = BaseDamage;
-        playerAbilityController = PassiveAndAbilitiesManager.instance.abilityController;
-        launchController = playerAbilityController.launchController;
+        playerSkillController = PassiveAndAbilitiesManager.instance.skillController;
+        launchController = playerSkillController.launchController;
         playerChargeController = FindObjectOfType<PlayerChargeController>();
     }
 

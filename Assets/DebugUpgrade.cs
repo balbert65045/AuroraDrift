@@ -6,8 +6,8 @@ public class DebugUpgrade : MonoBehaviour
 {
     public UpgradeType Type;
     public PassiveType passiveType;
-    public PassiveAbilityType passiveAbilityType;
     public AbilityType abilityType;
+    public SkillType skillType;
     public OrbType orbType;
     public int tier;
 

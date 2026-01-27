@@ -27,7 +27,10 @@ public class Dust : MonoBehaviour
             dissapearing =true;
             ParticleSystem.MainModule ps = GetComponent<ParticleSystem>().main;
             ps.loop = false;
-            StartCoroutine("DestroyAfterDelay", ps.startLifetime.constant);
+            if(gameObject.activeSelf)
+            {
+                StartCoroutine("DestroyAfterDelay", ps.startLifetime.constant);
+            }
         }
     }
 

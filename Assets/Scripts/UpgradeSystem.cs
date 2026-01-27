@@ -1,20 +1,22 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum UpgradeType
 {
     Passive,
-    Ability,
-    PassiveAbility
+    Skill,
+    Ability
 }
 public class Upgrade
 {
     public UpgradeType Type;
     public PassiveType passiveType;
+    public SkillType skillType;
     public AbilityType abilityType;
-    public PassiveAbilityType passiveAbility;
     public OrbType orbType;
     public int tier;
 
@@ -25,12 +27,12 @@ public class Upgrade
     public ButtonRegion region;
     public void SetButtonRegion(ButtonRegion buttonRegion) { region = buttonRegion; }
 
-    public Upgrade (UpgradeType type, PassiveType passiveType, AbilityType abilityType, PassiveAbilityType passiveAbilityType, OrbType orbType, int tier)
+    public Upgrade (UpgradeType type, PassiveType passiveType, SkillType skillType, AbilityType abilityType, OrbType orbType, int tier)
     {
         Type = type;
         this.passiveType = passiveType;
+        this.skillType = skillType;
         this.abilityType = abilityType;
-        this.passiveAbility = passiveAbilityType;
         this.orbType = orbType;
         this.tier = tier;
     }
@@ -73,21 +75,31 @@ public class Upgrade
 
 public class UpgradeSystem : MonoBehaviour
 {
-    int ButtonOn = 0;
 
-    public AbilityList abilityList;
+    //Lists
+    public SkillList skillList;
     [SerializeField] PassiveList passiveList;
     [SerializeField] List<PassiveType> OrbSpecificPassives;
-    [SerializeField] PassiveAbilityList passiveAbilityList;
+    [SerializeField] AbilityList abilityList;
 
+    [SerializeField] AbilityList combinationAbilityList;
+
+    //CurrentUpgrades
     public List<Upgrade> CurrentUpgrades = new List<Upgrade>();
-    public EventHandler<List<Upgrade>> OnShowUpgrades;
+    public List<Upgrade> CurrentAbilities = new List<Upgrade>();
+    List<Upgrade> CurrentPassives = new List<Upgrade>();
+    List<Upgrade> CurrentSkills = new List<Upgrade>();
 
-    public Action<Upgrade> OnSelectPassiveAbility;
-    public Action<Upgrade> OnSelectPassive;
+    //Events
+    public EventHandler<List<Upgrade>> OnShowUpgrades;
     public Action<Upgrade> OnSelectAbility;
+    public Action<Upgrade> OnSelectPassive;
+    public Action<Upgrade> OnSelectSkill;
     public Action OnSelectUpgrade;
     public Action OnClearUpgrades;
+
+
+    public Action<AbilityType, AbilityType, Upgrade> OnCombineAbility;
     // Start is called before the first frame update
 
     bool allowUnpause = false;
@@ -96,9 +108,25 @@ public class UpgradeSystem : MonoBehaviour
 
     private void Start()
     {
-        ShowPossiblePassiveAbilities();
-        //ShowPossibleUpgrades();
-        //ShowPossibleUpgrades();
+       //ShowPossibleSkillUpgrades();
+       ShowPossibleAbilities();
+       //StartCoroutine("WaitThenDoItagain");
+      //  StartCoroutine("WaitThenDoItagain2");
+
+    }
+
+    IEnumerator WaitThenDoItagain()
+    {
+        yield return new WaitForSeconds(.1f);
+        ShowPossibleAbilities();
+
+    }
+
+    IEnumerator WaitThenDoItagain2()
+    {
+        yield return new WaitForSeconds(.2f);
+        ShowPossibleAbilities();
+
     }
 
     private void LateUpdate()
@@ -110,7 +138,43 @@ public class UpgradeSystem : MonoBehaviour
         }
     }
 
-    public void ShowPossiblePassiveAbilities()
+    public void ShowCombinationUpgrade(AbilityType blueAbility, AbilityType redAbility, AbilityType CombinationAbility)
+    {
+        Time.timeScale = 0;
+        paused = true;
+        allowUnpause = true;
+
+        //Create Upgrade
+        Upgrade combinationUpgrade = CreateCombinationUpgrade(UpgradeType.Ability, PassiveType.Speed, SkillType.BlueSwing, CombinationAbility, OrbType.None, 1);
+
+        if (OnCombineAbility != null) { OnCombineAbility.Invoke(blueAbility, redAbility, combinationUpgrade); }
+
+    }
+
+    void CreateCombinationAbility(AbilityType blueAbility, AbilityType redAbility)
+    {
+        //2D Array of possibilities
+        //Missel | Missel
+        if (blueAbility == AbilityType.Missel && redAbility == AbilityType.Missel)
+        {
+            ShowCombinationUpgrade(blueAbility, redAbility, AbilityType.MachineGun);
+        }
+        //Missel | Mine
+        else if ((blueAbility == AbilityType.Missel || redAbility == AbilityType.Missel) && (blueAbility == AbilityType.Mine || redAbility == AbilityType.Mine))
+        {
+            ShowCombinationUpgrade(blueAbility, redAbility, AbilityType.Rocket);
+        }
+        //Missel | Mine
+        else if (blueAbility == AbilityType.Mine && redAbility == AbilityType.Mine)
+        {
+            Debug.LogError("Nothing here!");
+        }
+
+    }
+
+
+
+    public void ShowPossibleAbilities()
     {
         Time.timeScale = 0;
         paused = true;
@@ -118,134 +182,166 @@ public class UpgradeSystem : MonoBehaviour
 
         List<Upgrade> PossibleUpgrades = new List<Upgrade>();
 
-        List<PassiveAbilityDictionary> listAvailablePassiveAbilities = new List<PassiveAbilityDictionary>();
+        List<AbilityDictionary> listAvailableAbilities = new List<AbilityDictionary>();
 
-        foreach (PassiveAbilityDictionary dict in passiveAbilityList.passiveAbilityDictionaries)
+        Upgrade currentBlueAbility = null;
+        Upgrade currentRedAbility = null;
+        foreach (Upgrade upgrade in CurrentAbilities)
         {
-            listAvailablePassiveAbilities.Add(dict);
+            if (upgrade.orbType == OrbType.Blue) { currentBlueAbility = upgrade; }
+            if (upgrade.orbType == OrbType.Red) { currentRedAbility = upgrade; }
         }
 
-        //Select three Upgrades
-        for (int i = 0; i < 3; i++)
+        //Two abilities exist go Combine
+        if(currentRedAbility != null && currentBlueAbility != null && CurrentAbilities.Count == 2)
         {
-            int totalAvailable = listAvailablePassiveAbilities.Count;
-            int indexSelected = UnityEngine.Random.Range(0, totalAvailable);
-            //Select Passive Ability
-            PassiveAbilityDictionary selectedAbilityType = listAvailablePassiveAbilities[indexSelected];
-            int tier = FindUpgradeTier(UpgradeType.PassiveAbility, AbilityType.BlueSwing, PassiveType.Speed, selectedAbilityType.type, OrbType.None);
-            Upgrade selectedUpgrade = CreateUpgrade(UpgradeType.PassiveAbility, PassiveType.Speed, AbilityType.BlueSwing, selectedAbilityType.type, selectedAbilityType.orbType, tier);
+            CreateCombinationAbility(currentBlueAbility.abilityType, currentRedAbility.abilityType);
+            return;
+        }
+
+        //Available spot either blue or red
+        if(currentRedAbility == null || currentBlueAbility == null)
+        {
+            int emptyAbilitySlots = 3 - CurrentAbilities.Count;
+
+            foreach (AbilityDictionary dict in abilityList.abilityDictionaries)
+            {
+                if (currentRedAbility != null && dict.orbType == OrbType.Red) { continue; }
+                if (currentBlueAbility != null && dict.orbType == OrbType.Blue) { continue; }
+                listAvailableAbilities.Add(dict);
+            }
+
+            //Select three Upgrades
+            for (int i = 0; i < emptyAbilitySlots; i++)
+            {
+                int totalAvailable = listAvailableAbilities.Count;
+                int indexSelected = UnityEngine.Random.Range(0, totalAvailable);
+                //Select Passive Ability
+                AbilityDictionary selectedAbilityType = listAvailableAbilities[indexSelected];
+                int tier = FindUpgradeTier(UpgradeType.Ability, SkillType.BlueSwing, PassiveType.Speed, selectedAbilityType.type, selectedAbilityType.orbType);
+                Upgrade selectedUpgrade = CreateUpgrade(UpgradeType.Ability, PassiveType.Speed, SkillType.BlueSwing, selectedAbilityType.type, selectedAbilityType.orbType, tier);
+                PossibleUpgrades.Add(selectedUpgrade);
+                listAvailableAbilities.RemoveAt(indexSelected);
+            }
+        }
+      
+        //Upgrade existing
+        for(int i = 0; i < CurrentAbilities.Count; i++)
+        {
+            Upgrade upgrade = CurrentAbilities[i];
+            int tier = FindUpgradeTier(UpgradeType.Ability, SkillType.BlueSwing, PassiveType.Speed, upgrade.abilityType, upgrade.orbType);
+            Upgrade selectedUpgrade = CreateUpgrade(UpgradeType.Ability, PassiveType.Speed, SkillType.BlueSwing, upgrade.abilityType, upgrade.orbType, tier);
             PossibleUpgrades.Add(selectedUpgrade);
-            listAvailablePassiveAbilities.RemoveAt(indexSelected);
         }
 
         if (OnShowUpgrades != null) { OnShowUpgrades.Invoke(this, PossibleUpgrades); }
     }
 
-    public void ShowPossibleUpgrades()
+
+
+
+    public void ShowPossiblePassiveUpgrades()
     {
-        Debug.Log("Show Upgrades");
+        Time.timeScale = 0;
+        paused = true;
+        allowUnpause = true;
+
+        List<PassiveType> listAvailablePassives = new List<PassiveType>();
+
+    }
+
+
+    List<SkillType> MovementSkills = new List<SkillType> { SkillType.OrbLaunch };
+    bool movementSkillAvailable = true;
+    bool skill2Available = true;
+    bool skill3Available = true;
+
+    public void ShowPossibleSkillUpgrades()
+    {
         Time.timeScale = 0;
         paused = true;
         allowUnpause = true;
 
         List<Upgrade> PossibleUpgrades = new List<Upgrade>();
 
-        //Populate Passives
-        //Hide passives for now
-        List<PassiveType> listAvailablePassives = new List<PassiveType>();
-        //var passives = Enum.GetValues(typeof(PassiveType));
-        //foreach (var item in passives)
-        //{
-        //    listAvailablePassives.Add((PassiveType)item);
-        //}
-        
         //Populate Abilities
-        List<AbilityType> listAvailableAbilities = new List<AbilityType>();
-        var abilities = Enum.GetValues(typeof(AbilityType));
+        List<SkillType> listAvailableSkills = new List<SkillType>();
+        var skills = Enum.GetValues(typeof(SkillType));
         //X and B are currently used so only show upgrades
-        if(ButtonOn >= 2)
+        foreach(Upgrade skill in CurrentSkills)
         {
-            foreach(AbilityType abilityType in abilitiesSelected)
-            {
-                listAvailableAbilities.Add(abilityType);
-            }
-            if(listAvailableAbilities.Count <= 2)
-            {
-                AbilityType[] MovementAbilities = { AbilityType.OrbLaunch };
-                foreach (AbilityType movementAbility in MovementAbilities)
-                {
-                    listAvailableAbilities.Add(movementAbility);
-                }
-            }
-      
+            if(skill.region == ButtonRegion.Dash) { movementSkillAvailable = false; }
+            else if(skill.region == ButtonRegion.Ability2) { skill2Available = false; }
+            else if(skill.region == ButtonRegion.Ability3) {  skill3Available = false; }
+
+            //Add current Skill for upgrade option
+            listAvailableSkills.Add(skill.skillType);
         }
-        else
+
+        if (movementSkillAvailable && (skill2Available || skill3Available))
         {
-            foreach (var item in abilities)
+            //ADD ALL options
+            foreach (SkillType skill in skills)
             {
-                listAvailableAbilities.Add((AbilityType)item);
+                listAvailableSkills.Add(skill);
+            }
+        }
+        else if (movementSkillAvailable)
+        {
+            //ADD only Movement Options
+            foreach (SkillType movementSkill in MovementSkills)
+            {
+                listAvailableSkills.Add(movementSkill);
+            }
+        }
+        else if (skill2Available || skill3Available)
+        {
+            //ADD non Movement Options
+            foreach (SkillType skill in skills)
+            {
+                if (!MovementSkills.Contains(skill))
+                {
+                    listAvailableSkills.Add(skill);
+                }
             }
         }
 
         //Select three Upgrades
         for(int i = 0; i < 3; i++)
         {
-            //int totalAvailable = listAvailableAbilities.Count + listAvailablePassives.Count;
-            int totalAvailable = listAvailableAbilities.Count;
-            Debug.Log(totalAvailable);
+            int totalAvailable = listAvailableSkills.Count;
             int indexSelected = UnityEngine.Random.Range(0, totalAvailable);
-            Debug.Log(indexSelected);
+
             //Select Ability
-            AbilityType selectedAbilityType = listAvailableAbilities[indexSelected];
-            int tier = FindUpgradeTier(UpgradeType.Ability, selectedAbilityType, PassiveType.Speed, PassiveAbilityType.Missel, OrbType.None);
-            Upgrade selectedUpgrade = CreateUpgrade(UpgradeType.Ability, PassiveType.Speed, selectedAbilityType, PassiveAbilityType.Missel, OrbType.None, tier);
+            SkillType selectedAbilityType = listAvailableSkills[indexSelected];
+            int tier = FindUpgradeTier(UpgradeType.Skill, selectedAbilityType, PassiveType.Speed, AbilityType.Missel, OrbType.None);
+            Upgrade selectedUpgrade = CreateUpgrade(UpgradeType.Skill, PassiveType.Speed, selectedAbilityType, AbilityType.Missel, OrbType.None, tier);
             PossibleUpgrades.Add(selectedUpgrade);
-            listAvailableAbilities.RemoveAt(indexSelected);
-            /*
-            if(indexSelected >= listAvailablePassives.Count)
-            {
-
-                //indexSelected -= listAvailablePassives.Count;
-                AbilityType selectedAbilityType = listAvailableAbilities[indexSelected];
-                int tier = FindUpgradeTier(UpgradeType.Ability, selectedAbilityType, PassiveType.Speed, OrbType.None);
-                Upgrade selectedUpgrade = CreateUpgrade(UpgradeType.Ability, PassiveType.Speed, selectedAbilityType,OrbType.None, tier);
-                PossibleUpgrades.Add(selectedUpgrade);
-                listAvailableAbilities.RemoveAt(indexSelected);
-            }
-            //Select Passive
-            else
-            {
-
-                PassiveType selectedPassiveType = listAvailablePassives[indexSelected];
-                //Choose What Orb
-                int flip = UnityEngine.Random.Range(0, 2);
-                OrbType orbType = OrbType.None;
-                if (OrbSpecificPassives.Contains(selectedPassiveType))
-                {
-                    orbType = flip == 0 ? OrbType.Blue : OrbType.Red;
-                }
-                //Orb type does not matter if the passive does not need it
-                int tier = FindUpgradeTier(UpgradeType.Passive, AbilityType.OrbLaunch, selectedPassiveType, orbType);
-                Upgrade selectedUpgrade = CreateUpgrade(UpgradeType.Passive, selectedPassiveType, AbilityType.OrbLaunch, orbType, tier);
-                PossibleUpgrades.Add(selectedUpgrade);
-                listAvailablePassives.RemoveAt(indexSelected);
-            }
-            */
+            listAvailableSkills.RemoveAt(indexSelected);
         }
 
         if(OnShowUpgrades != null) { OnShowUpgrades.Invoke(this, PossibleUpgrades); }
     }
 
 
-    Upgrade CreateUpgrade(UpgradeType upgradeType, PassiveType passiveType, AbilityType abilityType, PassiveAbilityType passiveAvilityType, OrbType orbType, int tier)
+    Upgrade CreateCombinationUpgrade(UpgradeType upgradeType, PassiveType passiveType, SkillType skillType, AbilityType abilityType, OrbType orbType, int tier)
     {
-        Upgrade selectedUpgrade = new Upgrade(upgradeType, passiveType, abilityType, passiveAvilityType, orbType, tier);
-        if(upgradeType == UpgradeType.PassiveAbility)
+        Upgrade selectedUpgrade = new Upgrade(upgradeType, passiveType, skillType, abilityType, orbType, tier);
+        selectedUpgrade.SetAmount(combinationAbilityList.GetValueIncrease(abilityType));
+        selectedUpgrade.SetBaseAmount(combinationAbilityList.GetBaseValue(abilityType));
+        selectedUpgrade.SetCooldown(combinationAbilityList.GetCooldown(abilityType));
+        return selectedUpgrade;
+    }
+
+    Upgrade CreateUpgrade(UpgradeType upgradeType, PassiveType passiveType, SkillType skillType, AbilityType abilityType, OrbType orbType, int tier)
+    {
+        Upgrade selectedUpgrade = new Upgrade(upgradeType, passiveType, skillType, abilityType, orbType, tier);
+        if(upgradeType == UpgradeType.Ability)
         {
             //selectedUpgrade.SetAmount
-            selectedUpgrade.SetAmount(passiveAbilityList.GetValueIncrease(passiveAvilityType));
-            selectedUpgrade.SetBaseAmount(passiveAbilityList.GetBaseValue(passiveAvilityType));
-            selectedUpgrade.SetCooldown(passiveAbilityList.GetCooldown(passiveAvilityType));
+            selectedUpgrade.SetAmount(abilityList.GetValueIncrease(abilityType));
+            selectedUpgrade.SetBaseAmount(abilityList.GetBaseValue(abilityType));
+            selectedUpgrade.SetCooldown(abilityList.GetCooldown(abilityType));
         }
         else if(upgradeType == UpgradeType.Passive)
         {
@@ -253,41 +349,67 @@ public class UpgradeSystem : MonoBehaviour
         }
         else
         {
-            selectedUpgrade.SetAmount(abilityList.GetValueIncrease(abilityType));
-            selectedUpgrade.SetBaseAmount(abilityList.GetBaseValue(abilityType));
-            selectedUpgrade.SetCooldown(abilityList.GetCooldown(abilityType));
-            if(abilityType == AbilityType.OrbLaunch)
+            selectedUpgrade.SetAmount(skillList.GetValueIncrease(skillType));
+            selectedUpgrade.SetBaseAmount(skillList.GetBaseValue(skillType));
+            selectedUpgrade.SetCooldown(skillList.GetCooldown(skillType));
+
+            if(tier == 1)
             {
-                selectedUpgrade.SetButtonRegion(ButtonRegion.Dash);
-            }
-            else if(ButtonOn == 0)
-            {
-                selectedUpgrade.SetButtonRegion(ButtonRegion.Ability2);
+                if (MovementSkills.Contains(skillType))
+                {
+                    selectedUpgrade.SetButtonRegion(ButtonRegion.Dash);
+                }
+                else if (skill2Available)
+                {
+                    selectedUpgrade.SetButtonRegion(ButtonRegion.Ability2);
+                }
+                else if (skill3Available)
+                {
+                    selectedUpgrade.SetButtonRegion(ButtonRegion.Ability3);
+                }
             }
             else
             {
-                selectedUpgrade.SetButtonRegion(ButtonRegion.Ability3);
+                //Use region of the one before
+                int index = UpgradeIndex(selectedUpgrade);
+                selectedUpgrade.SetButtonRegion(CurrentSkills[index].region);
             }
         }
         return selectedUpgrade;
     }
 
 
-    int FindUpgradeTier(UpgradeType upgradeType, AbilityType abilityType, PassiveType passiveType, PassiveAbilityType passiveAbilityType, OrbType orbType)
+    int FindUpgradeTier(UpgradeType upgradeType, SkillType skillType, PassiveType passiveType, AbilityType abilityType, OrbType orbType)
     {
         int tier = 1;
         if(upgradeType == UpgradeType.Passive)
         {
-            for (int i = 0; i < CurrentUpgrades.Count; i++)
+            for(int i = 0; i < CurrentPassives.Count; i++)
             {
-                if (CurrentUpgrades[i].Type == UpgradeType.Passive && CurrentUpgrades[i].passiveType == passiveType && CurrentUpgrades[i].orbType == orbType){ tier++; }
+                if (CurrentPassives[i].passiveType == passiveType && CurrentPassives[i].orbType == orbType)
+                {
+                    return CurrentPassives[i].tier + 1;
+                }
             }
         }
-        else
+        else if(upgradeType == UpgradeType.Ability)
         {
-            for (int i = 0; i < CurrentUpgrades.Count; i++)
+            for (int i = 0; i < CurrentAbilities.Count; i++)
             {
-                if (CurrentUpgrades[i].Type == UpgradeType.Ability && CurrentUpgrades[i].abilityType == abilityType) { tier++; }
+                if (CurrentAbilities[i].abilityType == abilityType && CurrentAbilities[i].orbType == orbType)
+                {
+                    return CurrentAbilities[i].tier + 1;
+                }
+            }
+        }
+        else if (upgradeType == UpgradeType.Skill)
+        {
+            for (int i = 0; i < CurrentSkills.Count; i++)
+            {
+                if (CurrentSkills[i].skillType == skillType)
+                {
+                    return CurrentSkills[i].tier + 1;
+                }
             }
         }
         return tier;
@@ -295,8 +417,9 @@ public class UpgradeSystem : MonoBehaviour
 
     public void ClearUpgrades()
     {
-        ButtonOn = 0;
-        abilitiesSelected.Clear();
+        CurrentAbilities.Clear();
+        CurrentPassives.Clear();
+        CurrentSkills.Clear();
         CurrentUpgrades.Clear();
         if (OnClearUpgrades != null)
         {
@@ -305,43 +428,74 @@ public class UpgradeSystem : MonoBehaviour
     }
 
 
-    List<AbilityType> abilitiesSelected = new List<AbilityType>();
     public void SelectUpgrade(Upgrade selectedUpgrade)
     {
         paused = false;
-        if(selectedUpgrade.tier == 1)
-        {
-            if (selectedUpgrade.region == ButtonRegion.Ability2 || selectedUpgrade.region == ButtonRegion.Ability3)
-            {
-                ButtonOn++;
-            }
-        }
-
         //Put Upgrade Here
         CurrentUpgrades.Add(selectedUpgrade);
 
-        //Upgrade is a passive ability
-        if (selectedUpgrade.Type == UpgradeType.PassiveAbility)
+        if (OnSelectUpgrade != null) { OnSelectUpgrade.Invoke(); }
+
+        //Upgrade is a ability
+        if (selectedUpgrade.Type == UpgradeType.Ability)
         {
-            if (OnSelectPassiveAbility != null) { OnSelectPassiveAbility.Invoke(selectedUpgrade); }
+            AddOrReplaceUpgrade(CurrentAbilities, selectedUpgrade);
+            if (OnSelectAbility != null) { OnSelectAbility.Invoke(selectedUpgrade); }
         }
 
         //Upgrade is a passive
         else if (selectedUpgrade.Type == UpgradeType.Passive)
         {
+            AddOrReplaceUpgrade(CurrentPassives, selectedUpgrade);
             if (OnSelectPassive != null) { OnSelectPassive.Invoke(selectedUpgrade); }
         }
-        //Upgrade is an ability
+        //Upgrade is an skill
         else
         {
-            if (!abilitiesSelected.Contains(selectedUpgrade.abilityType))
-            {
-                abilitiesSelected.Add(selectedUpgrade.abilityType);
-            }
-            if (OnSelectAbility != null) { OnSelectAbility.Invoke(selectedUpgrade); }
+            AddOrReplaceUpgrade(CurrentSkills, selectedUpgrade);
+            if (OnSelectSkill != null) { OnSelectSkill.Invoke(selectedUpgrade); }
         }
-        if (OnSelectUpgrade != null) { OnSelectUpgrade.Invoke(); }
-
-
     }
+
+
+    void AddOrReplaceUpgrade(List<Upgrade> upgradeList, Upgrade newUpgrade)
+    {
+        int index = UpgradeIndex(newUpgrade);
+        if (index == -1)
+        {
+            upgradeList.Add(newUpgrade);
+        }
+        else
+        {
+            upgradeList.RemoveAt(index);
+            upgradeList.Insert(index, newUpgrade);
+        }
+    }
+
+    int UpgradeIndex(Upgrade upgrade)
+    {
+        switch (upgrade.Type)
+        {
+            case UpgradeType.Passive:
+                for(int i = 0; i < CurrentPassives.Count; i++)
+                {
+                    if (CurrentPassives[i].passiveType == upgrade.passiveType && CurrentPassives[i].orbType == upgrade.orbType) { return i; }
+                }
+                break;
+            case UpgradeType.Ability:
+                for (int i = 0; i < CurrentAbilities.Count; i++)
+                {
+                    if (CurrentAbilities[i].abilityType == upgrade.abilityType && CurrentAbilities[i].orbType == upgrade.orbType) { return i; }
+                }
+                break;
+            case UpgradeType.Skill:
+                for (int i = 0; i < CurrentSkills.Count; i++)
+                {
+                    if (CurrentSkills[i].skillType == upgrade.skillType) { return i; }
+                }
+                break;
+        }
+        return -1;
+    }
+
 }

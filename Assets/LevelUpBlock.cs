@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LevelUpBlock : MonoBehaviour
 {
+    [SerializeField] GameObject ImageContainer;
     [SerializeField] float InitialGrowTime = 3f;
     [SerializeField] float RotateSpeed = 100f;
     [SerializeField] GameObject ExplosionPrefab;
@@ -44,12 +45,16 @@ public class LevelUpBlock : MonoBehaviour
     }
 
     bool showingUpgrade = false;
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!showingUpgrade)
+        if(collision.GetComponent<PlayerMovement>() || collision.GetComponent<RedOrbController>())
         {
-            showingUpgrade = true;
-            ShowUpgrade();
+            if (!showingUpgrade)
+            {
+                showingUpgrade = true;
+                ShowUpgrade();
+            }
         }
     }
 
@@ -58,13 +63,15 @@ public class LevelUpBlock : MonoBehaviour
         Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
         spriteRenderer.enabled = false;
         boxCollider2D.enabled = false;
+        ImageContainer.SetActive(false);
         StartCoroutine("WaitThenShow");
     }
 
     IEnumerator WaitThenShow()
     {
+        Debug.Log("Test");
         yield return new WaitForSeconds(.2f);
-        upgradeSystem.ShowPossibleUpgrades();
+        upgradeSystem.ShowPossibleAbilities();
         yield return new WaitForSeconds(.2f);
         FindObjectOfType<EnemySpawner>().SpawnNextWave();
         Destroy(this.gameObject);

@@ -6,7 +6,10 @@ using UnityEngine.VFX;
 
 public class PlayerOrbitController : MonoBehaviour
 {
-    
+
+    public Action OnThrowRed;
+    public Action OnThrowBlue;
+
     [SerializeField] GameObject RedOrbLocation;
     public bool Orbiting;
     [SerializeField] RedOrbController redOrb;
@@ -80,6 +83,7 @@ public class PlayerOrbitController : MonoBehaviour
         EndOrbit();
         redOrb.GetThrown();
         GetComponent<PlayerPullController>().OutsideStopPulling();
+        if(OnThrowRed != null) { OnThrowRed.Invoke();}
     }
 
     //THIS IS FOR AN ABILITY
@@ -106,6 +110,8 @@ public class PlayerOrbitController : MonoBehaviour
 
         //Vector2 velocity = thrownDir * 85f;
         pm.GetThrown(velocity, velocityEnd);
+
+        if (OnThrowBlue != null) { OnThrowBlue.Invoke(); }
     }
 
 

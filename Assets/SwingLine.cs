@@ -20,7 +20,7 @@ public class SwingLine : MonoBehaviour
         redOrb = FindObjectOfType<RedOrbController>();
         lineRenderer = GetComponent<LineRenderer>();
 
-        swingController = PassiveAndAbilitiesManager.instance.abilityController.swingController;
+        swingController = PassiveAndAbilitiesManager.instance.skillController.swingController;
         swingController.OnSwingBegin += BeginSwing;
         swingController.OnSwingEndRed += EndSwing;
         swingController.OnSwingEndBlue += EndSwing;

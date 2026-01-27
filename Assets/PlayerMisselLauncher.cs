@@ -3,86 +3,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMisselLauncher : MonoBehaviour
+public class PlayerMisselLauncher : PlayerOrbAbility
 {
-
-    public Action<float> OnStartBlueCooldown;
-    public Action<float> OnStartRedCooldown;
 
     [SerializeField] GameObject prefabBlueMissel;
     [SerializeField] GameObject prefabOrangeMissel;
 
     PlayerMovement playerMovement;
     RedOrbController redOrbController;
-    PlayerOrbitController orbitController;
 
-    Upgrade currentRedAbility;
-    Upgrade currentBlueAbility;
 
-    TimerClass blueTimer = new TimerClass(false);
-    float blueTime;
-
-    TimerClass redTimer = new TimerClass(false);
-    float redTime;
-    // Start is called before the first frame update
-    void Start()
+    public void Reconnect()
     {
         playerMovement = FindObjectOfType<PlayerMovement>();
         redOrbController = FindObjectOfType<RedOrbController>();
-        orbitController = FindObjectOfType<PlayerOrbitController>();
     }
 
-    public void SetPassiveAbility(Upgrade upgrade)
+
+    public void LaunchBlueMissel()
     {
-        if(upgrade.orbType == OrbType.Blue)
+        if(currentBlueAbility == null) { return; }
+        if (!blueTimer.IsOn())
         {
-            currentBlueAbility = upgrade;
-            blueTime = upgrade.cooldown;
             RefreshBlueTimer();
-        }
-        else
-        {
-            currentRedAbility = upgrade;
-            redTime = upgrade.cooldown;
-            RefreshOrangeTimer();
+            SpawnBlueMissel();
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void LaunchRedMissel()
     {
-        //return;
-        if (blueTimer.IsOn())
+        if (currentRedAbility == null) { return; }
+        if (!redTimer.IsOn())
         {
-            if(!orbitController.Orbiting) {
-                if (blueTimer.TimerStillGoing(Time.time))
-                {
-
-                }
-                else
-                {
-                    SpawnBlueMissel();
-                    RefreshBlueTimer();
-                }
-            }
-        }
-
-        if (redTimer.IsOn())
-        {
-            if (!orbitController.Orbiting)
-            {
-                if (redTimer.TimerStillGoing(Time.time))
-                {
-
-                }
-                else
-                {
-                    SpawnOrangeMissel();
-                    RefreshOrangeTimer();
-                }
-            }
+            RefreshOrangeTimer();
+            //SpawnOrangeMissel();
+            redOrbController.BecomeMissel();
         }
     }
+
 
     void SpawnOrangeMissel()
     {
@@ -105,20 +63,6 @@ public class PlayerMisselLauncher : MonoBehaviour
 
         missel.GetComponent<PlayerMissel>().SetDamage(currentRedAbility.GetTotalAmountCalculated());
 
-    }
-
-    void RefreshOrangeTimer()
-    {
-        redTimer = new TimerClass(true, redTime, Time.time);
-        if (OnStartRedCooldown != null) { OnStartRedCooldown.Invoke(redTime); }
-
-    }
-
-
-    void RefreshBlueTimer()
-    {
-        blueTimer = new TimerClass(true, blueTime, Time.time);
-        if(OnStartBlueCooldown != null) { OnStartBlueCooldown.Invoke(blueTime); }
     }
 
     void SpawnBlueMissel()
